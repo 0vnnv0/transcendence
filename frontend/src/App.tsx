@@ -1,22 +1,23 @@
 import { useState } from 'react'
+import Button from './components/ui/Button/Button';
 
 function App() {
   const [count, setCount] = useState(0)
 
+  const layout = "flex items-center flex-col"
   return (
 	<>
-		<section className="flex items-center flex-col p-8">
-			<div className="flex items-center flex-col pb-8">
+		<section className={`${layout} p-8`}>
+			<div className={`${layout} pb-8`}>
 				<h1 className="text-2xl font-bold">Test App</h1>
 				<p>Click the counter below to see the state changing</p>
 			</div>
-			<button
-				type="button"
-				className="border rounded-lg bg-sky-100 border-sky-900 hover:bg-sky-200 px-4 py-2 "
+			<Button 
+				variant="primary"
 				onClick={() => setCount((count) => count + 1)}
 			>
 				Count is {count}
-			</button>
+      		</Button>
 		</section>
     </>
   )
