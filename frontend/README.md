@@ -1,12 +1,12 @@
 # How to use
 
-To install all dependencies make navigate inside the frontend folder and run:
+To install all dependencies navigate inside the frontend folder and run:
 
 ```js
 npm install
 ```
 
-To start the vite server run:
+To start the frontend server run:
 
 ```js
 npm run dev
