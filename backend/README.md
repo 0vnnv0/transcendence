@@ -79,6 +79,14 @@ cd backend
 npm install
 ```
 
+
+Docker (install without root priviliges)
+```bash
+dockerd-rootless-setuptool.sh install
+```
+---
+
+
 ---
 
 # Required Packages
