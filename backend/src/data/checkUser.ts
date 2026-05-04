@@ -28,4 +28,4 @@ async function checkUser(login: string) {
   }
 }
 
-checkUser('hreusing');
+checkUser('fjung');
