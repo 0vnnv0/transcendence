@@ -13,7 +13,7 @@ function App() {
 				<p>Click the counter below to see the state changing</p>
 			</div>
 			<Button 
-				variant="primary"
+				variant="secondary"
 				onClick={() => setCount((count) => count + 1)}
 			>
 				Count is {count}
