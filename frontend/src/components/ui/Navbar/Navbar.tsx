@@ -1,21 +1,36 @@
 import { useNavigate } from 'react-router-dom'
-import Input from '../Input/Input'
+import SearchBar from '../Search/Search'
 
 function Navbar() {
   const navigate = useNavigate()
-  const navButton = "text-green-300 hover:text-green-700 transition-colors"
+  const navButton = "flex items-center gap-2 text-green-300 hover:text-green-700 transition-all hover:scale-110 cursor-pointer"
 
   return (
 	<nav className="fixed left-0 top-0 h-screen w-48 flex flex-col items-start justify-center gap-4 p-6 bg-green-950/30 backdrop-blur-md border-r border-green-500/20">
-		<div className="absolue top-6">
-			<Input placeholder="Suchen..." />
+		<div className="absolute top-6">
+			<SearchBar />
 		</div>
 		<ul className="flex flex-col gap-2 mt-auto mb-auto">
-     	   <li><button className={navButton} onClick={() => navigate('/dashboard')}>Dashboard</button></li>
-			<li><button className={navButton} onClick={() => navigate('/feed')}>Feed</button></li>
-			<li><button className={navButton} onClick={() => navigate('/projects')}>All Projects</button></li>
-			<li><button className={navButton} onClick={() => navigate('/chats')}>Chats</button></li>
+     	   <li><button className={navButton} onClick={() => navigate('/dashboard')}>
+				<img src="/home.svg"/>Dashboard
+			</button></li>
+			<li><button className={navButton} onClick={() => navigate('/feed')}>
+				<img src="/dashboard.svg"/>Feed
+			</button></li>
+			<li><button className={navButton} onClick={() => navigate('/projects')}>
+				<img src="/projects.svg"/>All Projects
+			</button></li>
+			<li><button className={navButton} onClick={() => navigate('/chats')}>
+				<img src="/chat.svg"/>Chats
+			</button></li>
 		</ul>
+		<div className="absolute bottom-6">
+			<img
+				src="/profile.jpg"
+				className="w-12 h-12 rounded-full object-cover transition-all hover:scale-110 cursor-pointer"
+				onClick={() => navigate ('/myprofile')}
+			/>
+		</div>
     </nav>
   )
 }
