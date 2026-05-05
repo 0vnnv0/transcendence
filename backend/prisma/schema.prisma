@@ -9,14 +9,93 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  // output = "../generated/prisma_client"
-  // output = "../node_modules/@prisma/client"
 }
 
 model User { 
-  id        Int      @id @default(autoincrement()) 
-  createdAt DateTime @default(now()) 
-  email     String   @unique
-  name      String?
+	id				Int			@id @default(autoincrement()) 
+	createdAt		DateTime	@default(now()) 
+	email			String		@unique
+	intraName		String		@unique
+	campusID		Int			@unique
+	campusName		String
+	currentRank		Int
+	paceDeadline	DateTime
+	blackholeDate	DateTime
+	student			Boolean
+
+	quests			UserQuests?
+	projects		UserProjects[]
+	availability	Availability?
+	chats			Chat[]		@relation("UserToChat")
+	sentMessages	ChatMessage[]
 } 
 
+model UserQuests {
+	id				Int			@id @default(autoincrement()) 
+	user			User		@relation(fields: [userId], references: [id])
+	userId			Int			@unique
+	rank1			Boolean		@default(false)
+	rank2			Boolean		@default(false)
+	rank3			Boolean		@default(false)
+	rank4			Boolean		@default(false)
+	rank5			Boolean		@default(false)
+	rank6			Boolean		@default(false)
+}
+
+model Project {
+	id				Int			@id @default(autoincrement()) 
+	name			String
+	projectRank		Int
+	//users			U
+}
+
+// model UserProjects {
+// 	id				Int			@id @default(autoincrement()) 
+// 	user			User		@relation(fields: [userId], references: [id])
+// 	userId			Int			@unique
+
+// }
+
+model UserProjects {
+	id				Int			@id @default(autoincrement()) 
+	user			User		@relation(fields: [userId], references: [id])
+	userId			Int			@unique
+	//project			Project		@relation(fields: [projectId], references: [id])
+	projectId		Int
+	status			Status		@default(NOT_STARTED)
+	isLookingForGroup	Boolean		@default(false)
+}
+
+model Availability {
+	id				Int			@id @default(autoincrement()) 
+	user			User		@relation(fields: [userId], references: [id])
+	userId			Int			@unique
+	workDaysPerWeek	Int
+	startDate		DateTime
+	endDate			DateTime
+	preferredDays	String[]
+	isRemote		Boolean  	@default(false)
+}
+
+model Chat {
+	id				Int			@id @default(autoincrement()) 
+	createdAt		DateTime	@default(now())
+	users			User[]		@relation("UserToChat")
+	messages		ChatMessage[]
+}
+
+model ChatMessage {
+	id				Int			@id @default(autoincrement())
+	chat			Chat		@relation(fields: [chatId], references: [id])
+	chatId			Int
+	sender			User		@relation(fields: [senderId], references: [id])
+	senderId		Int
+	createdAt		DateTime	@default(now())
+	content			String
+}
+
+enum Status {
+	NOT_STARTED
+	IN_PROGRESS
+	FINISHED
+}

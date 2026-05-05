@@ -93,7 +93,9 @@ Open your config: nano ~/.zshrc
 Add this line at the bottom:
 
 ```bash
-alias start_docker='dockerd-rootless.sh --data-root /home/$USER/goinfre/docker_storage'
+alias docker-clean='pkill -9 -u $(whoami) -f "docker|rootlesskit|containerd" && rm -rf /run/user/$(id -u)/dockerd-rootless /run/user/$(id -u)/docker.sock && echo "Docker processes cleaned."'
+
+alias start-docker='dockerd-rootless.sh --data-root /home/$USER/goinfre/docker_storage'
 ```
 
 Save and exit (Ctrl+O, Enter, Ctrl+X).
@@ -102,7 +104,8 @@ Apply changes: source ~/.zshrc
 
 Start docker:
 ```bash
-start_docker
+docker-clean
+start-docker
 ```
 
 
@@ -149,6 +152,8 @@ Development dependencies:
 npm install -D typescript ts-node-dev @types/node
 ```
 
+you can install the prisma extension in VS Code
+
 ---
 
 # Running the Server
@@ -163,6 +168,11 @@ Server runs on:
 
 ```txt
 http://localhost:3000
+```
+
+```txt
+Prisma runs on
+http://localhost:5555
 ```
 
 ---

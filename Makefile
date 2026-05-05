@@ -1,6 +1,6 @@
 COMPOSE_FILE = srcs/docker-compose.yml
-DATA_DIR = /home/hreusing/data
-DB_DIR = /home/hreusing/data/db/
+DATA_DIR = /home/$(USER)/data
+DB_DIR = /home/$(USER)/data/db/
 
 .PHONY: all build up down clean fclean re
 
