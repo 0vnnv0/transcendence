@@ -20,7 +20,7 @@ model User {
 	campusName		String
 	currentRank		Int
 	paceDeadline	DateTime
-	blackholeDate	DateTime
+	blackholeDate	DateTime?
 	student			Boolean
 
 	quests			UserQuests?
