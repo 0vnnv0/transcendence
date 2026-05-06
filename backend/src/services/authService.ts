@@ -30,8 +30,11 @@ export class AuthService {
   }
 
   static async upsertUser(userData: any) {
+	const mainCursus = userData.cursus_users.find(
+	(c: any) => c.cursus.slug === '42cursus' || c.cursus_id === 21
+	);
 	// 1. Sicherstellen, dass das Datum valide ist oder ein Fallback nutzen
-	const bhDate = userData.blackholed_at ? new Date(userData.blackholed_at) : new Date();
+	//const bhDate = userData.blackholed_at ? new Date(userData.blackholed_at) : new Date();
 	
 	// 2. Sicherstellen, dass Campus-Daten existieren (verhindert den "undefined reading '0'" Fehler)
 	const campus = userData.campus && userData.campus.length > 0 ? userData.campus[0] : { id: 0, name: "Unknown" };
@@ -41,7 +44,7 @@ export class AuthService {
 			},
 		update: {
 			currentRank: Math.floor(userData.level || 0),
-			blackholeDate: bhDate,
+			blackholeDate: mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
 			},
 		create: {
 			intraName: userData.login,
@@ -49,9 +52,9 @@ export class AuthService {
 			campusID: campus.id,
 			campusName: campus.name,
 			currentRank: Math.floor(userData.level || 0),
-			paceDeadline: new Date(), // Hier ggf. auch ein Feld aus der API nutzen
-			blackholeDate: bhDate,
-			student: true
+			paceDeadline: new Date(), // Hier muss aus Quest Datum genommen werden
+			blackholeDate:  mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
+			student: mainCursus?.grade === 'Cadet',
 		}
 	});
   }
