@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Feed from './pages/Feed'
 import Projects from './pages/Projects'
 import MyProfile from './pages/MyProfile'
+import Chats from './pages/Chats'
 
 
 function App() {
@@ -13,7 +14,8 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
 	  <Route path="/feed" element={<Feed />} />
 	  <Route path="/projects" element={<Projects />} />
-    <Route path="/myprofile" element={<MyProfile />} />
+	  <Route path="/myprofile" element={<MyProfile />} />
+	  <Route path="/chats" element={<Chats />} />
     </Routes>
   )
 }

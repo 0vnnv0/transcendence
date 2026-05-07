@@ -3,10 +3,10 @@ import SearchBar from '../Search/Search'
 
 function Navbar() {
   const navigate = useNavigate()
-  const navButton = "flex items-center gap-2 text-green-300 hover:text-green-700 transition-all hover:scale-110 cursor-pointer"
+  const navButton = "flex items-center gap-2 text-orange-500 hover:text-yellow-500 transition-all hover:scale-110 cursor-pointer"
 
   return (
-	<nav className="fixed left-0 top-0 h-screen w-48 flex flex-col items-start justify-center gap-4 p-6 bg-green-950/30 backdrop-blur-md border-r border-green-500/20">
+	<nav className="fixed left-0 top-0 h-screen w-48 flex flex-col items-start justify-center gap-4 p-6 bg-blue-400/20 backdrop-blur-md border-r border-orange-500/50">
 		<div className="absolute top-6">
 			<SearchBar />
 		</div>
