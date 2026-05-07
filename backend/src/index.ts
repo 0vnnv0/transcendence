@@ -1,16 +1,44 @@
 //DUMMIE
 //dummie for indexfile
 import buildServer from "./serverSetup";
+//import { Pool } from 'pg';
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
+
+// 1. Prisma Adapter Setup (wie im Guide)
+const connectionString = process.env.DATABASE_URL;
+//const pool = new Pool({ connectionString });
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function start() {
 	const server = await buildServer();
 
+	// 2. Die Route aus dem Guide für Fastify adaptieren
+    server.get("/", async (request, reply) => {
+        try {
+            const userCount = await prisma.user.count();
+            
+            const message = userCount === 0
+                ? "No users have been added yet."
+                : "Some users have been added to the database.";
+            
+            return { message }; // Fastify wandelt Objekte automatisch in JSON um
+        } catch (error) {
+            server.log.error(error);
+            return reply.status(500).send({ error: "Database connection failed" });
+        }
+    });
+
 	try {
 		await server.listen({
 			port: 3000,
+			host: '0.0.0.0'
 		});
 
-		console.log("Server running on port 3000");
+		console.log("Server running on http://localhost:3000");
 	} catch (err) {
 		server.log.error(err);
 		process.exit(1);
