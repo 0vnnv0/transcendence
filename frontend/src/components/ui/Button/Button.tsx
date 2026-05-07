@@ -5,7 +5,7 @@ import React from 'react';
 // ButtonHTMLAttributes tells TS the Button should accept any standard HTML button attribute
 // has to be HTMLButtonElement and not <a> or <div>
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -27,8 +27,9 @@ const Button: React.FC<ButtonProps> = ({
 
   // Variant-specific styles
   const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
+    primary: "bg-violet-950 text-white hover:bg-violet-500 shadow-sm",
     secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
+	danger: "bg-red-700 text-white hover:bg-red-500 shadow-lg"
   };
 
   // Size-specific styles
