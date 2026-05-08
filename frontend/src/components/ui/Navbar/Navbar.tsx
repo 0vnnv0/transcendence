@@ -12,16 +12,16 @@ function Navbar() {
 		</div>
 		<ul className="flex flex-col gap-2 mt-auto mb-auto">
      	   <li><button className={navButton} onClick={() => navigate('/dashboard')}>
-				<img src="/home.svg"/>Dashboard
+				<img src="/home.svg"/>Dashboard<img src="/arrow.svg" />
 			</button></li>
 			<li><button className={navButton} onClick={() => navigate('/feed')}>
-				<img src="/dashboard.svg"/>Feed
+				<img src="/feed.svg"/>Feed<img src="/arrow.svg" />
 			</button></li>
 			<li><button className={navButton} onClick={() => navigate('/projects')}>
-				<img src="/projects.svg"/>All Projects
+				<img src="/projects.svg"/>Projects <img src="/arrow.svg" />
 			</button></li>
 			<li><button className={navButton} onClick={() => navigate('/chats')}>
-				<img src="/chat.svg"/>Chats
+				<img src="/chat.svg"/>Chats 
 			</button></li>
 		</ul>
 		<div className="absolute bottom-6">

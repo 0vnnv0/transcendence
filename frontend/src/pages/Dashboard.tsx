@@ -9,6 +9,9 @@ function Dashboard() {
     <div>
 		<Navbar />
     </div>
+	<div className="font-[Gasoek_One] text-6xl ml-70 text-orange-500">
+		<h1>welcome to cluster fuck</h1>
+	</div>
 	</section>
   )
 }
