@@ -9,6 +9,9 @@ function Chats() {
     <div>
 		<Navbar />
     </div>
+		<div className="ml-70 text-orange-500">
+		<h1>chat with someone, lets gooooo</h1>
+	</div>
 	</section>
   )
 }

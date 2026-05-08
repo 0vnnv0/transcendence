@@ -9,6 +9,9 @@ function Feed() {
     <div>
 		<Navbar />
     </div>
+	<div className="ml-70 text-orange-500">
+		<h1>this is your feed, say hi!</h1>
+	</div>
 	</section>
   )
 }

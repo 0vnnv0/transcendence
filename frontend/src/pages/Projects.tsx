@@ -9,6 +9,9 @@ function Projects() {
     <div>
 		<Navbar />
     </div>
+	<div className="ml-70 text-orange-500">
+		<h1>which project are you working on?</h1>
+	</div>
 	</section>
   )
 }
