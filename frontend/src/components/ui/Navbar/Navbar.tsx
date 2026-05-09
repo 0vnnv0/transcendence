@@ -6,7 +6,7 @@ function Navbar() {
   const navButton = "flex items-center gap-2 text-orange-500 hover:text-yellow-500 transition-all hover:scale-110 cursor-pointer"
 
   return (
-	<nav className="fixed left-0 top-0 h-screen w-48 flex flex-col items-start justify-center gap-4 p-6 bg-blue-400/20 backdrop-blur-md border-r border-orange-500/50">
+	<nav className="flex flex-col flex-1 min-h-screen items-start justify-center gap-4 p-6 bg-blue-400/20 backdrop-blur-md border-r border-orange-500/50">
 		<div className="top-6">
 			<SearchBar />
 		</div>
@@ -21,7 +21,7 @@ function Navbar() {
 				<img src="/projects.svg"/>Projects <img src="/arrow.svg" />
 			</button></li>
 			<li><button className={navButton} onClick={() => navigate('/chats')}>
-				<img src="/chat.svg"/>Chats 
+				<img src="/chat.svg"/>Chats
 			</button></li>
 		</ul>
 		<div className="bottom-6">

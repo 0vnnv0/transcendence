@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@theme {
+  /* This creates the 'font-custom' utility class */
+  --font-kyiv: "KyivTypeSans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: 'KyivTypeSans';
+  src: url('./assets/fonts/KyivTypeSans-Medium.eot'); /* IE9 Compat Modes */
+  src: url('./assets/fonts/KyivTypeSans-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./assets/fonts/KyivTypeSans-Medium.woff2') format('woff2'), /* Modern Browsers */
+       url('./assets/fonts/KyivTypeSans-Medium.woff') format('woff'); /* Modern Browsers */
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap; /* Helps with performance */
+}
+
+@font-face {
+  font-family: 'KyivTypeSans';
+  src: url('./assets/fonts/KyivTypeSans-Regular.eot'); /* IE9 Compat Modes */
+  src: url('./assets/fonts/KyivTypeSans-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./assets/fonts/KyivTypeSans-Regular.woff2') format('woff2'), /* Modern Browsers */
+       url('./assets/fonts/KyivTypeSans-Regular.woff') format('woff'); /* Modern Browsers */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Helps with performance */
+}

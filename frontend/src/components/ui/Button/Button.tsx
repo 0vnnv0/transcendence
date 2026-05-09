@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "font-kyiv font-medium uppercase inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {
@@ -43,9 +43,9 @@ const Button: React.FC<ButtonProps> = ({
   const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
   return (
-    <button 
-      className={classes} 
-      disabled={disabled} 
+    <button
+      className={classes}
+      disabled={disabled}
       {...props}
     >
       {children}
