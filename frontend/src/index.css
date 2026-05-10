@@ -3,6 +3,7 @@
 @theme {
   /* This creates the 'font-custom' utility class */
   --font-kyiv: "KyivTypeSans", ui-sans-serif, system-ui, sans-serif;
+  --color-mild-purple: #F0DBFF;
 }
 
 @font-face {

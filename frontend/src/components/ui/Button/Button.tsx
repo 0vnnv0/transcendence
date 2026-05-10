@@ -6,7 +6,7 @@ import React from 'react';
 // has to be HTMLButtonElement and not <a> or <div>
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'md' | 'lg';
 }
 
 // FC == Functional Component -> it expects props defined in ButtonProps interface
@@ -34,8 +34,7 @@ const Button: React.FC<ButtonProps> = ({
 
   // Size-specific styles
   const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-5 py-2.5 text-base",
+    md: "px-4 py-2 text-sm",
     lg: "px-8 py-3 text-lg"
   };
 
