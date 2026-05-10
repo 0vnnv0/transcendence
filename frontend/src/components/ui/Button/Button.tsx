@@ -23,13 +23,13 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "font-kyiv font-medium uppercase inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "font-kyiv border border-gray-500 bg-sunshine font-medium uppercase inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {
-    primary: "bg-violet-950 text-white hover:bg-violet-500 shadow-sm",
-    secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-	danger: "bg-red-700 text-white hover:bg-red-500 shadow-lg"
+    primary: "hover:bg-sunshine-hover",
+    secondary: "hover:bg-sunshine-hover",
+	danger: "text-white hover:bg-sunshine-hover"
   };
 
   // Size-specific styles

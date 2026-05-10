@@ -1,9 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  /* This creates the 'font-custom' utility class */
+  /* This creates the 'kyiv' utility class */
   --font-kyiv: "KyivTypeSans", ui-sans-serif, system-ui, sans-serif;
+
+  /* custom colours */
+  --color-lime: #E5F53C;
+  --color-gold: #FFD900;
   --color-mild-purple: #F0DBFF;
+
+  /* This creates the 'bg-sunshine' utility */
+  --background-image-sunshine: radial-gradient(circle, var(--color-lime) 0%, var(--color-gold) 100%);
+  --background-image-sunshine-hover: radial-gradient(circle, var(--color-gold) 0%, var(--color-lime) 100%);
 }
 
 @font-face {
