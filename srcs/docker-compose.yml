@@ -91,7 +91,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/$USER/data/db
+      device: /$HOME/data/db
       o: bind
       
 secrets:

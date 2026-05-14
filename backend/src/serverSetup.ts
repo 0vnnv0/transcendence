@@ -1,11 +1,15 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import fastifyStatic from "@fastify/static";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { Server } from "socket.io";
 
-import { displayUsersRoutes } from "./routes/displayUsers";
+import { displayUsersRoutes } from "./routes/displayUsers.js";
 
-import { chatRoutes } from "./routes/chatRoutes";
+import { chatRoutes } from "./routes/chatRoutes.js";
+
 
 //all statements logged in the consule
 const fastify = Fastify({
@@ -16,6 +20,14 @@ const fastify = Fastify({
 async function buildServer() {
 	await fastify.register(cors, {
 		origin: "*",
+	});
+
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = path.dirname(__filename);
+
+	fastify.register(fastifyStatic, {
+		root: path.join(__dirname, "../htmlTests"),
+		prefix: "/",
 	});
 
 	await displayUsersRoutes(fastify);
@@ -31,7 +43,7 @@ async function buildServer() {
 		console.log("socket connected:", socket.id);
 	});
 
-	return fastify;
+	return {app: fastify, io};
 }
 
 export default buildServer;

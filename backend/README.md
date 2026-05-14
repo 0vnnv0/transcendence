@@ -232,7 +232,7 @@ To get the output simply use in de backend directory:
 npx ts-node src/data/checkQuest.ts
 ```
 
-or 
+or
 
 ```bash
 npx ts-node src/data/checkUser.ts
