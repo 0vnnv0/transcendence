@@ -15,12 +15,18 @@ function Navbar() {
 			<NavItem label="Feed" iconPath="feed.svg" route="/feed" />
 			<NavItem label="Projects" iconPath="projects.svg" route="/projects" />		
 		</ul>
+		<ul className="flex flex-col my-auto gap-2 w-full">
+			<NavItem label="Chats" iconPath="chat.svg" route="/chats" />
+		</ul>
 		<div className="bottom-6 mt-auto">
+			<div className="relative inline-block">
 			<img
 				src="/profile.jpg"
 				className="w-12 h-12 rounded-2xl object-cover transition-all hover:scale-110 cursor-pointer"
 				onClick={() => navigate ('/myprofile')}
 			/>
+			<span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-black rounded-full"></span>
+		</div>
 		</div>
     </nav>
   )
