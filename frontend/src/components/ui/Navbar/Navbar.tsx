@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import SearchBar from '../Search/Search'
 import NavItem from '../NavItem/NavItem'
+import ChatMenu from '../ChatMenu/ChatMenu'
+import { useState } from 'react';
 
 function Navbar() {
   const navigate = useNavigate()
@@ -14,9 +16,7 @@ function Navbar() {
 			<NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
 			<NavItem label="Feed" iconPath="feed.svg" route="/feed" />
 			<NavItem label="Projects" iconPath="projects.svg" route="/projects" />		
-		</ul>
-		<ul className="flex flex-col my-auto gap-2 w-full">
-			<NavItem label="Chats" iconPath="chat.svg" route="/chats" />
+			<ChatMenu />
 		</ul>
 		<div className="bottom-6 mt-auto">
 			<div className="relative inline-block">
