@@ -16,8 +16,8 @@ function Navbar() {
 			<NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
 			<NavItem label="Feed" iconPath="feed.svg" route="/feed" />
 			<NavItem label="Projects" iconPath="projects.svg" route="/projects" />		
-			<ChatMenu />
 		</ul>
+		<ChatMenu />
 		<div className="bottom-6 mt-auto">
 			<div className="relative inline-block">
 			<img
