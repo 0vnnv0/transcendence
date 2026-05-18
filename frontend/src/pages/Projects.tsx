@@ -41,30 +41,34 @@ function Projects() {
               description="this is a fun game"
             />
           </div>
-          				<div className="flex gap-2">
+        	<div className="flex gap-2 cursor-pointer">
 					<ProjectCard
 						layout="portrait"
 						image="profile.jpg"
 						title="ft_irc"
-						subtitle='One of our favourite games.'
+						subtitle='Internet Relay Chat'
 						tags={['2 - 3 People', 'Rank 5']}
-						description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
+						description="This project is about creating your own IRC server.
+									You will use an actual IRC client to connect to your server and test it"
 					/>
 					<ProjectCard
 						layout="portrait"
 						image="thumb.jpg"
 						title="webserv"
-						subtitle='42 or brewdog'
+						subtitle='Why do URLs start with HTTP?'
 						tags={['2 - 3 People', 'Rank 5']}
-						description="Sadly there are a few annoying players around who scream to loud at times, which is why the game can be either fun or not."
+						description="This project is about writing your own HTTP server. You will be able to test it with an actual browser.
+									HTTP is one of the most widely used protocols on the internet."
 					/>
 					<ProjectCard
 						layout="portrait"
 						image="thumb.jpg"
 						title="Transcendence"
-						subtitle='Has beautiful images.'
+						subtitle='Surprise.'
 						tags={['5 People', 'Rank 6']}
-						description="The beautiful images are sometimes very confusing though, how does someone come up with these ideas?"
+						description="This project involves undertaking tasks you have never done before.
+									Remember the beginning of your journey in computer science.
+									Look at you now; it’s time to shine!"
 					/>
 				</div>
         </div>
