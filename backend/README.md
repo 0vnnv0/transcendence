@@ -103,6 +103,7 @@ Save and exit (Ctrl+O, Enter, Ctrl+X).
 Apply changes: source ~/.zshrc
 
 Start docker:
+- close VS-Code
 ```bash
 docker-clean
 start-docker

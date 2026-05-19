@@ -1,6 +1,6 @@
 COMPOSE_FILE = srcs/docker-compose.yml
 DATA_DIR = /home/$(USER)/data
-DB_DIR = /home/$(USER)/data/db/
+DB_DIR = /home/$(USER)/data/srcs_postgres_data/
 
 .PHONY: all build up down clean fclean re
 
@@ -26,7 +26,8 @@ clean:
 
 # removes unused volumes
 fclean: down clean
-	docker run --rm -v $(DATA_DIR):/cleanup alpine rm -rf /cleanup/db
+# 	-docker volume rm srcs_postgres_data
+	docker run --rm -v $(DATA_DIR):/cleanup alpine rm -rf /cleanup/srcs_postgres_data
 	rm -rf $(DATA_DIR)
 	docker system prune -af --volumes
 

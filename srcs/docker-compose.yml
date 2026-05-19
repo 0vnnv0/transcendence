@@ -43,7 +43,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../backend/prisma/migrations:/transcendence/prisma/migrations
+      - ${PWD}/../backend/prisma/migrations:/transcendence/prisma/migrations
     networks:
       - transcendence
     restart: always
@@ -88,11 +88,11 @@ networks:
 
 volumes:
   postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/$USER/data/db
-      o: bind
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   device: /home/$USER/data/db
+    #   o: bind
       
 secrets:
   db_password:
