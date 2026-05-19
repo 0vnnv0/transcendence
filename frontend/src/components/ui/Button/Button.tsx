@@ -6,7 +6,7 @@ import React from 'react';
 // has to be HTMLButtonElement and not <a> or <div>
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'md' | 'lg';
 }
 
 // FC == Functional Component -> it expects props defined in ButtonProps interface
@@ -23,19 +23,18 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "font-kyiv border border-gray-500 bg-sunshine font-medium uppercase inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {
-    primary: "bg-violet-950 text-white hover:bg-violet-500 shadow-sm",
-    secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-	danger: "bg-red-700 text-white hover:bg-red-500 shadow-lg"
+    primary: "hover:bg-sunshine-hover",
+    secondary: "hover:bg-sunshine-hover",
+	danger: "text-white hover:bg-sunshine-hover"
   };
 
   // Size-specific styles
   const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-5 py-2.5 text-base",
+    md: "px-4 py-2 text-sm",
     lg: "px-8 py-3 text-lg"
   };
 
@@ -43,9 +42,9 @@ const Button: React.FC<ButtonProps> = ({
   const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
   return (
-    <button 
-      className={classes} 
-      disabled={disabled} 
+    <button
+      className={classes}
+      disabled={disabled}
       {...props}
     >
       {children}
