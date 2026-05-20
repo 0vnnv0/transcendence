@@ -23,6 +23,7 @@ function Dashboard() {
 						title="Pac Man"
 						subtitle='Eat as many Linsenwaffeln as you can.'
 						tags={['2 People', 'Rank 5']}
+						route='/certain_project'
 						description="This is a very cool project that many people can collaborate on. A classic, a game. Everyone knows and loves it."
 				/>
 				<UserCard
@@ -46,6 +47,7 @@ function Dashboard() {
 						title="Codenames"
 						subtitle='One of our favourite games.'
 						tags={['2 People', 'Rank 5']}
+						route='/certain_project'
 						description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
 					/>
 					<ProjectCard
@@ -54,6 +56,7 @@ function Dashboard() {
 						title="Blood on the Clocktower"
 						subtitle='42 or brewdog'
 						tags={['React', 'TypeScript']}
+						route='/certain_project'
 						description="Sadly there are a few annoying players around who scream to loud at times, which is why the game can be either fun or not."
 					/>
 					<ProjectCard
@@ -62,6 +65,7 @@ function Dashboard() {
 						title="Dixit"
 						subtitle='Has beautiful images.'
 						tags={['3 People', 'Rank 3']}
+						route='/certain_project'
 						description="The beautiful images are sometimes very confusing though, how does someone come up with these ideas?"
 					/>
 				</div>

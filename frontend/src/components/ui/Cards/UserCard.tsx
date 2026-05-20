@@ -5,7 +5,7 @@ import TagList from '../TagList/TagList';
 interface UserCardProps {
   layout?: 'portrait' | 'landscape';
   image: string;
-  title: string;
+  title?: string;
   tags?: string[];
   ctaText?: string;
   onCtaClick?: () => void;
@@ -25,7 +25,7 @@ const UserCard = ({
     <div
       className={`
         flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm
-        hover:shadow-md transition-shadow
+        hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
         ${isLandscape ? 'flex-row justify-between' : 'flex-col'}
       `}
     >
