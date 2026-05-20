@@ -2,7 +2,7 @@
 // filtering users by rank or campus
 // will be implemente with API
 
-import { User } from "../types/User";
+import { User } from "../types/User.js";
 
 type FilterValue = string | number;
 
