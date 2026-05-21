@@ -22,5 +22,5 @@ function NavItem({ label, iconPath, route }: NavItemProps) {
         </li>
     );
 }
-
+                          
 export default NavItem

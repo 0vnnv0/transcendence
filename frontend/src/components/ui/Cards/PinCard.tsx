@@ -18,7 +18,7 @@ const PinCard = ({
   onCtaClick,
 }: PinCardProps) => {
   return (
-    <div className="flex flex-row flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex flex-row flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow">
 		<img
 			src={image}
 			alt={altText}

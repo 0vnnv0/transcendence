@@ -5,6 +5,7 @@ import Feed from './pages/Feed'
 import Projects from './pages/Projects'
 import MyProfile from './pages/MyProfile'
 import Chats from './pages/Chats'
+import Certain_Project from './pages/Certain_Project'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 	  <Route path="/projects" element={<Projects />} />
 	  <Route path="/myprofile" element={<MyProfile />} />
 	  <Route path="/chats" element={<Chats />} />
+	  <Route path="/project/:id" element={<Certain_Project />} />
     </Routes>
   )
 }
