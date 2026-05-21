@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Socket.IO Chat Tester</title>
+
+<style>
+body {
+	font-family: Arial, sans-serif;
+	max-width: 1000px;
+	margin: 20px auto;
+	display: flex;
+	gap: 20px;
+}
+
+#sidebar {
+	width: 250px;
+	border: 1px solid #ccc;
+	padding: 15px;
+	border-radius: 8px;
+}
+
+#main {
+	flex: 1;
+	border: 1px solid #ccc;
+	padding: 15px;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	height: 700px;
+}
+
+input, button {
+	padding: 8px;
+	margin: 4px 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+button {
+	cursor: pointer;
+}
+
+#chatList {
+	margin-top: 10px;
+}
+
+.chatButton {
+	width: 100%;
+	text-align: left;
+	padding: 10px;
+	margin-bottom: 5px;
+	border: 1px solid #aaa;
+	background: #f5f5f5;
+	border-radius: 6px;
+}
+
+.chatButton.active {
+	background: #dbeafe;
+	border-color: #3b82f6;
+}
+
+#messages {
+	flex: 1;
+	border: 1px solid #ccc;
+	padding: 10px;
+	overflow-y: auto;
+	margin: 10px 0;
+	border-radius: 6px;
+	background: #fafafa;
+}
+
+.message {
+	margin-bottom: 10px;
+	padding: 8px;
+	border-radius: 6px;
+	background: white;
+	border: 1px solid #ddd;
+}
+
+.system {
+	color: gray;
+	font-style: italic;
+}
+
+.typing {
+	color: orange;
+	font-style: italic;
+}
+
+#bottomBar {
+	display: flex;
+	gap: 10px;
+}
+
+#messageInput {
+	flex: 1;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LEFT SIDE -->
+<div id="sidebar">
+
+	<h2>Connection</h2>
+
+	<label>User ID</label>
+	<input id="userId" value="1">
+
+	<button onclick="connectSocket()">
+		Connect
+	</button>
+
+	<hr>
+
+	<h2>Chats</h2>
+
+	<label>Create / Join Chat</label>
+	<input id="chatIdInput" value="1">
+
+	<button onclick="joinChat()">
+		Join Chat
+	</button>
+
+	<div id="chatList"></div>
+
+</div>
+
+<!-- RIGHT SIDE -->
+<div id="main">
+
+	<h2 id="currentChatTitle">
+		No chat selected
+	</h2>
+
+	<div id="messages"></div>
+
+	<div id="bottomBar">
+		<input
+			id="messageInput"
+			placeholder="Write message..."
+			oninput="sendTyping()"
+		>
+
+		<button onclick="sendMessage()">
+			Send
+		</button>
+	</div>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+<script>
+
+let socket = null;
+
+let currentChatId = null;
+
+const joinedChats = new Set();
+
+function log(text, className = "") {
+
+	const box = document.getElementById("messages");
+
+	const div = document.createElement("div");
+
+	div.className = className;
+
+	div.innerHTML = text;
+
+	box.appendChild(div);
+
+	box.scrollTop = box.scrollHeight;
+}
+
+function connectSocket() {
+
+	if (socket) {
+		alert("Already connected");
+		return;
+	}
+
+	const userId = Number(
+		document.getElementById("userId").value
+	);
+
+	socket = io("http://localhost:3000");
+
+	socket.on("connect", () => {
+
+		socket.on("chat_list", (chats) => {
+			chats.forEach(chat => {
+
+				if (joinedChats.has(chat.id))
+					return;
+
+				joinedChats.add(chat.id);
+
+				addChatButton(chat.id);
+			});
+
+			if (chats.length > 0) {
+				selectChat(chats[0].id);
+			}
+		});
+		log(
+			`Connected as user ${userId}`,
+			"system"
+		);
+
+		socket.emit("register", {
+			userId
+		});
+	});
+
+	socket.on("disconnect", () => {
+		log("Disconnected", "system");
+	});
+
+	socket.on("new_message", (msg) => {
+
+		if (msg.chatId !== currentChatId)
+			return;
+
+		log(
+			`
+			<div class="message">
+				<b>${msg.sender.intraName}</b><br>
+				${msg.content}
+			</div>
+			`
+		);
+	});
+
+	socket.on("chat_history", ({ chatId, messages }) => {
+
+		if (chatId !== currentChatId)
+			return;
+
+		clearMessages();
+
+		messages.forEach(msg => {
+
+			log(`
+				<div class="message">
+					<b>${msg.sender.intraName}</b><br>
+					${msg.content}
+				</div>
+			`);
+		});
+	});
+
+	socket.on("typing", (data) => {
+
+		if (data.chatId !== currentChatId)
+			return;
+
+		log(
+			`User ${data.userId} is typing...`,
+			"typing"
+		);
+	});
+}
+
+function joinChat() {
+
+	if (!socket) {
+		alert("Connect first");
+		return;
+	}
+
+	const chatId = Number(
+		document.getElementById("chatIdInput").value
+	);
+
+	if (!chatId)
+		return;
+
+	if (joinedChats.has(chatId)) {
+		selectChat(chatId);
+		return;
+	}
+
+	socket.emit("join_chat", chatId);
+
+	joinedChats.add(chatId);
+
+	addChatButton(chatId);
+
+	selectChat(chatId);
+
+	log(`Joined chat ${chatId}`, "system");
+}
+
+function addChatButton(chatId) {
+
+	const container =
+		document.getElementById("chatList");
+
+	const wrapper = document.createElement("div");
+
+	wrapper.style.display = "flex";
+	wrapper.style.gap = "5px";
+	wrapper.style.marginBottom = "5px";
+
+	const button = document.createElement("button");
+
+	button.className = "chatButton";
+
+	button.id = `chatButton_${chatId}`;
+
+	button.innerText = `Chat ${chatId}`;
+
+	button.onclick = () => {
+		selectChat(chatId);
+	};
+
+	const leaveButton = document.createElement("button");
+
+	leaveButton.innerText = "X";
+
+	leaveButton.style.width = "40px";
+
+	leaveButton.onclick = () => {
+		leaveChat(chatId, wrapper);
+	};
+
+	wrapper.appendChild(button);
+	wrapper.appendChild(leaveButton);
+
+	container.appendChild(wrapper);
+}
+
+function selectChat(chatId) {
+
+currentChatId = chatId;
+
+document.getElementById(
+	"currentChatTitle"
+).innerText = `Chat ${chatId}`;
+
+document
+	.querySelectorAll(".chatButton")
+	.forEach(btn => btn.classList.remove("active"));
+
+const activeButton =
+	document.getElementById(`chatButton_${chatId}`);
+
+if (activeButton)
+	activeButton.classList.add("active");
+
+clearMessages();
+
+socket.emit("load_messages", {
+	chatId
+});
+
+log(`Viewing chat ${chatId}`, "system");
+}
+
+function leaveChat(chatId, element) {
+
+	socket.emit("leave_chat", chatId);
+
+	joinedChats.delete(chatId);
+
+	element.remove();
+
+	log(`Left chat ${chatId}`, "system");
+
+	if (currentChatId === chatId) {
+
+		currentChatId = null;
+
+		document.getElementById(
+			"currentChatTitle"
+		).innerText = "No chat selected";
+
+		clearMessages();
+	}
+}
+
+function sendMessage() {
+
+	if (!currentChatId) {
+		alert("Select a chat first");
+		return;
+	}
+
+	const content =
+		document.getElementById("messageInput").value;
+
+	if (!content.trim())
+		return;
+
+	socket.emit("send_message", {
+		chatId: currentChatId,
+		content
+	});
+
+	document.getElementById(
+		"messageInput"
+	).value = "";
+}
+
+function sendTyping() {
+
+	if (!currentChatId)
+		return;
+
+	socket.emit("typing", {
+		chatId: currentChatId
+	});
+}
+
+function clearMessages() {
+
+	document.getElementById(
+		"messages"
+	).innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 //DUMMIE
 // this creates random users as a replacement for the API
 // frage: erstaml alle user laden? oder bei allem -> request an die API?
-import { User } from "../types/User";
+import { User } from "../types/User.js";
 
 const NUMBER_OF_USERS = 300;
 

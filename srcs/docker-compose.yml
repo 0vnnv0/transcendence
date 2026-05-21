@@ -1,0 +1,99 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    #build: 
+      #context: ./requirements/postgresql
+     # dockerfile: Dockerfile
+    #env_file: .env
+    environment: 
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=pguser 
+      - POSTGRES_PASSWORD=1234
+    secrets:
+      - db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - transcendence
+    command: postgres -c listen_addresses='*'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pguser -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    restart: always
+    logging: 
+      options: 
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    container_name: backend
+    build: 
+      context: ../backend
+      dockerfile: Dockerfile
+    image: backend
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../backend/prisma/migrations:/transcendence/prisma/migrations
+    networks:
+      - transcendence
+    restart: always
+
+  prisma-studio:
+    image: node:24-alpine # Nutzt das gleiche Image wie dein Backend
+    container_name: prisma-studio
+    working_dir: /app # Gleiches Verzeichnis wie im Backend-Dockerfile
+    env_file: .env
+    environment:
+      # - PRISMA_STUDIO_BINARY_HOST=0.0.0.0
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - ../backend:/app # Dein Backend-Code inklusive prisma/schema.prisma
+    command: sh -c "npm install && npx prisma studio --port 5555 --browser none"    
+    ports:
+      - "5555:5555"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    networks:
+      - transcendence
+
+  # nginx:
+  #   container_name: nginx
+  #   build: 
+  #     context: ./requirements/nginx
+  #   image: nginx
+  #   depends_on:
+  #     - backend
+  #   # ports:
+  #   #   - "3000:443"
+  #   networks:
+  #     - transcendence
+  #   restart: always
+
+networks:
+  transcendence:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /$HOME/data/db
+      o: bind
+      
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt

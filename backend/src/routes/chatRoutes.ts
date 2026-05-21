@@ -3,7 +3,7 @@
 //either with one user or multiple users
 import { FastifyInstance } from "fastify";
 
-import { users } from "../data/loadUsers";
+import { users } from "../data/loadUsers.js";
 
 export async function chatRoutes(server: FastifyInstance) {
 

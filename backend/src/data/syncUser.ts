@@ -1,7 +1,7 @@
-
+import { PrismaClient } from '@prisma/client';
 import { FortyTwoService } from '../services/fortyTwoService';
 
-
+const prisma = new PrismaClient();
 const ftService = new FortyTwoService();
 
 export async function sync42UserToDb(login: string) {

@@ -1,33 +1,48 @@
 //DUMMIE
 //dummie for indexfile
-import buildServer from "./serverSetup";
-<<<<<<< HEAD
-=======
+import buildServer from "./serverSetup.js";
 //import { Pool } from 'pg';
-// import { PrismaClient } from "@prisma/client";
-// import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
-import prisma from "./lib/prisma";
+import { setupChatSockets } from "./sockets/chat.js";
 
 // 1. Prisma Adapter Setup (wie im Guide)
 const connectionString = process.env.DATABASE_URL;
 //const pool = new Pool({ connectionString });
 const pool = new pg.Pool({ connectionString });
-// const adapter = new PrismaPg(pool);
-// const prisma = new PrismaClient({ adapter });
->>>>>>> 449985c (added: json file with all information about the projects, a script to add the data to prisma (not working yet: PrismaClient Init error))
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function start() {
-	const server = await buildServer();
+	const {app, io} = await buildServer();
 
+	// 2. Die Route aus dem Guide für Fastify adaptieren
+    app.get("/", async (request, reply) => {
+        try {
+            const userCount = await prisma.user.count();
+            
+            const message = userCount === 0
+                ? "No users have been added yet."
+                : "Some users have been added to the database.";
+            
+            return { message }; // Fastify wandelt Objekte automatisch in JSON um
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(500).send({ error: "Database connection failed" });
+        }
+    });
+
+	await setupChatSockets(io, prisma);
 	try {
-		await server.listen({
+		await app.listen({
 			port: 3000,
+			host: '0.0.0.0'
 		});
 
-		console.log("Server running on port 3000");
+		console.log("Server running on http://localhost:3000");
 	} catch (err) {
-		server.log.error(err);
+		app.log.error(err);
 		process.exit(1);
 	}
 }

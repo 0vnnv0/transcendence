@@ -16,11 +16,19 @@ model User {
 	createdAt		DateTime	@default(now()) 
 	email			String		@unique
 	intraName		String		@unique
+<<<<<<< HEAD
 	campusID		Int			
 	campusName		String
 	currentRank		Int
 	paceDeadline	DateTime
 	blackholeDate	DateTime?
+=======
+	campusID		Int			@unique
+	campusName		String
+	currentRank		Int
+	paceDeadline	DateTime
+	blackholeDate	DateTime
+>>>>>>> origin/main
 	student			Boolean
 
 	quests			UserQuests?

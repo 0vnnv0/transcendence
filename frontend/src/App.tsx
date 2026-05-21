@@ -1,25 +1,24 @@
-import { useState } from 'react'
-import Button from './components/ui/Button/Button';
+import { Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
+import Feed from './pages/Feed'
+import Projects from './pages/Projects'
+import MyProfile from './pages/MyProfile'
+import Chats from './pages/Chats'
+import Certain_Project from './pages/Certain_Project'
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  const layout = "flex items-center flex-col"
   return (
-	<>
-		<section className={`${layout} p-8`}>
-			<div className={`${layout} pb-8`}>
-				<h1 className="text-2xl font-bold">Test App</h1>
-				<p>Click the counter below to see the state changing</p>
-			</div>
-			<Button 
-				variant="primary"
-				onClick={() => setCount((count) => count + 1)}
-			>
-				Count is {count}
-      		</Button>
-		</section>
-    </>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+	  <Route path="/feed" element={<Feed />} />
+	  <Route path="/projects" element={<Projects />} />
+	  <Route path="/myprofile" element={<MyProfile />} />
+	  <Route path="/chats" element={<Chats />} />
+	  <Route path="/project/:id" element={<Certain_Project />} />
+    </Routes>
   )
 }
 
