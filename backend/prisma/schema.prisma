@@ -58,6 +58,9 @@ model Project {
 
   description     String?
 
+  keywords    String[]
+  skills      String[]
+
   oldCore         Boolean  @default(false)
   newCore         Boolean  @default(false)
 

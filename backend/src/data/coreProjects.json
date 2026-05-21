@@ -11,6 +11,15 @@
 		"xpPoints": 2814,
 		"projectRank": 3,
 		"description": "The objective of this project is for you to create a simple shell.",
+		"keywords": [
+			"Unix logic"
+		],
+		"skills": [
+			"Imperative",
+			"programming",
+			"Rigor",
+			"Unix"
+		],
 		"oldCore": true,
 		"newCore": false
 	},
@@ -26,6 +35,16 @@
 		"xpPoints": 5775,
 		"projectRank": 4,
 		"description": "This project is an introduction to the beautiful world of Raytracing.",
+		"keywords": [
+			"Applicative"
+		],
+		"skills": [
+			"Imperative",
+			"programming",
+			"Rigor",
+			"Algorithms & AI",
+			"Graphics"
+		],
 		"oldCore": true,
 		"newCore": false
 	},
@@ -41,6 +60,15 @@
 		"xpPoints": 5775,
 		"projectRank": 4,
 		"description": "This project is inspired by the world-famous eponymous 90's game, which was the first FPS ever. It will enable you to explore ray-casting. Your goal will be to make a dynamic view inside a maze, in which you'll have to find your way.",
+		"keywords": [
+			"Applicative"
+		],
+		"skills": [
+			"Imperative programming",
+			"Rigor",
+			"Algorithms & AI",
+			"Graphics"
+		],
 		"oldCore": true,
 		"newCore": false
 	},
@@ -56,6 +84,14 @@
 		"xpPoints": 21630,
 		"projectRank": 5,
 		"description": "This project aims to create your own HTTP server. You will be able to test it with a real web browser. HTTP is one of the most used protocols on the internet. Knowing its intricacies will be useful, even if web development is not on your carreer path.",
+		"keywords": [
+			"Network"
+		],
+		"skills": [
+			"Object-oriented programming",
+			"Rigor",
+			"Network & system administration"
+		],
 		"oldCore": true,
 		"newCore": false
 	},
@@ -71,6 +107,15 @@
 		"xpPoints": 21630,
 		"projectRank": 5,
 		"description": "Create your own IRC server in C++98, compatible with a standard IRC client for the required features.",
+		"keywords": [
+			"Network"
+		],
+		"skills": [
+			"Object-oriented programming",
+			"Rigor",
+			"Unix",
+			"Network & system administration"
+		],
 		"oldCore": true,
 		"newCore": false
 	},
@@ -86,6 +131,16 @@
 		"xpPoints": 24360,
 		"projectRank": 6,
 		"description": "Design, develop, and organize a full-stack web application with complete creative freedom. Choose your project concept, select from a wide range of technical modules, and make key architectural decisions. This highly flexible project allows you to explore modern web development while demonstrating your technical skills and creativity through a modular approach.",
+		"keywords": [
+			"Group",
+			"Creativity",
+			"Framework"
+		],
+		"skills": [
+			"Rigor",
+			"Web",
+			"Group & interpersonal"
+		],
 		"oldCore": true,
 		"newCore": true
 	},
@@ -101,6 +156,18 @@
 		"xpPoints": 1855,
 		"projectRank": 1,
 		"description": "This project involves sorting data on a stack, with a limited set of instructions, and using the smallest number of moves. To succeed, you will have to manipulate various sorting algorithms and choose the most appropriate solution(s) for optimized data sorting.",
+		"keywords": [
+			"Sorting algorithms",
+			"Battery concept and handling elements",
+			"Algorithm implementation"
+		],
+		"skills": [
+			"Imperative",
+			"programming",
+			"Rigor",
+			"Algorithms & AI",
+			"Unix"
+		],
 		"oldCore": false,
 		"newCore": true
 	},
@@ -116,6 +183,17 @@
 		"xpPoints": 1142,
 		"projectRank": 2,
 		"description": "Create your own program that generate a fully usable maze compliant with several constraints, and display it.",
+		"keywords": [
+			"General",
+			"Python",
+			"Algorithm"
+		],
+		"skills": [
+			"Algorithms & AI",
+			"Adaptation & creativity",
+			"Group & interpersonal",
+			"Graphics"
+		],
 		"oldCore": false,
 		"newCore": true
 	},
@@ -131,6 +209,17 @@
 		"xpPoints": 7717,
 		"projectRank": 4,
 		"description": "Recreate the famous arcade game Pac-Man with a modern Python codebase, a clean project structure, and a deployable build.",
+		"keywords": [
+			"Python",
+			"Gaming",
+			"Maze"
+		],
+		"skills": [
+			"Object-oriented programming",
+			"Algorithms & AI",
+			"Group & interpersonal",
+			"Graphics"
+		],
 		"oldCore": false,
 		"newCore": true
 	},
@@ -146,6 +235,15 @@
 		"xpPoints": 10042,
 		"projectRank": 5,
 		"description": "This is a project where you build an autonomous AI agent capable of reasoning, generating, executing, and iterating on code to solve programming challenges in a secure, sandboxed environment.",
+		"keywords": [
+			"AI",
+			"Agentic"
+		],
+		"skills": [
+			"Object-oriented programming",
+			"DB & Data",
+			"Algorithms & AI"
+		],
 		"oldCore": false,
 		"newCore": true
 	},
@@ -161,6 +259,18 @@
 		"xpPoints": 15836,
 		"projectRank": 5,
 		"description": "Create a multiplayer text adventure that unites learners in a shared virtual world with dynamic item management. Working in pairs, build a robust TCP server implementing RFC 42TAP (The Answer Protocol) using systems programming languages (C, C++, Rust, Go, or Zig — Python is strictly forbidden for this activity), develop both command-line and graphical clients, and implement real-time networking features like chat, presence events, group coordination, and a sophisticated item economy. Master network programming concepts and RFC-compliant protocol implementation while crafting an engaging game experience where items exist as unique instances that can be taken, dropped, and shared between players, preventing duplication and creating realistic resource scarcity. Learn to write production-quality network protocols following Internet standards conventions with proper ABNF syntax definitions, comprehensive error handling, and formal technical documentation. Your collaborative code becomes the foundation of storytelling, exploration, and strategic resource management in a persistent networked world.",
+		"keywords": [
+			"Network",
+			"Gaming",
+			"Multiplayer"
+		],
+		"skills": [
+			"Rigor",
+			"Network & system administration",
+			"Group & interpersonal",
+			"Graphics"
+
+		],
 		"oldCore": false,
 		"newCore": true
 	},
@@ -176,6 +286,15 @@
 		"xpPoints": 2100,
 		"projectRank": 6,
 		"description": "Build your communication and self-reflection skills by working closely with a peer. Through mutual interviews, you’ll learn to recognize and express both your strengths and theirs—helping you craft genuine, effective resumes.",
+		"keywords":[
+			"communication",
+			"teamwork"
+		],
+		"skills":[
+			"Organization",
+			"Adaptation & creativity",
+			"Group & interpersonal"
+		],
 		"oldCore": true,
 		"newCore": true
 	}
