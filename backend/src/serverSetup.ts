@@ -10,8 +10,7 @@ import { displayUsersRoutes } from "./routes/displayUsers.js";
 
 import { chatRoutes } from "./routes/chatRoutes.js";
 
-
-import { authRoutes } from "./routes/authRoutes";
+import { authRoutes } from "./routes/authRoutes.js";
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
 import fastifyJwt from '@fastify/jwt';
