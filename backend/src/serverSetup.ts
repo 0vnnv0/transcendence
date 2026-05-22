@@ -3,13 +3,9 @@ import cors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import { Server } from "socket.io";
-
 import { displayUsersRoutes } from "./routes/displayUsers.js";
-
 import { chatRoutes } from "./routes/chatRoutes.js";
-
 import { authRoutes } from "./routes/authRoutes.js";
 
 // Plugin Json Web Token, damit User eingeloggt bleibt

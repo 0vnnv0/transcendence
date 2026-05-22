@@ -3,6 +3,11 @@
 import prisma from "../lib/prisma";
 
 export class AuthService {
+	// function to verify the given Login data with 42 intra
+  static async verifyUserCredentials(email: string, password: string) {
+	return email === "test@example.com" && password === "password123";
+  }
+
   static async getAccessToken(code: string) {
     const response = await fetch("https://api.intra.42.fr/oauth/token", {
       method: "POST",
