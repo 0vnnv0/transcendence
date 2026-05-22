@@ -13,8 +13,8 @@ function Navbar() {
 		</div>
 		<ul className="flex flex-col mt-50 gap-2 w-full">
 			<NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
-			<NavItem label="Feed" iconPath="feed.svg" route="/feed" />
-			<NavItem label="Projects" iconPath="projects.svg" route="/projects" />		
+			<NavItem label="Feed" iconPath="/feed.svg" route="/feed" />
+			<NavItem label="Projects" iconPath="/projects.svg" route="/projects" />		
 		</ul>
 		<ChatMenu />
 		<div className="bottom-6 mt-auto">
