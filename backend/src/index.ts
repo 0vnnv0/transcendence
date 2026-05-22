@@ -1,10 +1,11 @@
 //DUMMIE
 //dummie for indexfile
-import buildServer from "./serverSetup";
+import buildServer from "./serverSetup.js";
 //import { Pool } from 'pg';
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
+import { setupChatSockets } from "./sockets/chat.js";
 
 // 1. Prisma Adapter Setup (wie im Guide)
 const connectionString = process.env.DATABASE_URL;
@@ -14,10 +15,10 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function start() {
-	const server = await buildServer();
+	const {app, io} = await buildServer();
 
 	// 2. Die Route aus dem Guide für Fastify adaptieren
-    server.get("/", async (request, reply) => {
+    app.get("/", async (request, reply) => {
         try {
             const userCount = await prisma.user.count();
             
@@ -27,20 +28,21 @@ async function start() {
             
             return { message }; // Fastify wandelt Objekte automatisch in JSON um
         } catch (error) {
-            server.log.error(error);
+            app.log.error(error);
             return reply.status(500).send({ error: "Database connection failed" });
         }
     });
 
+	await setupChatSockets(io, prisma);
 	try {
-		await server.listen({
+		await app.listen({
 			port: 3000,
 			host: '0.0.0.0'
 		});
 
 		console.log("Server running on http://localhost:3000");
 	} catch (err) {
-		server.log.error(err);
+		app.log.error(err);
 		process.exit(1);
 	}
 }

@@ -1,6 +1,11 @@
 COMPOSE_FILE = srcs/docker-compose.yml
+<<<<<<< HEAD
 DATA_DIR = /home/$(USER)/data
 DB_DIR = /home/$(USER)/data/srcs_postgres_data/
+=======
+DATA_DIR = $(HOME)/data
+DB_DIR = $(HOME)/data/db/
+>>>>>>> main
 
 .PHONY: all build up down clean fclean re
 

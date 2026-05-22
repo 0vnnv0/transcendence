@@ -48,6 +48,20 @@ services:
       - transcendence
     restart: always
 
+  frontend:
+    container_name: frontend
+    build: 
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3000 #So React knows where API is
+    image: frontend
+    ports:
+      - "8080:80" #Website can be accessed via http://localhost:8080 
+    networks:
+      - transcendence
+    restart: always
+
   prisma-studio:
     image: node:24-alpine # Nutzt das gleiche Image wie dein Backend
     container_name: prisma-studio
@@ -88,11 +102,19 @@ networks:
 
 volumes:
   postgres_data:
+<<<<<<< HEAD
     # driver: local
     # driver_opts:
     #   type: none
     #   device: /home/$USER/data/db
     #   o: bind
+=======
+    driver: local
+    driver_opts:
+      type: none
+      device: /$HOME/data/db
+      o: bind
+>>>>>>> main
       
 secrets:
   db_password:
