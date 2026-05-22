@@ -29,7 +29,7 @@ function Projects() {
 				{processedProjects.map((project) => (
 				<ProjectCard 
 					layout="portrait"
-					image="success.png"
+					image="/success.png"
 					title={project.name}
 					subtitle="eat eat eat"
 					tags={project.keywords}
