@@ -43,7 +43,7 @@ const UserCard = ({
           ${isLandscape ? 'justify-center py-2 pr-2 gap-3' : 'pb-3 px-2 gap-4'}
         `}
       >
-        <h1 className="font-[Geist_Mono] text-base font-bold">{title}</h1>
+        <h1 className="text-subtitle">{title}</h1>
         <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>
           {tags && <TagList tags={tags} />}
           {ctaText && <Button onClick={onCtaClick}>{ctaText}</Button>}
