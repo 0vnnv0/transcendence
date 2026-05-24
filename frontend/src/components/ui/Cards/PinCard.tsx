@@ -26,8 +26,8 @@ const PinCard = ({
 		/>
 		<div className="flex flex-1 flex-row justify-between py-2 pr-2 items-center">
 			<div>
-				<h2 className="font-kyiv font-medium text-sm mb-1">{username}</h2>
-				{message && <p className="font-kyiv text-sm">{message}</p>}
+				<h2 className="text-paragraph-bold mb-1">{username}</h2>
+				{message && <p className="text-paragraph">{message}</p>}
 			</div>
 			{ctaText && <Button onClick={onCtaClick}>{ctaText}</Button>}
 		</div>

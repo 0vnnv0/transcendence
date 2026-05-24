@@ -50,10 +50,10 @@ const ProjectCard = ({
         `}
       >
         <div>
-          <h1 className="font-[Geist_Mono] text-lg font-bold">{title}</h1>
-          {subtitle && <h2 className="font-kyiv font-medium text-sm">{subtitle}</h2>}
+          <h1 className="text-subtitle">{title}</h1>
+          {subtitle && <h2 className="text-paragraph-bold">{subtitle}</h2>}
         </div>
-        {description && <p className="font-kyiv text-sm">{description}</p>}
+        {description && <p className="text-paragraph">{description}</p>}
       </div>
     </div>
   );
