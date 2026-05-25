@@ -1,6 +1,6 @@
 // bekommt die Daten vom Auth Prozess und gibt json Files zurueck
 
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
 
 export class AuthService {
 	// function to verify the given Login data with 42 intra

@@ -5,9 +5,14 @@ import { AuthService } from "../services/authService.js";
 import Fastify from 'fastify';
 import { request } from "node:http";
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 const fastify = Fastify({ logger: true });
 
 
@@ -70,7 +75,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		if (!user) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password."
+				message: "Invalid E-Mail or wrong password. Try again."
 			});
 		}
 
@@ -78,7 +83,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		if (!passwordIsValid) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password."
+				message: "Invalid E-Mail or wrong password. Try again."
 			});
 		}
 
