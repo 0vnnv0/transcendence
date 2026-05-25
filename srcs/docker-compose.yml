@@ -43,7 +43,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../backend/prisma/migrations:/transcendence/prisma/migrations
+      - ${PWD}/../backend/prisma/migrations:/transcendence/prisma/migrations
     networks:
       - transcendence
     restart: always

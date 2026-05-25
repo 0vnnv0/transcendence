@@ -7,6 +7,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { setupChatSockets } from "./sockets/chat.js";
 
+
 // 1. Prisma Adapter Setup (wie im Guide)
 const connectionString = process.env.DATABASE_URL;
 //const pool = new Pool({ connectionString });

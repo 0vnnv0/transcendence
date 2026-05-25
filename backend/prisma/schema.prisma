@@ -15,13 +15,15 @@ model User {
 	id				Int			@id @default(autoincrement()) 
 	createdAt		DateTime	@default(now()) 
 	email			String		@unique
-	intraName		String		@unique
-	campusID		Int			@unique
-	campusName		String
-	currentRank		Int
-	paceDeadline	DateTime
-	blackholeDate	DateTime
-	student			Boolean
+	intraEmail		String?		
+	password		String
+	intraName		String?		@unique
+	campusID		Int?			
+	campusName		String?
+	currentRank		Int?
+	paceDeadline	DateTime?
+	blackholeDate	DateTime?
+	student			Boolean? //grade:cadet
 
 	quests			UserQuests?
 	projects		UserProjects[]
