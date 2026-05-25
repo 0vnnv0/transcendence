@@ -49,10 +49,11 @@ export const registerUser = async (request: FastifyRequest, reply: FastifyReply)
 			},
 			select: { id: true, email: true, createdAt: true}
 		});
-		return reply.code(201).send({
+		reply.code(201); 
+		return {
 			message: "Registration successful!",
 			user: newUser
-		});
+		};
 	} catch (error) {
 		request.log.error(error);
 		return reply.code(500).send({ error: "Internal Server Error "});
@@ -101,7 +102,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		}, { expiresIn: '1d'});
 
 		return reply.send({
-			message: 'Login erfolgreich',
+			message: 'Login successful',
 			access_token: token,
 			user: { id: user.id, email: user.email }
 		});
