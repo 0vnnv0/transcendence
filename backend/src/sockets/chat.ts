@@ -1,10 +1,9 @@
 //TODO on this: 
-// - create chat function
+// - create chat function but for rest route 
 // - use online Users array?
 // - replace register with some form of authentication
 // - maybe mod the db schemas to improve this
 // - rn everything fails silently by returning and maybe logging, better error handling?
-// - replace load messages with REST route 
 
 
 import { Server } from "socket.io";
@@ -30,8 +29,6 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 			sendMessage(chatId, content, socket, prisma, io));
 		socket.on("typing", ({ chatId }) => 
 			typingSignal(chatId, socket, prisma));
-		socket.on("load_messages", ({ chatId }) =>
-			loadMessages(chatId, socket, prisma));
 		socket.on("disconnect", () => 
 			userDisconnect(onlineUsers, socket));
 	});
@@ -94,6 +91,9 @@ async function addUserToChat(
             },
         });
     } catch (error) {
+		socket.emit("error_occurred", {
+			message: "Could not add User."
+		});
         return;
     }
 }
@@ -133,6 +133,9 @@ async function userJoinChat(
 	}
 	catch (err) {
 		console.error(err);
+		socket.emit("error_occurred", {
+			message: "Could not join Chat."
+		});
 	}
 }
 
@@ -168,6 +171,9 @@ async function userLeaveChat(
 		console.log(`User ${userId} left chat ${chatId}`);
 	}
 	catch (err) {
+		socket.emit("error_occurred", {
+			message: "Could not leave Chat."
+		});
 		console.error(err);
 	}
 }
@@ -194,7 +200,7 @@ async function sendMessage (
 			data: {
 				chatId: Number(chatId),
 				senderId: Number(senderId),
-				content: String(content),
+				content: String(content)
 			},
 			include: {
 				sender: {
@@ -205,12 +211,18 @@ async function sendMessage (
 				},
 			},
 		});
-
+		await prisma.chat.update({
+			where: { id: Number(chatId) },
+			data: { updatedAt: new Date() }
+		});
 		console.log(`Sending message to chat_${chatId}`);
 		io.to(`chat_${chatId}`).emit("new_message", message);
 	}
 	catch (err) {
 		console.error(err);
+		socket.emit("error_occurred", {
+			message: "Could not send Message."
+		});
 	}
 }
 
@@ -225,51 +237,6 @@ function typingSignal(chatId: number, socket: Socket, prisma: PrismaClient){
 	});
 }
 
-//loads the past 50 messages and has the capacity to load the next 50 messages on a cursor request (but havent tested this)
-//emits found messages through "chat_history" event
-async function loadMessages(
-    chatId: number,
-    socket: Socket,
-    prisma: PrismaClient,
-    cursorId?: number
-) {
-    try {
-        const limit = 50;
-
-        const messages = await prisma.chatMessage.findMany({
-            where: {
-                chatId: Number(chatId),
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-            take: limit,
-            ...(cursorId && {
-                skip: 1, 
-                cursor: { id: cursorId },
-            }),
-            include: {
-                sender: {
-                    select: {
-                        id: true,
-                        intraName: true,
-                    },
-                },
-            },
-        });
-        const chronologicalMessages = messages.reverse();
-
-        socket.emit("chat_history", {
-            chatId,
-            messages: chronologicalMessages,
-            hasMore: messages.length === limit,
-        });
-
-    } catch (err) {
-        console.error(err);
-    }
-}
-
 //registers user disconnect, for now only updates the onlineUsers array, might be unnecessary or updated later
 function userDisconnect(onlineUsers: Map<number, string>, socket: Socket) {
 	const userId = socket.data.userId;
@@ -282,7 +249,7 @@ function userDisconnect(onlineUsers: Map<number, string>, socket: Socket) {
 }
 
 //helper: tests if user making request is actually part of the chat before sending messages or adding users
-async function isInChat (userId: number, chatId: number, prisma: PrismaClient) {
+export async function isInChat (userId: number, chatId: number, prisma: PrismaClient) {
 	const isMember = await prisma.chat.findFirst({
 		where: {
 			id: chatId,

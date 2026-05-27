@@ -9,7 +9,7 @@ import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
-import fastifyJwt from '@fastify/jwt';
+import fastifyJwt from "@fastify/jwt";
 
 //all statements logged in the consule
 const fastify = Fastify({
@@ -35,7 +35,6 @@ async function buildServer() {
 	});
 
 	await displayUsersRoutes(fastify);
-	await chatRoutes(fastify);
 
 	const io = new Server(fastify.server, {
 		cors: {
