@@ -8,10 +8,56 @@
   --color-lime: #E5F53C;
   --color-gold: #FFD900;
   --color-mild-purple: #F0DBFF;
+  --color-background-neutral: #F8F6F3;
 
   /* This creates the 'bg-sunshine' utility */
   --background-image-sunshine: radial-gradient(circle, var(--color-lime) 0%, var(--color-gold) 100%);
   --background-image-sunshine-hover: radial-gradient(circle, var(--color-gold) 0%, var(--color-lime) 100%);
+}
+
+/* GasoekOne / Regular / 57px */
+@utility text-title {
+    @apply font-[Gasoek_One] text-6xl text-black;
+}
+
+/* GeistMono / Bold / 16px */
+@utility text-subtitle {
+	@apply font-[Geist_Mono] font-bold text-base;
+}
+
+/* GeistMono / Bold / 14px */ 
+@utility text-lead {
+	@apply font-[Geist_Mono] font-bold text-sm;
+}
+
+/* Kyiv / Medium / 16px */
+@utility text-paragraph-big-bold {
+	@apply font-kyiv font-medium text-base;
+}
+
+/* Kyiv / Medium / 14px */
+@utility text-paragraph-bold {
+	@apply font-kyiv font-medium text-sm;
+}
+
+/* Kyiv / Regular / 14px */
+@utility text-paragraph {
+	@apply font-kyiv text-sm;
+}
+
+/* Kyiv / Medium / 12px */
+@utility text-cta-bold {
+	@apply font-kyiv text-xs uppercase font-medium;
+}
+
+/* Kyiv / Medium / 10px */
+@utility text-tag-bold {
+	@apply font-kyiv text-[10px] uppercase font-medium;
+}
+
+/* Kyiv / Regular / 10px */
+@utility text-tag {
+	@apply font-kyiv text-[10px] uppercase;
 }
 
 @font-face {

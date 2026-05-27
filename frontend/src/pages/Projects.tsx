@@ -1,77 +1,44 @@
 import Navbar from '../components/ui/Navbar/Navbar'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
-
+import projectsData from '../data/projects.json';
+import { useState } from 'react';
 
 function Projects() {
-  return (
+	const [userCore, setUserCore] = useState<'newCore' | 'oldCore'>('oldCore');
+	const processedProjects = projectsData
+	.filter((project) => {
+		return project[userCore] === true;
+	})
+	.sort((a, b) => {
+		return a.projectRank - b.projectRank;
+	})
+
+	return (
 		<section
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
 			style={{ backgroundColor: "white" }} 
-      >
+     	>
 		  	<div className="w-70 flex-none">
 			  	<Navbar />
 		  	</div>
-			  <div className="flex flex-col flex-1 p-10 gap-10">
-				  <h1 className="font-[Gasoek_One] text-6xl text-black">
-              Projects
-				  </h1>
-        	<div className="flex gap-2">
-            <ProjectCard 
-              layout="portrait"
-              image="profile.jpg"
-              title="pacMan"
-              subtitle="eat eat eat"
-              tags={['2 People', 'Rank 4']}
-              description="this is a fun game"
-            />
-            <ProjectCard 
-              layout="portrait"
-              image="profile.jpg"
-              title="pacMan"
-              subtitle="eat eat eat"
-              tags={['2 People', 'Rank 4']}
-              description="this is a fun game"
-            />
-            <ProjectCard 
-              layout="portrait"
-              image="profile.jpg"
-              title="pacMan"
-              subtitle="eat eat eat"
-              tags={['2 People', 'Rank 4']}
-              description="this is a fun game"
-            />
-          </div>
-        	<div className="flex gap-2 cursor-pointer">
-					<ProjectCard
-						layout="portrait"
-						image="profile.jpg"
-						title="ft_irc"
-						subtitle='Internet Relay Chat'
-						tags={['2 - 3 People', 'Rank 5']}
-						description="This project is about creating your own IRC server.
-									You will use an actual IRC client to connect to your server and test it"
-					/>
-					<ProjectCard
-						layout="portrait"
-						image="thumb.jpg"
-						title="webserv"
-						subtitle='Why do URLs start with HTTP?'
-						tags={['2 - 3 People', 'Rank 5']}
-						description="This project is about writing your own HTTP server. You will be able to test it with an actual browser.
-									HTTP is one of the most widely used protocols on the internet."
-					/>
-					<ProjectCard
-						layout="portrait"
-						image="thumb.jpg"
-						title="Transcendence"
-						subtitle='Surprise.'
-						tags={['5 People', 'Rank 6']}
-						description="This project involves undertaking tasks you have never done before.
-									Remember the beginning of your journey in computer science.
-									Look at you now; it’s time to shine!"
-					/>
-				</div>
-        </div>
+			<div className="flex flex-col flex-1 p-10 gap-10">				 
+				 <h1 className="font-[Gasoek_One] text-6xl text-black">
+			 		 Projects
+			 	 </h1>
+        	<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+				{processedProjects.map((project) => (
+				<ProjectCard 
+					layout="portrait"
+					image="/success.png"
+					title={project.name}
+					subtitle="eat eat eat"
+					tags={project.keywords}
+					route={`/project/${project.slug}`}
+					description={project.description}
+				/>
+			))}
+	       	 </div>
+		</div>
 	</section>
   )
 }

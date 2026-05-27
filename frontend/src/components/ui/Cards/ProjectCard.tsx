@@ -1,4 +1,5 @@
 import TagList from '../TagList/TagList';
+import { useNavigate } from 'react-router-dom'
 
 interface ProjectCardProps {
   layout?: 'portrait' | 'landscape';
@@ -6,6 +7,7 @@ interface ProjectCardProps {
   title: string;
   subtitle?: string;
   description?: string;
+  route: string;
   tags?: string[];
 }
 const ProjectCard = ({
@@ -14,14 +16,19 @@ const ProjectCard = ({
   title,
   subtitle,
   description,
+  route,
   tags,
 }: ProjectCardProps) => {
   const isLandscape = layout === 'landscape';
+  const navigate = useNavigate()
+
   return (
+
     <div
+	  onClick={() => navigate(route)}
       className={`
         relative flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm
-        hover:shadow-md transition-shadow
+        hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
         ${isLandscape ? 'flex-row justify-between' : 'flex-col'}
       `}
     >
@@ -43,10 +50,10 @@ const ProjectCard = ({
         `}
       >
         <div>
-          <h1 className="font-[Geist_Mono] text-lg font-bold">{title}</h1>
-          {subtitle && <h2 className="font-kyiv font-medium text-sm">{subtitle}</h2>}
+          <h1 className="text-subtitle">{title}</h1>
+          {subtitle && <h2 className="text-paragraph-bold">{subtitle}</h2>}
         </div>
-        {description && <p className="font-kyiv text-sm">{description}</p>}
+        {description && <p className="text-paragraph">{description}</p>}
       </div>
     </div>
   );
