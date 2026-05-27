@@ -14,4 +14,7 @@ export interface User {
 		year: number;
 	}
 	nextProject: Project[];
+
+	preferredOnCampus?: boolean;
+	hoursPerWeek?: number;
 }
