@@ -1,5 +1,5 @@
 //TODO on this: 
-// - create chat function
+// - create chat function but for rest route 
 // - use online Users array?
 // - replace register with some form of authentication
 // - maybe mod the db schemas to improve this
