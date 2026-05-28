@@ -141,7 +141,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     //   access_token: token, // Das Frontend speichert das meistens im LocalStorage
     //   user 
     // };
-	const frontendRedirectUrl = `http://localhost:8080/auth-success?token=${token}`;
+	const frontendRedirectUrl = `http://localhost:8080/authsuccess?token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
 	console.error("DEBUG AUTH ERROR:", error); // Das zeigt uns den echten Fehler im Terminal

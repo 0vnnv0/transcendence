@@ -1,5 +1,4 @@
 import Button from '../components/ui/Button/Button'
-import { useNavigate } from 'react-router-dom'
 
 function Authorize() {
 	const handleAuthClick = () => {
@@ -15,7 +14,7 @@ function Authorize() {
 			<h1 className="text-title">
 				please authorize your account with 42
 			</h1>
-			<Button type="submit" onClick={handleAuthClick}  className="mt-4">
+			<Button type="button" onClick={handleAuthClick}  className="mt-4">
 					authorisation
 			</Button>
 		</div>

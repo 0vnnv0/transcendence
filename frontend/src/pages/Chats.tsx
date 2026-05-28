@@ -1,10 +1,12 @@
 import Navbar from '../components/ui/Navbar/Navbar'
 import { useParams } from 'react-router-dom';
 import ChatWindow from '../components/ui/ChatWindow/ChatWindow'
+
 function Chats() {
 	const { username } = useParams<{ username: string }>();
 
   return (
+	
 		<section
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
 			style={{ backgroundColor: "white" }}

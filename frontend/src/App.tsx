@@ -7,6 +7,7 @@ import MyProfile from './pages/MyProfile'
 import Chats from './pages/Chats'
 import Certain_Project from './pages/Certain_Project'
 import Authorize from './pages/Authorize'
+import AuthSuccess from './pages/AuthSuccess'
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
 	  <Route path="/project/:id" element={<Certain_Project />} />
 	  <Route path="/chat/:username" element={<Chats />} />
 	  <Route path="/authorize" element={<Authorize />} />
+	  <Route path="/authsuccess" element={<AuthSuccess />} />
     </Routes>
   )
 }

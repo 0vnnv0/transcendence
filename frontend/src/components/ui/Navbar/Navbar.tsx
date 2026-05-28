@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import SearchBar from '../Search/Search'
 import NavItem from '../NavItem/NavItem'
 import ChatMenu from '../ChatMenu/ChatMenu'
+import Button from '../../../components/ui/Button/Button'
 
 function Navbar() {
   const navigate = useNavigate()
@@ -25,6 +26,9 @@ function Navbar() {
 				onClick={() => navigate ('/myprofile')}
 			/>
 			<span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-black rounded-full"></span>
+		</div>
+		<div>
+			<Button type="button" className="mt-4">Logout</Button>
 		</div>
 		</div>
     </nav>
