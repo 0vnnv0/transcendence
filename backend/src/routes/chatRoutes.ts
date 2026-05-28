@@ -1,9 +1,6 @@
-//DUMMIE
-// whn u click on a user --> "chat"
-//either with one user or multiple users
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+//this sets upp all routes related to chats and messages
 
-//import { users } from "../data/loadUsers.js";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { isInChat } from "../sockets/chat.js";
 
@@ -11,44 +8,11 @@ export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 {
 	fastify.get('/chats', async (request, response) => loadChats(fastify, prisma, request, response));
 	fastify.get('/chat/:chatId', async (request, response) => loadMessages(fastify, prisma, request, response));
-/*	server.get("/chat", async (request, reply) => {
-
-		const query = request.query as {
-			id?: string | string[];
-		};
-
-		if (!query.id) {
-			return {
-				message: "No user id provided",
-			};
-		}
-
-		const ids = Array.isArray(query.id)
-			? query.id.map(Number)
-			: [Number(query.id)];
-
-		const matchedUsers = users.filter((user) =>
-			ids.includes(user.id)
-		);
-
-		if (matchedUsers.length === 0) {
-			return {
-				message: "No users found",
-			};
-		}
-
-		return {
-			message:
-				matchedUsers.length === 1
-					? "Chat with user"
-					: "Chat with multiple users",
-
-			users: matchedUsers,
-		};
-	});*/
 }
 
 //loads the past 50 messages once you open chat and has the capacity to load the next 50 messages on a cursor request until the end (but havent tested this)
+//it returns the messages and the next cursor that should be used for the next call to this to retreve the next 50
+//returns null for this property when we get to the end
 async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
 {
 	//only need this next bit until JWT is implemented: const userId = request.user.id;
@@ -101,7 +65,8 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 	}
 }
 
-//returns all chats that user is a part of
+//returns all chats that user is a part of in the order of last messages within chat
+//return values include the db colums that the chat owns plus user data plus the last message in that chat for preview
 async function loadChats(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
 {
 	//only need this next bit until JWT is implemented: const userId = request.user.id;
