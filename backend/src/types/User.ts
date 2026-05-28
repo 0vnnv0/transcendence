@@ -9,6 +9,10 @@ export interface User {
 	login: string;
 	campus: string;
 	rank: number;
+	coalition: {
+		name: string;
+		slug: string;
+	}
 	selectedIn: {
 		month: number;
 		year: number;
@@ -17,4 +21,5 @@ export interface User {
 
 	preferredOnCampus?: boolean;
 	hoursPerWeek?: number;
+	newCore: boolean;
 }

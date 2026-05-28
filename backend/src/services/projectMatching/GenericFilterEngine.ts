@@ -1,5 +1,5 @@
 import { User } from "../../types/User.js";
-import { Filter } from "./filterTypes.js";
+import { Filter } from "../../types/filterTypes.js";
 
 function matchesHoursRange(userHours: number, range: string): boolean {
 	switch (range) {
