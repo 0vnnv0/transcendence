@@ -47,7 +47,7 @@ function Login() {
 				</div>
 				{error && <p className="text-red-500 text-xs">{error.message}</p>}
 				<Button type="submit" disabled={isPending} className="mt-4">
-					{isPending ? 'Logging in...' : 'Login'}
+					{isPending ? 'Signing in...' : 'Sign Up'}
 				</Button>
 			</form>
         </div>
