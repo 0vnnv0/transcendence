@@ -7,8 +7,28 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: loginUser,
+	//mutationFn: signUpUser,
+	//mutationFn: authorizeUser,
+    onSuccess: (data) => {
+      // 1. Store the token (usually in localStorage or a Cookie)
+      localStorage.setItem('token', data.token);
+      
+      // 2. Redirect the user to the chat dashboard
+      navigate('/dashboard');
+    },
+    onError: (error) => {
+      console.error('Login error:', error.message);
+    }
+  });
+}
+
+export function useSignUp() {
+  const navigate = useNavigate();
+
+  return useMutation({
+    //mutationFn: loginUser,
 	mutationFn: signUpUser,
-	mutationFn: authorizeUser,
+	//mutationFn: authorizeUser,
     onSuccess: (data) => {
       // 1. Store the token (usually in localStorage or a Cookie)
       localStorage.setItem('token', data.token);
