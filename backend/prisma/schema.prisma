@@ -82,6 +82,7 @@ model Availability {
 model Chat {
 	id				Int			@id @default(autoincrement()) 
 	createdAt		DateTime	@default(now())
+	updatedAt		DateTime	@updatedAt
 	users			User[]		@relation("UserToChat")
 	messages		ChatMessage[]
 }

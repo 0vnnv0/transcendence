@@ -1,5 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+import { jwtDecode } from 'jwt-decode';
+
+interface MyTokenPayload {
+	id: number;
+	intraName: string;
+	iat: number;
+	exp: number;
+}
 
 function AuthSuccess() {
 	const navigate = useNavigate();
@@ -10,10 +18,17 @@ function AuthSuccess() {
 
 		if (token) {
 			localStorage.setItem('token', token);
-			navigate('/dashboard');
+			try {
+				const decodedToken = jwtDecode<MyTokenPayload>(token);
+				console.log("Welcome back: ", decodedToken.intraName)
+				navigate('/dashboard');
+			} catch (error){
+				console.log("token not readable!", error);
+				navigate('/');
+			}
 		} else {
 			console.error("No token found in callback URL");
-			navigate('login');
+			navigate('/');
 		}
 	}, [searchParams, navigate]);
 	return (
