@@ -6,8 +6,10 @@ import { isInChat } from "../sockets/chat.js";
 
 export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 {
-	fastify.get('/chats', async (request, response) => loadChats(fastify, prisma, request, response));
-	fastify.get('/chat/:chatId', async (request, response) => loadMessages(fastify, prisma, request, response));
+	fastify.get('/chats', async (request, response) => 
+		loadChats(fastify, prisma, request, response));
+	fastify.get('/chat/:chatId', async (request, response) =>
+		loadMessages(fastify, prisma, request, response));
 }
 
 //loads the past 50 messages once you open chat and has the capacity to load the next 50 messages on a cursor request until the end (but havent tested this)
