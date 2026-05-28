@@ -34,7 +34,7 @@ export function useSignUp() {
       localStorage.setItem('token', data.token);
       
       // 2. Redirect the user to the chat dashboard
-      navigate('/dashboard');
+      navigate('/authorize');
     },
     onError: (error) => {
       console.error('Login error:', error.message);

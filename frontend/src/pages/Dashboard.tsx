@@ -1,9 +1,11 @@
 import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
+import { useAuth } from '../components/context/AuthContext';
 
 function Dashboard() {
 
+	const { userName } = useAuth();
 	return (
 		<section
 			className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat"
@@ -13,7 +15,7 @@ function Dashboard() {
 			</div>
 			<div className="flex flex-col flex-1 p-10 gap-10">
 				<h1 className="text-title">
-					welcome to cluster fuck
+					welcome to cluster fuck, {userName}!
 				</h1>
 				<CardSection title="Your next project in Rank 3">
 					<CardSection.Body viewMode="list">

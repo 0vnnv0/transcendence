@@ -2,9 +2,14 @@ import Navbar from '../components/ui/Navbar/Navbar'
 import EditButton from '../components/ui/EditButton/EditButton'
 import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
+import { useAuth } from '../components/context/AuthContext';
 
 function MyProfile() {
+
+	const { userName } = useAuth();
+
   return (
+
 		<section
 			className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat"
 		>
@@ -20,7 +25,7 @@ function MyProfile() {
 						<EditButton onClick={() => console.log("Profilbild geandert!")}></EditButton>
 					</span>
 				</div>
-				<h1 className="text-title">anschmit</h1>
+				<h1 className="text-title">{userName}</h1>
 				<CardSection title="Available for projects">
 					<CardSection.Body viewMode="grid">
 						<ProjectCard
