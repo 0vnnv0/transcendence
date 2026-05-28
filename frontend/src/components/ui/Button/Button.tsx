@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "font-kyiv border border-gray-500 bg-sunshine font-medium uppercase inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "text-cta-bold border border-gray-500 bg-sunshine inline-flex items-center justify-center transition-all duration-200 rounded-lg active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {

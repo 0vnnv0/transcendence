@@ -1,10 +1,10 @@
 import Button from '../components/ui/Button/Button'
 import { useForm } from 'react-hook-form'
-import { useLogin } from '../hooks/useAuth'
+import { useSignUp } from '../hooks/useAuth'
 
 function Login() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
-	const { mutate, isPending, error } = useLogin();
+	const { mutate, isPending, error } = useSignUp();
 
 	const onSubmit = (data) => {
 		console.log("Form submitted to api... ", data.email);
