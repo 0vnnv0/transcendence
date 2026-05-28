@@ -16,7 +16,7 @@ model User {
 	createdAt		DateTime	@default(now()) 
 	email			String		@unique
 	intraEmail		String?		
-	password		String
+	password		String?
 	intraName		String?		@unique
 	campusID		Int?			
 	campusName		String?

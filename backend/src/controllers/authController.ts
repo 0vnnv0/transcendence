@@ -16,7 +16,7 @@ const prisma = new PrismaClient({ adapter });
 const fastify = Fastify({ logger: true });
 
 
-export const registerUser = async (request: FastifyRequest, reply: FastifyReply) => {
+export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { email, password } = request.body as {email?: string, password?: string};
 	if (!email || !password) {
 		return reply.status(400).send({
@@ -136,11 +136,13 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
     // Token an den User schicken
-    return { 
-      message: "Login erfolgreich", 
-      access_token: token, // Das Frontend speichert das meistens im LocalStorage
-      user 
-    };
+    // return { 
+    //   message: "Login erfolgreich", 
+    //   access_token: token, // Das Frontend speichert das meistens im LocalStorage
+    //   user 
+    // };
+	const frontendRedirectUrl = `http://localhost:8080/authsuccess?token=${token}`;
+	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
 	console.error("DEBUG AUTH ERROR:", error); // Das zeigt uns den echten Fehler im Terminal
     return reply.code(500).send({ error: "Auth Service Error" });
