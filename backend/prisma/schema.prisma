@@ -96,6 +96,13 @@ model ChatMessage {
 	content			String
 }
 
+model BlacklistedTokens {
+	id				Int			@id @default(autoincrement())
+	token			String		@unique
+	expiresAt		DateTime
+	createdAt		DateTime	@default(now())
+}
+
 enum Status {
 	NOT_STARTED
 	IN_PROGRESS

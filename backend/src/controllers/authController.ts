@@ -116,6 +116,36 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 
 };
 
+export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) => {
+	try {
+		const authHeader = request.headers.authorization;
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			return reply.code(400).send({ message: 'No Token found'});
+		}
+		const token = authHeader.split(' ')[1];
+
+		const decoded = request.server.jwt.decode<{ exp: number }>(token);
+		if (decoded && decoded.exp) {
+			const expiresAt = new Date(decoded.exp * 1000);
+			
+			await prisma.blacklistedToken.upsert({
+				where: { token },
+				update: {},
+				create: {
+					token,
+					expiresAt
+				}
+			});
+		}
+		return reply.send({
+			message: 'Logout successful. Token blacklisted.'
+		})
+	} catch (error) {
+		request.log.error(error);
+		return reply.status(500).send({error: 'Internal Server Error'});
+	}
+};
+
 export const loginWith42 = async (request: FastifyRequest, reply: FastifyReply) => {
   const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FT_ID}&redirect_uri=${encodeURIComponent(process.env.FT_REDIRECT_URI || "")}&response_type=code&scope=public`;
   return reply.redirect(url);
