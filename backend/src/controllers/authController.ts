@@ -96,7 +96,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		// 	});
 		// }
 
-		const token = fastify.jwt.sign({
+		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
 		}, { expiresIn: '1d'});

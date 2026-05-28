@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.js";
+import prisma from '../lib/prisma.js';
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export const checkJwtAndBlacklist = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -15,7 +15,7 @@ export const checkJwtAndBlacklist = async (request: FastifyRequest, reply: Fasti
 		});
 		}
 
-		const isBlacklisted = await prisma.blacklistedToken.findUnique({
+		const isBlacklisted = await prisma.BlacklistedToken.findUnique({
 			where: { token }
 		});
 
@@ -25,10 +25,18 @@ export const checkJwtAndBlacklist = async (request: FastifyRequest, reply: Fasti
 				message: 'This token is invalid.'
 			});
 		}
-	} catch (err){
-		return reply.code(401).send({
-			error: 'Unauthorized',
-			message: 'Invalid token.'
+	} catch (err: any) {
+    // DIESE ZEILE ZEIGT UNS DEN ECHTEN GRUND IM TERMINAL:
+		console.error("❌ JWT VERIFICATION CRASHED:", err.message);
+		
+		return reply.code(401).send({ 
+		error: 'Unauthorized', 
+		message: 'Ungültiges Token.',
+		debugReason: err.message // Gibt den Fehler testweise ans Frontend weiter
 		});
+		// return reply.code(401).send({
+		// 	error: 'Unauthorized',
+		// 	message: 'Invalid token.'
+		// });
 	}
-};
+}

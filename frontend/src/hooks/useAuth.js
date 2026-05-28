@@ -71,7 +71,7 @@ export function useLogoutLogic() {
 				await fetch('/api/logout', {
 					method: 'POST',
 					headers: {
-						'Authorization': 'Bearer ${token}',
+						'Authorization': `Bearer ${token}`,
 					}
 				});
 			} catch (error) {
