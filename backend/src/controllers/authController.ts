@@ -96,10 +96,10 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		// 	});
 		// }
 
-		const token = fastify.jwt.sign({
+		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
-		}, { expiresIn: '1d'});
+		}, { expiresIn: '1h'});
 
 		return reply.send({
 			message: 'Login successful',
@@ -114,6 +114,36 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		});
 	}
 
+};
+
+export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) => {
+	try {
+		const authHeader = request.headers.authorization;
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			return reply.code(400).send({ message: 'No Token found'});
+		}
+		const token = authHeader.split(' ')[1];
+
+		const decoded = request.server.jwt.decode<{ exp: number }>(token);
+		if (decoded && decoded.exp) {
+			const expiresAt = new Date(decoded.exp * 1000);
+			
+			await prisma.blacklistedTokens.upsert({
+				where: { token },
+				update: {},
+				create: {
+					token,
+					expiresAt
+				}
+			});
+		}
+		return reply.send({
+			message: 'Logout successful. Token blacklisted.'
+		})
+	} catch (error) {
+		request.log.error(error);
+		return reply.status(500).send({error: 'Internal Server Error'});
+	}
 };
 
 export const loginWith42 = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -133,7 +163,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     const token = request.server.jwt.sign({ 
       id: user.id, 
       intraName: user.intraName 
-    }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
+    }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
     // Token an den User schicken
     // return { 

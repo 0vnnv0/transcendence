@@ -35,6 +35,20 @@ async function start() {
         }
     });
 
+	// Alle 60 Minuten abgelaufene Tokens aus der Blacklist löschen
+	setInterval(async () => {
+	try {
+		const deleted = await prisma.blacklistedToken.deleteMany({
+		where: {
+			expiresAt: { lt: new Date() }
+		}
+		});
+		console.log(`Blacklist cleaned: ${deleted.count} expired tokens deleted.`);
+	} catch (err) {
+		console.error("Error during Blacklist cleaning: ", err);
+	}
+	}, 1000 * 60 * 60);
+
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
 	try {
