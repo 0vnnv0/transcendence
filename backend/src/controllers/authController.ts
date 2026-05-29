@@ -99,7 +99,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
-		}, { expiresIn: '1d'});
+		}, { expiresIn: '1h'});
 
 		return reply.send({
 			message: 'Login successful',
