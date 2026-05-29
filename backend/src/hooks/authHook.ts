@@ -15,7 +15,7 @@ export const checkJwtAndBlacklist = async (request: FastifyRequest, reply: Fasti
 		});
 		}
 
-		const isBlacklisted = await prisma.BlacklistedToken.findUnique({
+		const isBlacklisted = await prisma.blacklistedTokens.findUnique({
 			where: { token }
 		});
 

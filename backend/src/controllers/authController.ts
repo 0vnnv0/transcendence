@@ -128,7 +128,7 @@ export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) =
 		if (decoded && decoded.exp) {
 			const expiresAt = new Date(decoded.exp * 1000);
 			
-			await prisma.blacklistedToken.upsert({
+			await prisma.blacklistedTokens.upsert({
 				where: { token },
 				update: {},
 				create: {
