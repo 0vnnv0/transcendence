@@ -99,7 +99,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
-		}, { expiresIn: '5m'});
+		}, { expiresIn: '1h'});
 
 		return reply.send({
 			message: 'Login successful',
@@ -163,7 +163,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     const token = request.server.jwt.sign({ 
       id: user.id, 
       intraName: user.intraName 
-    }, { expiresIn: '5m' }); // Token ist 1 Tag gültig
+    }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
     // Token an den User schicken
     // return { 

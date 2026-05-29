@@ -47,7 +47,7 @@ async function start() {
 	} catch (err) {
 		console.error("Error during Blacklist cleaning: ", err);
 	}
-	}, 1000 * 60 * 3);
+	}, 1000 * 60 * 60);
 
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
