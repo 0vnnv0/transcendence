@@ -163,7 +163,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     const token = request.server.jwt.sign({ 
       id: user.id, 
       intraName: user.intraName 
-    }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
+    }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
     // Token an den User schicken
     // return { 
