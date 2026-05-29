@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { AuthTokenResponse, IntraUser } from '../types/fortyTwo';
+import 'dotenv/config';
+import { AuthTokenResponse, IntraUser } from '../types/fortyTwo.js';
 
 const FT_API_URL = 'https://api.intra.42.fr/v2';
 
@@ -22,4 +23,34 @@ export class FortyTwoService {
     });
     return response.data;
   }
+	async getUserQuests(login: string, token: string) {
+		const response = await axios.get(
+			`${FT_API_URL}/users/${login}/quests_users`,
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		); 
+	return response.data;
+}
+
+	async getUserCoalitions(userId: number, token: string) {
+		const response = await axios.get(
+			`${FT_API_URL}/users/${userId}/coalitions`,
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		);
+
+		return response.data;
+	}
+
+	async getUserProjects(userId: number, token: string) {
+		const response = await axios.get(
+			`${FT_API_URL}/users/${userId}/projects_users`,
+			{
+				headers: { Authorization: `Bearer ${token}` }
+			}
+		); 
+	return response.data;
+	}
 }
