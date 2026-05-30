@@ -54,19 +54,20 @@ export class FortyTwoService {
 	return response.data;
 	}
 
-	async fetchBerlinUsers(token: string) {
-	const response = await axios.get(
-		`${FT_API_URL}/campus/51/users`,
-		{
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		params: {
-			per_page: 100,
-		},
-		}
-	);
 
-	return response.data;
-	}
+	async fetchCoalitionUsers(coalitionId: number, token: string) {
+		const response = await axios.get(
+		`${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
+		{
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			params: {
+				page: 1,
+				per_page: 100,
+			},
+		}
+		);
+		return response.data;
+		}
 }

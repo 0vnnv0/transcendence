@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { fetchAllPages } from "../lib/fetchAllPages.js";
-import { FortyTwoService } from "../services/fortyTwoService.js";
+import { FortyTwoService } from "./fortyTwoService.js";
 
 const FT_API_URL = "https://api.intra.42.fr/v2";
 
