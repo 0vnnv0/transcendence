@@ -11,6 +11,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model TestUser {
+  id        Int    @id @unique
+  login     String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User { 
 	id				Int			@id @default(autoincrement()) 
 	createdAt		DateTime	@default(now()) 
@@ -18,19 +26,11 @@ model User {
 	intraEmail		String?		
 	password		String?
 	intraName		String?		@unique
-<<<<<<< HEAD
-	campusID		Int			
-	campusName		String
-	currentRank		Int
-	paceDeadline	DateTime
-	blackholeDate	DateTime?
-=======
 	campusID		Int?			
 	campusName		String?
 	currentRank		Int?
 	paceDeadline	DateTime?
 	blackholeDate	DateTime?
->>>>>>> origin/main
 	student			Boolean? //grade:cadet
 
 	quests			UserQuests?

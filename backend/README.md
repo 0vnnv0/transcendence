@@ -307,3 +307,12 @@ Planned next steps:
 * Database integration with Prisma + PostgreSQL
 * Authentication system
 * Chat rooms
+
+# USER SYNC
+container starten (make),
+dann:
+```
+ docker exec -it backend npx tsx src/scripts/syncBerlinUsers.ts
+ ```
+
+ alle berlin user aus dem kommon core erscheinen bei prisma studio 
