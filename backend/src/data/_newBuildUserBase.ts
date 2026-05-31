@@ -3,7 +3,11 @@ export function newBuildUserBase(
 	coalition?: {
 		name: string;
 		slug: string;
-	}
+	},
+	rankInfo?: {
+		rank: number;
+		newCore: boolean;
+	},
 ) {
 	return {
 		id: apiUser.id,
@@ -16,5 +20,8 @@ export function newBuildUserBase(
 
 		coalitionName: coalition?.name ?? null,
 		coalitionSlug: coalition?.slug ?? null,
+
+		currentRank: rankInfo?.rank ?? null,
+		newCore: rankInfo?.newCore ?? false,
 	};
 }

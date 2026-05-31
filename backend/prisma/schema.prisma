@@ -22,6 +22,9 @@ model TestUser {
   coalitionName String?
   coalitionSlug String?
 
+  currentRank	Int?
+  newCore		Boolean?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -38,6 +41,9 @@ model User {
 	currentRank		Int?
 	paceDeadline	DateTime?
 	blackholeDate	DateTime?
+
+	coalitionName String?										//check
+	coalitionSlug String?										//check
 
 	quests			UserQuests?
 	projects		UserProjects[]

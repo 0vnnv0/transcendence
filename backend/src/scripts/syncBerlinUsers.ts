@@ -8,6 +8,7 @@ import { fetchBerlinCoreUsers } from "../services/fetchBerlinCoreUsers.js";
 import { FortyTwoService } from "../services/fortyTwoService.js";
 import { buildCoalitionMap } from "../data/buildCoalitionMap.js";
 import { newBuildUserBase } from "../data/_newBuildUserBase.js";
+import { buildRankMap } from "../data/buildRankMap.js";
 
 dotenv.config({
 	path: path.resolve(process.cwd(), ".env"),
@@ -46,14 +47,39 @@ async function syncBerlinUsers() {
 
 	console.log("MAP SIZE", coalitionMap.size);
 
+	const rank1Users = await service.fetchQuestUsers(44, token);
+	await sleep(1000);
+	const rank2Users = await service.fetchQuestUsers(45, token);
+	await sleep(1000);
+	const rank3Users = await service.fetchQuestUsers(46, token);
+	await sleep(1000);
+	const rank4Users = await service.fetchQuestUsers(47, token);
+	await sleep(1000);
+	const rank5Users = await service.fetchQuestUsers(48, token);
+	await sleep(1000);
+	const rank6Users = await service.fetchQuestUsers(49, token);
+	await sleep(1000);
+	const newCoreUsers = await service.fetchQuestUsers(128, token);
+	await sleep(1000);
+
+	const rankMap = buildRankMap(
+		activeUsers,
+		rank1Users,
+		rank2Users,
+		rank3Users,
+		rank4Users,
+		rank5Users,
+		rank6Users,
+		newCoreUsers,
+	);
+
 	const users = activeUsers.map((u) => {
 		const coalition = coalitionMap.get(u.id); 
+		const rankInfo = rankMap.get(u.id);
 
-		return newBuildUserBase(u, coalition);
+		return newBuildUserBase(u, coalition, rankInfo);
 	});
 
-	console.log("SAMPLE USER ID:", activeUsers[0].id);
-	console.log("MAP SAMPLE:", [...coalitionMap.keys()].slice(0, 5));
 
 	for (const user of users) {
 		await prisma.testUser.upsert({
@@ -76,3 +102,5 @@ async function syncBerlinUsers() {
 }
 
 syncBerlinUsers().catch(console.error);
+
+//am ende: noch mal checker funktion --> zb wenn jmd keine coalition hat --> RAUS

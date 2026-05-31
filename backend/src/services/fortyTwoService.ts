@@ -73,4 +73,24 @@ export class FortyTwoService {
 			return response.data;
 		});
 	}
+
+	async fetchQuestUsers(questId: number, token: string) {
+		return fetchAllPages(async (page) => {
+			const response = await axios.get(
+				`${FT_API_URL}/quests/${questId}/quests_users`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					params: {
+						page,
+						per_page: 100,
+						"filter[validated]": true,
+						"filter[campus_id]": 51,
+					},
+				},
+			);
+			return response.data;
+		});
+	}
 }
