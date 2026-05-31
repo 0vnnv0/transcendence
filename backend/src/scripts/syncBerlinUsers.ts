@@ -26,14 +26,17 @@ async function syncBerlinUsers() {
 
 	const activeUsers = buildActiveBerlinUsers(coreUsers);
 	console.log("Berlin active Core: ", activeUsers.length);
-	await sleep(600);
+	await sleep(1000);
 
 	const arctosUsers = await service.fetchCoalitionUsers(384, token);
-	await sleep(600);
+	console.log(arctosUsers.length);
+	await sleep(1000);
 	const melursusUsers = await service.fetchCoalitionUsers(383, token);
-	await sleep(600);
+	await sleep(1000);
+	console.log(melursusUsers.length);
 	const fulgensUsers = await service.fetchCoalitionUsers(382, token);
-	await sleep(600);
+	await sleep(1000);
+	console.log(fulgensUsers.length);
 
 	const coalitionMap = buildCoalitionMap(
 		arctosUsers,

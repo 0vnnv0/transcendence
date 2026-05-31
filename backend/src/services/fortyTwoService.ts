@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'dotenv/config';
 import { AuthTokenResponse, IntraUser } from '../types/fortyTwo.js';
+import { fetchAllPages } from '../lib/fetchAllPages.js';
 
 const FT_API_URL = 'https://api.intra.42.fr/v2';
 
@@ -56,18 +57,20 @@ export class FortyTwoService {
 
 
 	async fetchCoalitionUsers(coalitionId: number, token: string) {
-		const response = await axios.get(
-		`${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
-		{
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			params: {
-				page: 1,
-				per_page: 100,
-			},
-		}
-		);
-		return response.data;
-		}
+		return fetchAllPages(async (page) => {
+			const response = await axios.get(
+				`${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					params: {
+						page,
+						per_page: 100,
+					},
+				},
+			);
+			return response.data;
+		});
+	}
 }
