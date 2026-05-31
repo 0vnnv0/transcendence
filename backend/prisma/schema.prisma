@@ -12,26 +12,38 @@ generator client {
 }
 
 model TestUser {
-  id        Int    @id @unique
-  login     String @unique
+  id          Int      @id
+  login       String   @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  intraEmail  String?
+  campusId    Int?
+  campusName  String?
+
+  coalitionName String?
+  coalitionSlug String?
+
+  currentRank	Int?
+  newCore		Boolean?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model User { 
-	id				Int			@id @default(autoincrement()) 
-	createdAt		DateTime	@default(now()) 
-	email			String		@unique
-	intraEmail		String?		
+	id				Int			@id @default(autoincrement()) 	//check
+	createdAt		DateTime	@default(now()) 				//check
+	email			String		@unique	
+	intraEmail		String?										//check
 	password		String?
-	intraName		String?		@unique
-	campusID		Int?			
-	campusName		String?
+	intraName		String?		@unique							//check, aber heisst login
+	campusID		Int?										//check			
+	campusName		String?										//check
 	currentRank		Int?
 	paceDeadline	DateTime?
 	blackholeDate	DateTime?
-	student			Boolean? //grade:cadet
+
+	coalitionName String?										//check
+	coalitionSlug String?										//check
 
 	quests			UserQuests?
 	projects		UserProjects[]

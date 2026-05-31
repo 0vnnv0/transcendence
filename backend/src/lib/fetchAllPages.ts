@@ -15,6 +15,7 @@ export async function fetchAllPages<T>(
     if (data.length < perPage) break;
 
     page++;
+	await new Promise(resolve => setTimeout(resolve, 700));
   }
 
   return all;

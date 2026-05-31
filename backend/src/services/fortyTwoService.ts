@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'dotenv/config';
 import { AuthTokenResponse, IntraUser } from '../types/fortyTwo.js';
+import { fetchAllPages } from '../lib/fetchAllPages.js';
 
 const FT_API_URL = 'https://api.intra.42.fr/v2';
 
@@ -54,19 +55,42 @@ export class FortyTwoService {
 	return response.data;
 	}
 
-	async fetchBerlinUsers(token: string) {
-	const response = await axios.get(
-		`${FT_API_URL}/campus/51/users`,
-		{
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		params: {
-			per_page: 100,
-		},
-		}
-	);
 
-	return response.data;
+	async fetchCoalitionUsers(coalitionId: number, token: string) {
+		return fetchAllPages(async (page) => {
+			const response = await axios.get(
+				`${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					params: {
+						page,
+						per_page: 100,
+					},
+				},
+			);
+			return response.data;
+		});
+	}
+
+	async fetchQuestUsers(questId: number, token: string) {
+		return fetchAllPages(async (page) => {
+			const response = await axios.get(
+				`${FT_API_URL}/quests/${questId}/quests_users`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+					params: {
+						page,
+						per_page: 100,
+						"filter[validated]": true,
+						"filter[campus_id]": 51,
+					},
+				},
+			);
+			return response.data;
+		});
 	}
 }
