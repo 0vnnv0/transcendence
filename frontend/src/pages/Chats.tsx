@@ -1,10 +1,7 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useParams } from 'react-router-dom';
 import ChatWindow from '../components/ui/ChatWindow/ChatWindow'
 
 function Chats() {
-	const { username } = useParams<{ username: string }>();
-
   return (
 	
 		<section
@@ -15,9 +12,6 @@ function Chats() {
 				<Navbar />
 			</div>
 			<div className="flex flex-col flex-1 p-10 gap-10">
-				<h1 className="font-[Gasoek_One] text-6xl text-black">
-					{username}
-				</h1>
 				<ChatWindow />
 			</div>
 
