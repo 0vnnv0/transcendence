@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import SearchBar from '../Search/Search'
-import NavItem from '../NavItem/NavItem'
-import ChatMenu from '../ChatMenu/ChatMenu'
+import NavItem from './NavItem'
+import ChatMenu from './ChatMenu'
 import Button from '../../../components/ui/Button/Button'
 
 function Navbar() {
