@@ -59,3 +59,28 @@ export function useAuthorize() {
     }
   });
 }
+
+export function useLogoutLogic() {
+	const navigate = useNavigate();
+
+	const performLogout = async () => {
+		const token = localStorage.getItem('token');
+
+		if (token) {
+			try {
+				await fetch('/api/logout', {
+					method: 'POST',
+					headers: {
+						'Authorization': `Bearer ${token}`,
+					}
+				});
+			} catch (error) {
+				console.error("Backend-Logout unsuccessful.", error);
+			}
+		}
+
+		localStorage.removeItem('token');
+		navigate('/');
+	};
+	return { performLogout };
+}
