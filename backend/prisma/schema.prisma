@@ -25,6 +25,9 @@ model TestUser {
   currentRank	Int?
   newCore		Boolean?
 
+  completedProjects Json?
+  activeProjects    Json?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

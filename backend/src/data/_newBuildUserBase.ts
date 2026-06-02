@@ -8,6 +8,7 @@ export function newBuildUserBase(
 		rank: number;
 		newCore: boolean;
 	},
+	projectInfo?: any
 ) {
 	return {
 		id: apiUser.id,
@@ -23,5 +24,8 @@ export function newBuildUserBase(
 
 		currentRank: rankInfo?.rank ?? null,
 		newCore: rankInfo?.newCore ?? false,
+		
+		completedProjects: projectInfo?.completedProjects ?? [],
+		activeProjects: projectInfo?.activeProjects ?? [],
 	};
 }
