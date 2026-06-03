@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { socket } from '../../services/socket';
 
 interface AuthContextType {
 	userName: string;
@@ -24,6 +25,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      socket.connect();
+      socket.emit("register", { userID: userId });
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [userId]);
+
   return (
 	<AuthContext.Provider value={{userName, userId }}>
 		{children}
