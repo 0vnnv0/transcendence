@@ -35,6 +35,26 @@ async function run() {
 	const projects = projectUserMap.get(180624);
 
 	console.log(projects);
+
+
+
+	// const userId = 180624;
+
+	// console.log("\n=== MINISHELL ===\n");
+
+	// const minishellEntry = minishellUsers.find(
+	// 	(entry) => entry.user?.id === userId
+	// );
+
+	// console.dir(minishellEntry, { depth: null });
+
+	// console.log("\n=== TRANSCENDENCE ===\n");
+
+	// const transcendenceEntry = transcendenceUsers.find(
+	// 	(entry) => entry.user?.id === userId
+	// );
+
+	// console.dir(transcendenceEntry, { depth: null });
 }
 
 run().catch(console.error);
