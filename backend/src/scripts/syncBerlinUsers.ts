@@ -9,6 +9,7 @@ import { FortyTwoService } from "../services/fortyTwoService.js";
 import { buildCoalitionMap } from "../data/buildCoalitionMap.js";
 import { newBuildUserBase } from "../data/_newBuildUserBase.js";
 import { buildRankMap } from "../data/buildRankMap.js";
+import { buildProjectUserMap } from "../data/buildProjectUserMap.js";
 
 dotenv.config({
 	path: path.resolve(process.cwd(), ".env"),
@@ -45,6 +46,8 @@ async function syncBerlinUsers() {
 		fulgensUsers
 	);
 
+	// const coalitionMap = buildCoalitionMap( [], [], []);
+
 	console.log("MAP SIZE", coalitionMap.size);
 
 	const rank1Users = await service.fetchQuestUsers(44, token);
@@ -73,11 +76,79 @@ async function syncBerlinUsers() {
 		newCoreUsers,
 	);
 
+	// const rankMap = buildRankMap(
+	// activeUsers,
+	// [],
+	// [],
+	// [],
+	// [],
+	// [],
+	// [],
+	// []
+	// );
+
+
+	const minishellUsers = await service.fetchProjectUsers(1331, token);
+	await sleep(500);
+
+	const minirtUsers = await service.fetchProjectUsers(1315, token);
+	await sleep(500);
+
+	const cub3dUsers = await service.fetchProjectUsers(1326, token);
+	await sleep(500);
+
+	const webservUsers = await service.fetchProjectUsers(1332, token);
+	await sleep(500);
+
+	const ftIrcUsers = await service.fetchProjectUsers(1336, token);
+	await sleep(500);
+
+	const transcendenceUsers = await service.fetchProjectUsers(1337, token);
+	await sleep(500);
+
+	const resumeUsers = await service.fetchProjectUsers(2623, token);
+	await sleep(500);
+
+	const pushSwapUsers = await service.fetchProjectUsers(2687, token);
+	await sleep(500);
+
+	const mazeUsers = await service.fetchProjectUsers(2688, token);
+	await sleep(500);
+
+	const pacmanUsers = await service.fetchProjectUsers(2706, token);
+	await sleep(500);
+
+	const agentUsers = await service.fetchProjectUsers(2703, token);
+	await sleep(500);
+
+	const answerUsers = await service.fetchProjectUsers(2701, token);
+	await sleep(500);
+
+	const projectUserMap = buildProjectUserMap([
+		minishellUsers,
+		minirtUsers,
+		cub3dUsers,
+		webservUsers,
+		ftIrcUsers,
+		transcendenceUsers,
+		resumeUsers,
+
+		pushSwapUsers,
+		mazeUsers,
+		pacmanUsers,
+		agentUsers,
+		answerUsers,
+	]);
+
+	
+
+
 	const users = activeUsers.map((u) => {
 		const coalition = coalitionMap.get(u.id); 
 		const rankInfo = rankMap.get(u.id);
+		const projectInfo = projectUserMap.get(u.id);
 
-		return newBuildUserBase(u, coalition, rankInfo);
+		return newBuildUserBase(u, coalition, rankInfo, projectInfo);
 	});
 
 
@@ -92,6 +163,9 @@ async function syncBerlinUsers() {
 
 				coalitionName: user.coalitionName,
 				coalitionSlug: user.coalitionSlug,
+
+				completedProjects: user.completedProjects,
+				activeProjects: user.activeProjects,
 			},
 			create: 
 				user,
