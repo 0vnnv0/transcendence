@@ -46,6 +46,24 @@ function Login() {
 					{errors.password && <p className="text-red-500 text-xs">{String(errors.password.message)}</p>}
 				</div>
 				{error && <p className="text-red-500 text-xs">{error.message}</p>}
+				
+				<div className="flex gap-4 mt-4 w-full">
+                  {/* Register Button */}
+                  <Button type="submit" disabled={isPending || isLoggingIn} className="flex-1">
+                      {isPending ? 'Signing up...' : 'Sign Up'}
+                  </Button>
+
+                  {/* Login Button */}
+                  <Button 
+                      type="button" 
+                      onClick={handleSubmit(onLoginSubmit)} 
+                      disabled={isPending || isLoggingIn} 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                      {isLoggingIn ? 'Logging in...' : 'Login'}
+                  </Button>
+              </div>
+				
 				<Button type="submit" disabled={isPending} className="mt-4">
 					{isPending ? 'Signing in...' : 'Sign Up'}
 				</Button>
