@@ -1,15 +1,21 @@
 import Button from '../components/ui/Button/Button'
 import { useForm } from 'react-hook-form'
-import { useSignUp } from '../hooks/useAuth'
+import { useLogin, useSignUp } from '../hooks/useAuth'
 
 function Login() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
-	const { mutate, isPending, error } = useSignUp();
+	const signUpMutation = useSignUp();
+	const loginMutation = useLogin();
 
-	const onSubmit = (data) => {
-		console.log("Form submitted to api... ", data.email);
-		mutate(data);
+	const onSignUpSubmit = (data: any) => {
+		signUpMutation.mutate({ email: data.email, password: data.password });
+	};
+
+	const onLoginSubmit = (data: any) => {
+    	loginMutation.mutate({ email: data.email, password: data.password });
   	};
+
+	const isLoading = loginMutation.isPending || signUpMutation.isPending;
 
   const layout = "flex items-center flex-col"
 
@@ -23,7 +29,7 @@ function Login() {
           <h1 className="text-2xl font-bold text-white">Cluster Fuck</h1>
           <p className="text-white/70">Login to find the love of your life</p>
 			<form 
-				onSubmit={handleSubmit(onSubmit)} 
+				onSubmit={handleSubmit(onSignUpSubmit)} 
 				className="p-8 w-96"
 			>
 				<div className="mb-4">
@@ -45,10 +51,30 @@ function Login() {
 					/>
 					{errors.password && <p className="text-red-500 text-xs">{String(errors.password.message)}</p>}
 				</div>
-				{error && <p className="text-red-500 text-xs">{error.message}</p>}
-				<Button type="submit" disabled={isPending} className="mt-4">
-					{isPending ? 'Signing in...' : 'Sign Up'}
-				</Button>
+				{loginMutation.isError && (
+					<p className="text-red-500 text-xs mb-4">
+						{(loginMutation.error as any).response?.data?.message || loginMutation.error.message}
+					</p>
+				)}
+				{signUpMutation.isError && (
+					<p className="text-red-500 text-xs mb-4">
+						{(signUpMutation.error as any).response?.data?.message || signUpMutation.error.message}
+					</p>
+				)}
+				
+				<div className="flex gap-4 mt-4 w-full">
+                  <Button type="submit" disabled={isLoading} className="flex-1">
+                      {signUpMutation.isPending ? 'Signing up...' : 'Sign Up'}
+                  </Button>
+                  <Button 
+                      type="button" 
+                      onClick={handleSubmit(onLoginSubmit)} 
+                      disabled={isLoading} 
+                      className="flex-1"
+                  >
+                      {loginMutation.isPending ? 'Logging in...' : 'Login'}
+                  </Button>
+              	</div>
 			</form>
         </div>
       </section>
