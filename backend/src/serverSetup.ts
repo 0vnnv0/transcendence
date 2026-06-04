@@ -4,7 +4,7 @@ import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Server } from "socket.io";
-import { displayUsersRoutes } from "./routes/displayUsers.js";
+// import { displayUsersRoutes } from "./routes/displayUsers.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
 
@@ -34,7 +34,7 @@ async function buildServer() {
 		prefix: "/",
 	});
 
-	await displayUsersRoutes(fastify);
+	// await displayUsersRoutes(fastify);
 
 	const io = new Server(fastify.server, {
 		cors: {

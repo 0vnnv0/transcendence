@@ -59,7 +59,7 @@ export class AuthService {
 			currentRank: Math.floor(userData.level || 0),
 			paceDeadline: new Date(), // Hier muss aus Quest Datum genommen werden
 			blackholeDate:  mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
-			student: mainCursus?.grade === 'Cadet',
+			// student: mainCursus?.grade === 'Cadet',
 		}
 	});
   }
