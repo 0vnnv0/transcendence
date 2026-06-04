@@ -50,6 +50,7 @@ export async function seed() {
 				blackholeDate: new Date("2027-01-31"),
 			
 				student: true,
+				password: "password"
 			},
 		});
 	}

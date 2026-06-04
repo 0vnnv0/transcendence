@@ -18,6 +18,7 @@ model User {
 	intraEmail		String?		
 	password		String
 	intraName		String?		@unique
+	displayName		String?
 	campusID		Int?			
 	campusName		String?
 	currentRank		Int?
@@ -25,6 +26,7 @@ model User {
 	blackholeDate	DateTime?
 	student			Boolean? //grade:cadet
 
+	bio				String?
 	quests			UserQuests?
 	projects		UserProjects[]
 	availability	Availability?

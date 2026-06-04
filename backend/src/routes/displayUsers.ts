@@ -2,8 +2,8 @@
 //Displaying the filtered users
 import { FastifyInstance } from "fastify";
 
-import { users } from "../data/loadUsers";
-import { filterUsers } from "../services/filterUsers";
+import { users } from "../data/loadUsers.js";
+import { filterUsers } from "../services/filterUsers.js";
 
 export async function displayUsersRoutes(server: FastifyInstance) {
 

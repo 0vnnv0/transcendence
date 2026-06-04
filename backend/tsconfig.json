@@ -10,6 +10,10 @@
 
     "skipLibCheck": true
   },
+  "include": [
+    "src/**/*",
+    "src/types/**/*.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "prisma.config.ts" 
