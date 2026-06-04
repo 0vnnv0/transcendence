@@ -6,13 +6,29 @@ interface MessageInputProps {
     chatId: number;
 }
 
-const MessageInput: React.FC<MessageInputProps> = () => {
+const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
     const [text, setText] = useState("");
 
+	const handleSend = (e: React.SyntheticEvent) => {
+		e.preventDefault();
+		if (text.trim() === "")
+			return;
+
+		socket.emit("send_message", {
+			chatId: chatId,
+			content: text
+		});
+		setText("");
+	};
+
     return (
+		<form onSubmit={handleSend} >
             <div className="flex items-center">
                 <div className="flex-1">
-                    <textarea  
+                    <input  
+						type="text"
+						value={text}
+						onChange={(e) => setText(e.target.value)}
                         placeholder="Type a message..."
                         className="w-full text-sm bg-gray-100 rounded-full py-3 px-4 focus:ring-2 focus:outline-black resize-none"
                     />
@@ -26,6 +42,7 @@ const MessageInput: React.FC<MessageInputProps> = () => {
                     </button>
                 </div>
             </div>
+		</form>
     )
 }
 
