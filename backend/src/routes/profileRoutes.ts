@@ -6,7 +6,6 @@
 // - add checks for blocked users
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
-import '../types/fastify';
 
 //schema for validating body for profile modification 
 const updateProfileSchema = {
@@ -34,15 +33,20 @@ interface updateProfileBody {
 	displayName?: string;
 }
 
-export async function profileRoutes(fastify: FastifyInstance, prisma: PrismaClient)
+interface ProfileRoutesOptions {
+    prisma: PrismaClient;
+}
+
+export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoutesOptions)
 {
+	const prisma = opts.prisma;
 	fastify.addHook('preHandler', async (request, reply) => {
 		try {
 			await request.jwtVerify();
 		} catch (err) {
 			return reply.code(401).send({ error: 'Unauthorized' });
 		}
-	  });
+	});
 	fastify.get('/profile/:userId', async (request, response) =>
 		getProfileInfo(request, response, fastify, prisma));
 	fastify.patch('/profile/:userId', {schema: updateProfileSchema}, async (request, response) =>
@@ -52,15 +56,14 @@ export async function profileRoutes(fastify: FastifyInstance, prisma: PrismaClie
 
 async function modProfileInfo(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
-	// use this next part to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
-	const usingUserId = request.user.id;
-	if (!usingUserId)
-		return response.code(401).send({ error: "You are not logged in." });
+	// use these next parts to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
+	// const usingUserId = request.user.id;
+	// if (!usingUserId)
+	// 	return response.code(401).send({ error: "You are not logged in." });
 
-	const { rawUserId } = request.params as { rawUserId: string };
-	const userId = Number(rawUserId);
-	if (usingUserId !== userId)
-		return response.code(403).send({error: "you can't modify this Users account."})
+	const { userId } = request.params as { userId: Number };
+	// if (usingUserId !== userId)
+	// 	return response.code(403).send({error: "you can't modify this Users account."})
 
 	const body = request.body as updateProfileBody;
 	if (Object.keys(body).length === 0) {
@@ -69,7 +72,7 @@ async function modProfileInfo(request: FastifyRequest, response: FastifyReply, f
 
 	try {
 		const updatedUser = await prisma.user.update({
-		  where: { id: userId },
+		  where: { id: Number(userId) },
 		  data: body,
 		  select: {
 			id: true,
@@ -92,13 +95,11 @@ async function modProfileInfo(request: FastifyRequest, response: FastifyReply, f
 async function getProfileInfo(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
 	// use this next part to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
-	const usingUserId = request.user.id;
-	if (!usingUserId)
-		return response.code(401).send({ error: "You are not logged in." });
+	// const usingUserId = request.user.id;
+	// if (!usingUserId)
+	// 	return response.code(401).send({ error: "You are not logged in." });
 
-	//const { userId } = request.params as { userId: Number };
-	const { rawUserId } = request.params as { rawUserId: string };
-	const userId = Number(rawUserId);
+	const { userId } = request.params as { userId: Number };
 	try {
 
         const userData = await prisma.user.findUnique({
@@ -131,6 +132,7 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
 		};
 	} catch (error) {
 		fastify.log.error(error);
+		console.log(error);
 		return response.code(500).send({ error: "Failed to load profile." });
 	}
 }
