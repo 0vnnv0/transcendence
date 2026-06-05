@@ -28,7 +28,7 @@ function Login() {
     >
       <section className={`${layout} p-50`}>
         <div className={`${layout} pb-1 backdrop-blur-md bg-white/10 rounded-2xl p-6 border border-white/20`}>
-          <h1 className="text-2xl font-bold text-white">Cluster Fuck</h1>
+          <img src="logo-white.svg" className="h-20"></img>
           <p className="text-white/70">Login to find the love of your life</p>
 			<form 
 				onSubmit={handleSubmit(onSignUpSubmit)} 
