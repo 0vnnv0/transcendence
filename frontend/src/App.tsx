@@ -9,53 +9,50 @@ import Certain_Project from './pages/Certain_Project'
 import Authorize from './pages/Authorize'
 import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
+import { PublicRoute } from './components/context/AuthRoutes'
+import { ProtectedRoute } from './components/context/AuthRoutes'
+
+// function App() {
+//   return (
+//     <Routes>
+//       <Route path="/" element={<Login />} />
+//       <Route path="/dashboard" element={<Dashboard />} />
+// 	  <Route path="/feed" element={<Feed />} />
+// 	  <Route path="/projects" element={<Projects />} />
+// 	  <Route path="/myprofile" element={<MyProfile />} />
+// 	  <Route path="/chats" element={<Chats />} />
+// 	  <Route path="/project/:id" element={<Certain_Project />} />
+// 	  <Route path="/chat/:chatId" element={<Chats />} />
+// 	  <Route path="/authorize" element={<Authorize />} />
+// 	  <Route path="/authsuccess" element={<AuthSuccess />} />
+//   	  <Route path="/:username" element={<OtherProfile />} />
+
+//     </Routes>
+//   )
+// }
 
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-	  <Route path="/feed" element={<Feed />} />
-	  <Route path="/projects" element={<Projects />} />
-	  <Route path="/myprofile" element={<MyProfile />} />
-	  <Route path="/chats" element={<Chats />} />
-	  <Route path="/project/:id" element={<Certain_Project />} />
-	  <Route path="/chat/:chatId" element={<Chats />} />
-	  <Route path="/authorize" element={<Authorize />} />
-	  <Route path="/authsuccess" element={<AuthSuccess />} />
-  	  <Route path="/:username" element={<OtherProfile />} />
+	  <Route element={<PublicRoute />}>
+        <Route path="/" element={<Login />} />
+        <Route path="/authorize" element={<Authorize />} />
+      </Route>      
+	  <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/feed" element={<Feed />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/myprofile" element={<MyProfile />} />
+        <Route path="/chats" element={<Chats />} />
+        <Route path="/project/:id" element={<Certain_Project />} />
+        <Route path="/chat/:username" element={<Chats />} />
+      </Route>
+	  
 
+	  <Route path="/authsuccess" element={<AuthSuccess />} />
     </Routes>
   )
 }
-
-
-// Wenn eingeloggter user nicht mehr auf Login soll und nicht eingeloggter user nur auf Login/authorize soll
-// publicRoute sends logged in users to dashboard
-// protectedRoutes sends not logged in users to login
-
-// function App() {
-//   return (
-//     <Routes>
-// 	  <Route element={<PublicRoute />}>
-//         <Route path="/" element={<Login />} />
-//         <Route path="/authorize" element={<Authorize />} />
-//       </Route>      
-// 	  <Route element={<ProtectedRoute />}>
-//         <Route path="/dashboard" element={<Dashboard />} />
-//         <Route path="/feed" element={<Feed />} />
-//         <Route path="/projects" element={<Projects />} />
-//         <Route path="/myprofile" element={<MyProfile />} />
-//         <Route path="/chats" element={<Chats />} />
-//         <Route path="/project/:id" element={<Certain_Project />} />
-//         <Route path="/chat/:username" element={<Chats />} />
-//       </Route>
-	  
-
-// 	  <Route path="/authsuccess" element={<AuthSuccess />} />
-//     </Routes>
-//   )
-// }
 
 export default App
