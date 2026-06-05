@@ -1,7 +1,7 @@
 import Navbar from '../components/ui/Navbar/Navbar'
 import EditButton from '../components/ui/EditButton/EditButton'
 import CardSection from '../components/sections/CardSection'
-import ProjectCard from '../components/ui/Cards/ProjectCard'
+import InfoCard from '../components/ui/Cards/InfoCard'
 import { useAuth } from '../components/context/AuthContext';
 
 function MyProfile() {
@@ -27,25 +27,40 @@ function MyProfile() {
 				</div>
 				<h1 className="text-title">{userName}</h1>
 				<CardSection title="Available for projects">
-					<CardSection.Body viewMode="grid">
-						<ProjectCard
-							layout="portrait"
-							image="allowed.png"
-							title="webserv"
-							subtitle='Why do URLs start with HTTP?'
-							tags={['2 People', 'Rank 5']}
-							route="#"
-							description="This project is about writing your own HTTP server. You will be able to test it with an actual browser.
-										HTTP is one of the most widely used protocols on the internet."
+					<CardSection.Body viewMode="grid" columns={4}>
+						<InfoCard
+							image="rank.jpg"
+							title="Std / Woche"
+							description="20h"
 						/>
-						<ProjectCard
-							layout="portrait"
-							image="allowed.png"
-							title="ft_irc"
-							subtitle='One of our favourite games.'
-							tags={['2 People', 'Rank 5']}
-							route="#"
-							description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
+						<InfoCard
+							image="rank.jpg"
+							title="Tage anwesend"
+							description="4"
+						/>
+						<InfoCard
+							image="rank.jpg"
+							title="Rank"
+							description="5"
+						/>
+						<InfoCard
+							image="blackhole.jpg"
+							title="Blackhole"
+							description="25.06.26"
+						/>
+					</CardSection.Body>
+				</CardSection>
+				<CardSection title="Recommended next projects">
+					<CardSection.Body viewMode="grid" columns={2}>
+						<InfoCard
+							image="rank.jpg"
+							title="Std / Woche"
+							description="20h"
+						/>
+						<InfoCard
+							image="rank.jpg"
+							title="Tage anwesend"
+							description="4"
 						/>
 					</CardSection.Body>
 				</CardSection>
