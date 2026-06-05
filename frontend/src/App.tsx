@@ -21,7 +21,7 @@ function App() {
 	  <Route path="/myprofile" element={<MyProfile />} />
 	  <Route path="/chats" element={<Chats />} />
 	  <Route path="/project/:id" element={<Certain_Project />} />
-	  <Route path="/chat/:id" element={<Chats />} />
+	  <Route path="/chat/:chatId" element={<Chats />} />
 	  <Route path="/authorize" element={<Authorize />} />
 	  <Route path="/authsuccess" element={<AuthSuccess />} />
   	  <Route path="/:username" element={<OtherProfile />} />

@@ -30,14 +30,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
 						value={text}
 						onChange={(e) => setText(e.target.value)}
                         placeholder="Type a message..."
-                        className="w-full text-sm bg-gray-100 rounded-full py-3 px-4 focus:ring-2 focus:outline-black resize-none"
+                        className="w-full text-sm bg-gray-100 rounded-full py-3 px-4 focus:ring-2 focus:outline-purple resize-none"
                     />
-
                 </div>
                 <div className="ml-3">
                     <button 
                         type="submit"
-                        className="bg-white rounded-full size-12 flex items-center justify-center hover:bg-gray-500 cursor-pointer">
+                        className="bg-purple rounded-full size-10 flex items-center justify-center hover:bg-purple-dark cursor-pointer">
                         <img src="/send.svg" alt="send"></img>
                     </button>
                 </div>

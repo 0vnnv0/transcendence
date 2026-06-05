@@ -14,7 +14,7 @@ const ChatHeader: React.FC = () => {
                     <div>
                         <div className="cursor-pointer"
                         onClick={() => navigate (`/${username}`)}>
-                        <h2 className="font-[Gasoek_One] text-4xl">{username}</h2>
+                        <h2 className="font-[Gasoek_One] text-4xl">User</h2>
                         </div>
                         <p className="text-sm text-gray-500">Offline</p>
                     </div>
