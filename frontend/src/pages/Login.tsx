@@ -8,10 +8,12 @@ function Login() {
 	const loginMutation = useLogin();
 
 	const onSignUpSubmit = (data: any) => {
+		loginMutation.reset();
 		signUpMutation.mutate({ email: data.email, password: data.password });
 	};
 
 	const onLoginSubmit = (data: any) => {
+		signUpMutation.reset();
     	loginMutation.mutate({ email: data.email, password: data.password });
   	};
 

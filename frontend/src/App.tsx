@@ -9,6 +9,7 @@ import Certain_Project from './pages/Certain_Project'
 import Authorize from './pages/Authorize'
 import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
+// import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
 
 
 function App() {
