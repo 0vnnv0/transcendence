@@ -1,0 +1,14 @@
+docker exec -it backend npx tsx src/scripts/syncBerlinUsers.ts 
+(achtung: dauert ca. 5 min)
+
+ueber den backend port sind folgende routes erreichbar:
+localhost:3000
+
+/users								alle 42 Berlin users
+/users?coalition=arctos				alle User einer coalition
+/users?rank=5						alle user eines bestimmten ranks
+/users?newCore=true					alle user aus dem alten oder neunn core curriculum
+/users?completed=minishell			alle user die ein bestimmtes project abgeschlosssen haben 
+/users?active=ft_transcendence		alle user die active in ein projekt eingeschrieben sind
+
+GET /users/:login/next-project		das naechste gruppenprojekt einer bestimmten userin
