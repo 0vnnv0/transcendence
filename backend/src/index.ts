@@ -2,11 +2,12 @@
 //dummie for indexfile
 import buildServer from "./serverSetup.js";
 //import { Pool } from 'pg';
-import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { setupChatSockets } from "./sockets/chat.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
+import { userRoutes } from "./routes/userRoutes.js";
+import { PrismaClient } from "@prisma/client";
 
 
 // 1. Prisma Adapter Setup (wie im Guide)
@@ -51,6 +52,7 @@ async function start() {
 
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
+	await userRoutes(app, prisma);
 	try {
 		await app.listen({
 			port: 3000,
