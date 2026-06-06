@@ -39,7 +39,8 @@ export const redirectIfLoggedIn = async (request: FastifyRequest, reply: Fastify
         const authHeader = request.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return; // Kein Token da? Perfekt, der User ist Gast. Mach normal weiter!
-        }
+ 
+		}
         
         const token = authHeader.split(' ')[1];
 

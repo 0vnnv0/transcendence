@@ -48,7 +48,7 @@ function ChatMenu() {
 					{activeChats.map((chat) => (
 					<li
 						key={chat.id}
-						onClick={() => navigate(`/chat/${chat.username}`)} 
+						onClick={() => navigate(`/chat/${chat.id}`)} 
 					className="flex item-center gap-2 cursor-pointer hover:bg-gray-500/60 hover:rounded-md hover:scale-110">
 						<div className="relative inline-block">
 							<img 

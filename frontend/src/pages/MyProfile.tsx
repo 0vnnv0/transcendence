@@ -18,7 +18,7 @@ function MyProfile() {
 			</div>
 			<div className="flex flex-col flex-1 p-10 gap-10">
 				<div className="relative inline-block">
-					<img src="profile.jpg"
+					<img src="/profile.jpg"
 						className="w-full h-64 rounded-4xl object-cover">
 					</img>
 					<span className="absolute bottom-2 right-5 ">
