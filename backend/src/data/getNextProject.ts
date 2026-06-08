@@ -1,4 +1,7 @@
-import { Project } from "../types/coreProjects.js";
+//OLD VERSION 
+//just used for reference
+
+import { ProjectDefinition } from "../types/coreProjects.js";
 import projectsData from "./coreProjects.json";
 
 const OLD_CORE_EXCLUSIONS = [
@@ -6,7 +9,7 @@ const OLD_CORE_EXCLUSIONS = [
 	["webserv", "ft_irc"]
 ];
 
-const projects: Project[] = projectsData;
+const projects: ProjectDefinition[] = projectsData;
 
 function isExcludedByGroup(
 	slug: string, 
@@ -29,7 +32,7 @@ export function getNextProject(
 	rank: number,
 	newCore: boolean,
 	projectsUsers: any[]
-): Project[] {
+): ProjectDefinition[] {
 	let currentRank = rank;
 
 	while (currentRank <= 6) {

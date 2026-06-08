@@ -1,0 +1,46 @@
+docker exec -it backend npx tsx src/scripts/syncBerlinUsers.ts 
+(achtung: dauert ca. 5 min)
+--> muss man eigentlich nur einmal machen, dannach reicht (bei veränderungen)
+make down
+make build
+make up
+(volumes bleiben so gespeichert)
+
+ueber den backend port sind folgende routes erreichbar:
+localhost:3000
+
+/users								alle 42 Berlin users
+/users?coalition=arctos				alle User einer coalition
+/users?rank=5						alle user eines bestimmten ranks
+/users?newCore=true					alle user aus dem alten oder neunn core curriculum
+/users?completed=minishell			alle user die ein bestimmtes project abgeschlosssen haben 
+/users?active=ft_transcendence		alle user die active in ein projekt eingeschrieben sind
+
+/users/:login                       alle daten zu einer bestimmten userin
+
+/users/:login/next-project		    das naechste gruppenprojekt einer bestimmten userin
+
+
+PROJECT MATCHING:
+
+/users/:login/:slug/matches         alle moeglichen matches für eine userin 
+
+das sind alle project slugs:
+minishell
+minirt
+cub3d
+webserv
+ft_irc
+ft_transcendence
+push_swap
+a-maze-ing
+pac-man
+agent-smith
+the-answer-protocol
+42_collaborative_resume
+
+mögliche errors (werden so vom backend zurueckgegeben):
+users/pbohme/test/matches               404     "Project not found" 
+users/pbohme/minishell/matches          409     "Project already completed"
+users/pbohme/a-maze-ing/matches         403     "Project is not part of your core curriculum"
+users/elewin/a-maze-ing/matches         409     "You already have a team"

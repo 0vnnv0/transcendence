@@ -53,7 +53,7 @@ export class AuthService {
 			},
 		create: {
 			intraName: userData.login,
-			email: userData.email,
+			intraEmail: userData.email,
 			campusID: campus.id,
 			campusName: campus.name,
 			currentRank: Math.floor(userData.level || 0),

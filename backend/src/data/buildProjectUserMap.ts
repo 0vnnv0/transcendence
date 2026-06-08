@@ -1,7 +1,5 @@
-type UserProjects = {
-	completedProjects: string[];
-	activeProjects: string[];
-};
+import { UserProjects } from "../types/userProjects.js";
+
 
 export function buildProjectUserMap(
 	projectResponses: any[][]
@@ -46,7 +44,11 @@ export function buildProjectUserMap(
 				projectInfo.completedProjects.push(slug);
 			}
 			else {
-				projectInfo.activeProjects.push(slug);
+				projectInfo.activeProjects.push({
+					slug,
+					hasTeam: (entry.teams?.length ?? 0) > 0,
+					status: entry.status,
+				});
 			}
 		}
 	}
