@@ -58,6 +58,7 @@ model User {
 	availability	Availability?
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
+	isOnline		Boolean		@default(false)
 } 
 
 model UserQuests {
