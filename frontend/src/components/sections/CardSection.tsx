@@ -44,18 +44,28 @@ CardSection.Filters = function CardSectionFilters({ children }: { children: Reac
 // 3. Body Sub-Component Container (Handles Layout)
 type CardSectionBodyProps = {
   viewMode?: 'grid' | 'list';
+  columns?: 2 | 3 | 4; // Added dynamic columns prop (defaults to 3)
   children: React.ReactNode;
 };
 
-CardSection.Body = function CardSectionBody({ viewMode = 'grid', children }: CardSectionBodyProps) {
+const gridColMap = {
+  2: 'grid grid-cols-1 sm:grid-cols-2 gap-4',
+  3: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4',
+  4: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
+};
+
+CardSection.Body = function CardSectionBody({ 
+	viewMode = 'grid', 
+	columns = 3,
+	children
+ }: CardSectionBodyProps) {
+
+	const layoutClass = viewMode === 'grid' 
+    ? gridColMap[columns] 
+    : 'flex flex-col gap-4';
+
   return (
-    <div
-      className={
-        viewMode === 'grid'
-          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
-          : 'flex flex-col gap-4'
-      }
-    >
+    <div className={layoutClass}>
       {children}
     </div>
   );
