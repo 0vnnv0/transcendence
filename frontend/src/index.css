@@ -5,16 +5,11 @@
   --font-kyiv: "KyivTypeSans", ui-sans-serif, system-ui, sans-serif;
 
   /* custom colours */
-  --color-lime: #E5F53C;
-  --color-gold: #FFD900;
-  --color-purple: #7C39EF;
-  --color-purple-dark: #6428CC;
   --color-mild-purple: #F0DBFF;
+  --color-purple: #7C39EF;
+  --color-purple-dark: #6428CC;
   --color-background-neutral: #F8F6F3;
-
-  /* This creates the 'bg-sunshine' utility */
-  --background-image-sunshine: radial-gradient(circle, var(--color-lime) 0%, var(--color-gold) 100%);
-  --background-image-sunshine-hover: radial-gradient(circle, var(--color-gold) 0%, var(--color-lime) 100%);
+  --color-background-grey: #292826;
 }
 
 /* GasoekOne / Regular / 57px */

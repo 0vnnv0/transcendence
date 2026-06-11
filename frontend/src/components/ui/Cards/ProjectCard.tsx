@@ -27,7 +27,7 @@ const ProjectCard = ({
     <div
 	  onClick={() => navigate(route)}
       className={`
-        relative flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm
+        relative flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm h-fit
         hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
         ${isLandscape ? 'flex-row justify-between' : 'flex-col'}
       `}
@@ -41,7 +41,7 @@ const ProjectCard = ({
       <img
         src={image}
         alt=""
-        className="bg-gray-400 h-50 w-full flex-1 rounded-2xl object-cover"
+        className="bg-gray-400 h-50 max-h-50 w-full flex-1 rounded-2xl object-cover"
       />
       <div
         className={`
