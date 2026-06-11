@@ -1,4 +1,5 @@
 import { isExcludedByOldCoreRules } from "../lib/projectRules.js";
+import { ProjectDefinition } from "../types/coreProjects.js";
 import { DBUser } from "../types/DBUser.js";
 import { projectsByRank } from "./projectMap.js";
 
@@ -21,7 +22,7 @@ export function getAvailableProjects(user: DBUser, newCore: boolean) {
 		});
 	}
 
-	const result: any[] = [];
+	const result: ProjectDefinition[] = [];
 
 	const ranks = Array.from(projectsByRank.keys()).sort((a, b) => a - b);
 

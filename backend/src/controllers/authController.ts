@@ -139,6 +139,11 @@ export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) =
 				}
 			});
 		}
+		const userId = (request.user as any).id;
+		await prisma.user.update({
+          where: { id: userId },
+          data: { isOnline: false },
+        });
 		return reply.send({
 			message: 'Logout successful. Token blacklisted.'
 		})
