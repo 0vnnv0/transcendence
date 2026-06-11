@@ -7,8 +7,10 @@
 //   teamSize?: number;
 // };
 
+import projectsData from "../data/coreProjects.json";
 
-export interface Project {
+
+export interface ProjectDefinition {
 	id: number;
 	name: string;
 	slug: string;
@@ -25,3 +27,5 @@ export interface Project {
 	oldCore: boolean;
 	newCore: boolean;
 }
+
+export const PROJECTS: ProjectDefinition[] = projectsData;

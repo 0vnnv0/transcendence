@@ -33,16 +33,18 @@ export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) =
   	}
 
 	try {
-		const existingUser = await prisma.user.findUnique({
+		const existingUser = await prisma.loggedUser.findUnique({
 			where: { email }
 		});
 		if (existingUser) {
-			const loginUrl = 'http://localhost:8080/login';
-  			return reply.redirect(loginUrl);
+			return reply.code(400).send({
+			error: "Bad Request",
+			message: "Email already exists, please log in."
+    	});
 		}
 		// secure hashed password
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const newUser = await prisma.user.create({
+		const newUser = await prisma.loggedUser.create({
 			data: {
 				email,
 				password: hashedPassword
@@ -52,7 +54,7 @@ export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) =
 		reply.code(201); 
 		return {
 			message: "Registration successful!",
-			user: newUser
+			loggedUser: newUser
 		};
 	} catch (error) {
 		request.log.error(error);
@@ -70,13 +72,13 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 	}
 
 	try {
-		const user = await prisma.user.findUnique({
+		const user = await prisma.loggedUser.findUnique({
 			where: { email }
 		});
 		if (!user) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password. Try again."
+				message: "Account does not exist. Try with another e-mail or sign up."
 			});
 		}
 
@@ -84,7 +86,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		if (!passwordIsValid) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password. Try again."
+				message: "Wrong password. Try again."
 			});
 		}
 
@@ -104,7 +106,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		return reply.send({
 			message: 'Login successful',
 			access_token: token,
-			user: { id: user.id, email: user.email }
+			loggedUser: { id: user.id, email: user.email }
 		});
 	} catch (error) {
 		fastify.log.error(error);
@@ -137,6 +139,11 @@ export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) =
 				}
 			});
 		}
+		const userId = (request.user as any).id;
+		await prisma.user.update({
+          where: { id: userId },
+          data: { isOnline: false },
+        });
 		return reply.send({
 			message: 'Logout successful. Token blacklisted.'
 		})

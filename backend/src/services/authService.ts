@@ -46,20 +46,22 @@ export class AuthService {
 	return prisma.user.upsert({
 		where: {
 			intraName: userData.login
-			},
+		},
 		update: {
 			currentRank: Math.floor(userData.level || 0),
 			blackholeDate: mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
-			},
+			isOnline: true,	
+		},
 		create: {
 			intraName: userData.login,
-			email: userData.email,
+			intraEmail: userData.email,
 			campusID: campus.id,
 			campusName: campus.name,
 			currentRank: Math.floor(userData.level || 0),
 			paceDeadline: new Date(), // Hier muss aus Quest Datum genommen werden
 			blackholeDate:  mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
 			// student: mainCursus?.grade === 'Cadet',
+			isOnline: true,
 		}
 	});
   }

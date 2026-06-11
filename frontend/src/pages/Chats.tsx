@@ -2,6 +2,7 @@ import Navbar from '../components/ui/Navbar/Navbar'
 import ChatWindow from '../components/ui/ChatWindow/ChatWindow'
 
 function Chats() {
+
   return (
 	
 		<section
@@ -18,6 +19,5 @@ function Chats() {
 		</section>
   )
 }
-//https://www.youtube.com/watch?v=45Z-xBRHuRo 4:28
 
 export default Chats

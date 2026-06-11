@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 // import { displayUsersRoutes } from "./routes/displayUsers.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
+import { searchRoutes } from "./routes/searchRoutes.js"
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
 import fastifyJwt from "@fastify/jwt";
@@ -23,6 +24,7 @@ async function buildServer() {
 	});
 
 	await fastify.register(authRoutes);
+	await fastify.register(searchRoutes);
 	await fastify.register(fastifyJwt, {
 		secret: process.env.JWT_SECRET || 'super-geheimes-passwort-fuer-den-cluster'
 		});

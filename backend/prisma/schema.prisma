@@ -32,17 +32,22 @@ model TestUser {
   updatedAt   DateTime @updatedAt
 }
 
+model LoggedUser {
+	id				Int			@id @default(autoincrement())
+	email			String		@unique
+	password		String?
+	createdAt		DateTime	@default(now())
+}
+
 model User { 
 	id				Int			@id @default(autoincrement()) 	//check
 	createdAt		DateTime	@default(now()) 				//check
-	email			String		@unique	
-	intraEmail		String?										//check
-	password		String?
-	intraName		String?		@unique							//check, aber heisst login
-	campusID		Int?										//check			
-	campusName		String?										//check
-	currentRank		Int?
-	paceDeadline	DateTime?
+	intraEmail		String		@unique							//check
+	intraName		String		@unique							//check, aber heisst login
+	campusID		Int										//check			
+	campusName		String										//check
+	currentRank		Int
+	paceDeadline	DateTime
 	blackholeDate	DateTime?
 
 	coalitionName String?										//check
@@ -53,6 +58,7 @@ model User {
 	availability	Availability?
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
+	isOnline		Boolean		@default(false)
 } 
 
 model UserQuests {
