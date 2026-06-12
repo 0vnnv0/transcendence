@@ -28,6 +28,10 @@ function Certain_Project() {
                     <span>XP: {project.xpPoints}</span>
                     <span>|</span>
                     <span>about {project.estimatedHours} hours</span>
+					<span>|</span>
+					<span>Skills: {project.skills}</span>
+					<span>|</span>
+					<span>Keywords: {project.keywords[1]}</span>
                 </div>
 				<h2 className="font-[Gasoek_One] text-3xl">Feed</h2>
 				<UserCard 
