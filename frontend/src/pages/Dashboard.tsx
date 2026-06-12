@@ -37,7 +37,7 @@ function Dashboard() {
 				const response = await fetch(`http://localhost:3000/users/${userName}/next-project/current`);
 
 				if (!response.ok) {
-					throw new Error("Projekt konnte nicht geladen werden.");
+					throw new Error("Unable to load project");
 				}
 				const data: BackendResponse = await response.json();
 
