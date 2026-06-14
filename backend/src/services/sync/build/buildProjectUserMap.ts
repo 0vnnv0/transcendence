@@ -1,5 +1,11 @@
-import { UserProjects } from "../types/userProjects.js";
+import { UserProjects } from "../../../types/userProjects.js";
 
+
+const ACTIVE_STATUSES = [
+	"searching_a_group",
+	"creating_group",
+	"in_progress"
+];
 
 export function buildProjectUserMap(
 	projectResponses: any[][]

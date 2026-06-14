@@ -9,16 +9,23 @@ make up
 ueber den backend port sind folgende routes erreichbar:
 localhost:3000
 
-/users								alle 42 Berlin users
-/users?coalition=arctos				alle User einer coalition
-/users?rank=5						alle user eines bestimmten ranks
-/users?newCore=true					alle user aus dem alten oder neunn core curriculum
-/users?completed=minishell			alle user die ein bestimmtes project abgeschlosssen haben 
-/users?active=ft_transcendence		alle user die active in ein projekt eingeschrieben sind
+/users									alle 42 Berlin users
+/users?coalition=arctos					alle User einer coalition
+/users?rank=5							alle user eines bestimmten ranks
+/users?newCore=true						alle user aus dem alten oder neunn core curriculum
+/users?completed=minishell				alle user die ein bestimmtes project abgeschlosssen haben 
+/users?active=ft_transcendence			alle user die active in ein projekt eingeschrieben sind
+/users?rank=4&newCore=true
 
-/users/:login                       alle daten zu einer bestimmten userin
+/users/:login                       	alle daten zu einer bestimmten userin
 
-/users/:login/next-project		    das naechste gruppenprojekt einer bestimmten userin
+/users/:login/next-project		    	alle naechsten gruppenprojekte einer bestimmten userin
+/users/:login/next-project/current		das naechste gruppenproject
+/users/:login/:slug/matches				generisch alle matches
+/users/:login/:slug/matches?rank=6
+/users/:login/:slug/matches?coalition=arctos
+/users/:login/:slug/matches?completed=webserv
+/users/:login/:slug/matches?rank=6&coalition=arctos
 
 
 PROJECT MATCHING:
