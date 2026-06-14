@@ -2,14 +2,14 @@ import { sleep } from "../../utils/sleep.js";
 import { FortyTwoService } from "../fortyTwoService.js";
 import { buildCoalitionMap } from "./build/buildCoalitionMap.js";
 
-export async function fetchCoalitions(service: FortyTwoService, token: string) {
-	const arctos = await service.fetchCoalitionUsers(384, token);
+export async function fetchCoalitions(service: FortyTwoService) {
+	const arctos = await service.fetchCoalitionUsers(384);
 	await sleep(1000);
 
-	const melursus = await service.fetchCoalitionUsers(383, token);
+	const melursus = await service.fetchCoalitionUsers(383);
 	await sleep(1000);
 
-	const fulgens = await service.fetchCoalitionUsers(382, token);
+	const fulgens = await service.fetchCoalitionUsers(382);
 	await sleep(1000);
 
 	console.log("Coalitions loaded.");
