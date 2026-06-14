@@ -1,4 +1,4 @@
-import { RankInfo } from "../types/rankInfo.js";
+import { RankInfo } from "../../../types/rankInfo.js";
 
 
 function createRankMap(activeUsers: any[]) {
