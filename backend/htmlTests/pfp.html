@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>S3 Upload Tester</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        input, button {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+        }
+
+        pre {
+            background: #eee;
+            padding: 15px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>S3 Upload Tester</h1>
+
+<h2>JWT Token</h2>
+
+<input
+    id="token"
+    placeholder="Paste JWT here">
+
+<button onclick="saveToken()">
+    Save Token
+</button>
+
+<hr>
+
+<h2>Upload Image</h2>
+
+<input
+    type="file"
+    id="fileInput">
+
+<button onclick="upload()">
+    Upload
+</button>
+
+<hr>
+
+<h2>Response</h2>
+
+<pre id="output"></pre>
+
+<script>
+
+function show(data)
+{
+    document.getElementById("output")
+        .textContent =
+            JSON.stringify(data, null, 2);
+}
+
+function saveToken()
+{
+    localStorage.setItem(
+        "token",
+        document.getElementById("token").value
+    );
+
+    alert("Token saved");
+}
+
+function getToken()
+{
+    return localStorage.getItem("token");
+}
+
+async function upload()
+{
+    const file =
+        document.getElementById("fileInput")
+            .files[0];
+
+    if (!file)
+    {
+        alert("Please select a file");
+        return;
+    }
+
+    try
+    {
+        const urlResponse =
+            await fetch(
+                "http://localhost:3000/upload-url",
+                {
+                    method: "POST",
+                    headers:
+                    {
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        contentType: file.type
+                    })
+                }
+            );
+
+        const urlData =
+            await urlResponse.json();
+
+        if (!urlResponse.ok)
+        {
+            show({
+                step: "upload-url",
+                status:
+                    urlResponse.status,
+                data: urlData
+            });
+
+            return;
+        }
+
+        const uploadResponse =
+            await fetch(
+                urlData.uploadUrl,
+                {
+                    method: "PUT",
+                    headers:
+                    {
+                        "Content-Type":
+                            file.type
+                    },
+                    body: file
+                }
+            );
+
+        const uploadText =
+            await uploadResponse.text();
+
+        show({
+            uploadStatus:
+                uploadResponse.status,
+            uploadOk:
+                uploadResponse.ok,
+            key:
+                urlData.key,
+            s3Response:
+                uploadText
+        });
+    }
+    catch (err)
+    {
+        show(err);
+    }
+}
+
+document.getElementById("token").value =
+    localStorage.getItem("token") || "";
+
+</script>
+
+</body>
+</html>

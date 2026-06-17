@@ -1,176 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Profile Route Tester</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			max-width: 800px;
-			margin: 40px auto;
-		}
-
-		input, textarea, button {
-			display: block;
-			margin: 10px 0;
-			padding: 8px;
-			width: 100%;
-		}
-
-		pre {
-			background: #eee;
-			padding: 15px;
-			overflow: auto;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <title>Profile Route Tester</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; }
+        input, textarea, button { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+        pre { background: #eee; padding: 15px; overflow: auto; }
+    </style>
 </head>
 <body>
 
-	<h1>Profile API Tester</h1>
+    <h1>Profile API Tester</h1>
 
-	<h2>JWT Token</h2>
-	<input id="token" placeholder="Paste JWT here">
-	<button onclick="saveToken()">Save Token</button>
+    <h2>JWT Token</h2>
+    <input id="token" placeholder="Paste JWT here">
+    <button onclick="saveToken()">Save Token</button>
 
-	<hr>
+    <hr>
 
-	<h2>GET /profile/:userId</h2>
+    <h2>GET /profile/:userId</h2>
+    <input id="getUserId" type="number" placeholder="User ID">
+    <button onclick="getProfile()">Get Profile</button>
 
-	<input id="getUserId" type="number" placeholder="User ID">
+    <hr>
 
-	<button onclick="getProfile()">
-		Get Profile
-	</button>
+    <h2>DELETE /profile/:userId</h2>
+    <input id="delUserId" type="number" placeholder="User ID">
+    <button onclick="delProfile()">del Profile</button>
 
-	<hr>
+    <hr>
 
-	<h2>PATCH /profile/:userId</h2>
+    <h2>PATCH /profile/:userId</h2>
+    <input id="patchUserId" type="number" placeholder="User ID">
+    <input id="displayName" placeholder="Display Name">
+    <textarea id="bio" placeholder="Bio" rows="5"></textarea>
+    <button onclick="updateProfile()">Update Profile</button>
 
-	<input id="patchUserId" type="number" placeholder="User ID">
+    <hr>
 
-	<input id="displayName" placeholder="Display Name">
+    <h2>Response</h2>
+    <pre id="output"></pre>
 
-	<textarea
-		id="bio"
-		placeholder="Bio"
-		rows="5">
-	</textarea>
+    <script>
+        function saveToken() {
+            localStorage.setItem('token', document.getElementById('token').value);
+            alert('Token saved');
+        }
 
-	<button onclick="updateProfile()">
-		Update Profile
-	</button>
+        function getToken() {
+            return localStorage.getItem('token');
+        }
 
-	<hr>
+        function show(data) {
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
 
-	<h2>Response</h2>
+        async function getProfile() {
+            const userId = document.getElementById('getUserId').value;
+            if (!userId) return alert("Please enter a User ID");
 
-	<pre id="output"></pre>
+            try {
+                const response = await fetch(`http://localhost:3000/profile/${userId}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                show({ status: response.status, data });
+            } catch (err) {
+                show(err);
+            }
+        }
 
-	<script>
+        async function delProfile() {
+            // CHANGED: Reading from the new unique delUserId element
+            const userId = document.getElementById('delUserId').value;
+            
+            if (!userId) return alert("Please enter a User ID to delete");
+            if (!getToken()) return alert("No JWT token saved! Please add a token first.");
 
-		function saveToken()
-		{
-			localStorage.setItem(
-				'token',
-				document.getElementById('token').value
-			);
+            // Good UX practice for DELETE requests
+            if (!confirm(`Are you sure you want to delete profile ${userId}?`)) return;
 
-			alert('Token saved');
-		}
+            try {
+                const response = await fetch(`http://localhost:3000/profile/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
 
-		function getToken()
-		{
-			return localStorage.getItem('token');
-		}
+                const data = await response.json();
+                show({ status: response.status, data });
+            } catch (err) {
+                show(err);
+            }
+        }
 
-		function show(data)
-		{
-			document.getElementById('output').textContent =
-				JSON.stringify(data, null, 2);
-		}
+        async function updateProfile() {
+            const userId = document.getElementById('patchUserId').value;
+            if (!userId) return alert("Please enter a User ID");
 
-		async function getProfile()
-		{
-			const userId =
-				document.getElementById('getUserId').value;
+            const body = {};
+            const displayName = document.getElementById('displayName').value;
+            const bio = document.getElementById('bio').value;
 
-			try
-			{
-				const response = await fetch(
-					`http://localhost:3000/profile/${userId}`,
-					{
-						method: 'GET',
-						headers: {
-							'Authorization':
-								`Bearer ${getToken()}`
-						}
-					}
-				);
+            if (displayName) body.displayName = displayName;
+            if (bio) body.bio = bio;
 
-				const data = await response.json();
+            try {
+                const response = await fetch(`http://localhost:3000/profile/${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify(body)
+                });
 
-				show({
-					status: response.status,
-					data
-				});
-			}
-			catch (err)
-			{
-				show(err);
-			}
-		}
+                const data = await response.json();
+                show({ status: response.status, data });
+            } catch (err) {
+                show(err);
+            }
+        }
 
-		async function updateProfile()
-		{
-			const userId =
-				document.getElementById('patchUserId').value;
-
-			const body = {};
-
-			const displayName =
-				document.getElementById('displayName').value;
-
-			const bio =
-				document.getElementById('bio').value;
-
-			if (displayName)
-				body.displayName = displayName;
-
-			if (bio)
-				body.bio = bio;
-
-			try
-			{
-				const response = await fetch(
-					`http://localhost:3000/profile/${userId}`,
-					{
-						method: 'PATCH',
-						headers: {
-							'Content-Type': 'application/json',
-							'Authorization':
-								`Bearer ${getToken()}`
-						},
-						body: JSON.stringify(body)
-					}
-				);
-
-				const data = await response.json();
-
-				show({
-					status: response.status,
-					data
-				});
-			}
-			catch (err)
-			{
-				show(err);
-			}
-		}
-
-		document.getElementById('token').value =
-			localStorage.getItem('token') || '';
-
-	</script>
-
+        document.getElementById('token').value = localStorage.getItem('token') || '';
+    </script>
 </body>
 </html>

@@ -38,7 +38,7 @@ async function start() {
 
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
-	//await profileRoutes(app, prisma);
+	//await profileRoutes(app, {prisma});
 	app.register(profileRoutes, {prisma});
 	try {
 		await app.listen({
