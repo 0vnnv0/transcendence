@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:3000';
+const BASE_URL = 'http://10.11.5.3:3000';
 
 export interface FullUserProfile {
   id: number;

@@ -8,8 +8,8 @@ function Dashboard() {
 	const { userName } = useAuth();
 	const { data: profile, isLoading, isError } = useUserProfile(userName !== "Guest" ? userName : null);
 
-	if (isLoading) return <div>Loading full profile...</div>;
-	if (isError || !profile) return <div>Error loading profile data.</div>;
+	// if (isLoading) return <div>Loading full profile...</div>;
+	// if (isError || !profile) return <div>Error loading profile data.</div>;
 
 	console.log('User Profile:', profile);
 
