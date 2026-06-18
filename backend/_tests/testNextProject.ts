@@ -1,4 +1,4 @@
-import { getAvailableProjects } from "../src/data/_getAvailableProjects.js";
+import { getAvailableProjects } from "../src/data/getAvailableProjects.js";
 import prisma from "../src/lib/prisma.js";
 
 const userId = Number(process.argv[2]);
