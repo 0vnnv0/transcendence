@@ -164,12 +164,14 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
   try {
     const tokenData: any = await AuthService.getAccessToken(code);
     const userData = await AuthService.fetchIntraUser(tokenData.access_token);
-    const user = await AuthService.upsertUser(userData);
+    const user = await AuthService.upsertUser(userData, tokenData.access_token);
 
-    // JWT erstellen: Wir speichern die ID und den Namen im Token
+    // JWT erstellen: Wir speichern die ID, den Namen, newCore Status und isOnline im Token
     const token = request.server.jwt.sign({ 
       id: user.id, 
-      intraName: user.intraName 
+      intraName: user.intraName,
+      newCore: user.newCore,
+      isOnline: user.isOnline
     }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
     // Token an den User schicken
