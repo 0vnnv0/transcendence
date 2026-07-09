@@ -50,8 +50,8 @@ model User {
 	paceDeadline	DateTime
 	blackholeDate	DateTime?
 
-	coalitionName String?										//check
-	coalitionSlug String?										//check
+	coalitionName 	String?										//check
+	coalitionSlug 	String?										//check
 
 	quests			UserQuests?
 	projects		UserProjects[]
@@ -59,6 +59,7 @@ model User {
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
 	isOnline		Boolean		@default(false)
+	newCore			Boolean?
 } 
 
 model UserQuests {

@@ -1,0 +1,95 @@
+  Problem: user ist schon auf rank5, aber irgendwie wird
+  team projekt auf rank 4 angezeigt??
+  
+  {
+    "id": 204425,
+    "login": "mukibrok",
+    "intraEmail": "mukibrok@student.42berlin.de",
+    "campusId": 51,
+    "campusName": "Berlin",
+    "coalitionName": "Arctos",
+    "coalitionSlug": "arctos",
+    "currentRank": 5,
+    "newCore": false,
+    "completedProjects": [
+      "42cursus-minishell",
+      "cub3d"
+    ],
+    "activeProjects": [
+      {
+        "slug": "minirt",
+        "status": "searching_a_group",
+        "hasTeam": false
+      },
+      {
+        "slug": "webserv",
+        "status": "searching_a_group",
+        "hasTeam": false
+      }
+    ],
+    "createdAt": "2026-06-14T13:41:59.081Z",
+    "updatedAt": "2026-06-14T13:41:59.081Z"
+  },
+
+
+  user ist in das projekt eingeschrieben, aber ich sehe es nicht auf intra?
+  und: creating a group aber hasteam ist schon true
+    {
+    "id": 199573,
+    "login": "chsantos",
+    "intraEmail": "chsantos@student.42berlin.de",
+    "campusId": 51,
+    "campusName": "Berlin",
+    "coalitionName": "Melursus",
+    "coalitionSlug": "melursus",
+    "currentRank": 4,
+    "newCore": false,
+    "completedProjects": [
+      "42cursus-minishell"
+    ],
+    "activeProjects": [
+      {
+        "slug": "minirt",
+        "status": "creating_group",
+        "hasTeam": true
+      }
+    ],
+    "createdAt": "2026-06-14T13:41:59.092Z",
+    "updatedAt": "2026-06-14T13:41:59.092Z"
+  },
+
+
+haben ein anderes projekt gemacht, waren nie fuer ein projekt eingeschrieben:
+  {
+    "id": 180706,
+    "login": "shutan",
+    "intraEmail": "shutan@student.42berlin.de",
+    "campusId": 51,
+    "campusName": "Berlin",
+    "coalitionName": "Melursus",
+    "coalitionSlug": "melursus",
+    "currentRank": 5,
+    "newCore": false,
+    "completedProjects": [
+      "42cursus-minishell",
+      "cub3d",
+      "ft_irc"
+    ],
+    "activeProjects": [
+      {
+        "slug": "minirt",
+        "status": "searching_a_group",
+        "hasTeam": false
+      }
+    ],
+    "createdAt": "2026-06-14T13:41:59.111Z",
+    "updatedAt": "2026-06-14T13:41:59.111Z"
+  },
+
+
+
+
+--> alle user ohne coalition rausfiltern..
+--> staff rausfilterns
+
+idee: ids fuer coalitions, ranks, projects -> in .env?? ist flexibler

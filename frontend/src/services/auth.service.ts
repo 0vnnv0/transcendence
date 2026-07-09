@@ -1,26 +1,33 @@
-// --- Interfaces ---
+// Da dein Fastify-Backend auf Port 3000 läuft
+// const BASE_URL = 'http://localhost:3000';
 
-// Passe diese Felder an das an, was dein Backend tatsächlich erwartet!
-export interface LoginCredentials {
+// =============================================================================
+// TypeScript Interfaces & Types
+// =============================================================================
+
+export interface AuthCredentials {
   email?: string;
   password?: string;
-  // Fallback, falls du noch andere Felder mitschickst:
-  [key: string]: unknown; 
+  [key: string]: any; // Allows for any additional OAuth / 42 specific properties if passed
 }
 
-export interface SignUpCredentials {
-  email?: string;
-  password?: string;
-  username?: string;
-  [key: string]: unknown;
+export interface LoginResponse {
+  access_token: string;
 }
 
-// --- Service Funktionen ---
+export interface TokenResponse {
+  token: string;
+}
 
-// Hinweis: BASE_URL ist definiert, wird in deinen fetch-Aufrufen aber nicht genutzt.
-const BASE_URL = 'http://localhost:3000';
+interface ApiErrorResponse {
+  message?: string;
+}
 
-export async function loginUser(credentials: LoginCredentials): Promise<any> {
+// =============================================================================
+// API Service Functions
+// =============================================================================
+
+export async function loginUser(credentials: AuthCredentials): Promise<LoginResponse> {
   const response = await fetch(`/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,45 +35,92 @@ export async function loginUser(credentials: LoginCredentials): Promise<any> {
   });
 
   if (!response.ok) {
-    // Wir sagen TS hier, dass errorData ein Objekt mit einer optionalen 'message' ist
-    const errorData = (await response.json()) as { message?: string };
+    const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
     throw new Error(errorData.message || 'Login failed');
   }
-  return response.json(); 
+  
+  return response.json() as Promise<LoginResponse>; 
 }
 
-export async function signUpUser(credentials: SignUpCredentials): Promise<any> {
-  const response = await fetch('/api/signUp', {
+export async function signUpUser(credentials: AuthCredentials): Promise<TokenResponse> {
+  const response = await fetch(`/api/signUp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
   });
 
   if (!response.ok) {
-    const errorData = (await response.json()) as { message?: string };
-    // Tippfehler korrigiert: Hier stand vorher 'Login failed'
-    throw new Error(errorData.message || 'SignUp failed');
+    const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Registration failed');
   }
 
-  return response.json(); 
+  return response.json() as Promise<TokenResponse>; 
 }
 
-export async function authorizeUser(): Promise<any> {
-  const token = localStorage.getItem('token');
+export async function authorizeUser(): Promise<TokenResponse> {
+  const token: string | null = localStorage.getItem('token');
   
   const response = await fetch(`/api/auth/42`, { 
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json',
-      // Fallback für den Fall, dass token 'null' ist
       'Authorization': `Bearer ${token || ''}`
     }
   });
 
   if (!response.ok) {
-    const errorData = (await response.json()) as { message?: string };
+    const errorData: ApiErrorResponse = await response.json().catch(() => ({}));
     throw new Error(errorData.message || 'Authorization failed');
   }
 
-  return response.json();
+  return response.json() as Promise<TokenResponse>;
 }
+
+// const BASE_URL = 'http://localhost:3000';
+
+// export async function loginUser(credentials) {
+//   const response = await fetch(`/api/login`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(credentials),
+//   });
+
+//   if (!response.ok) {
+//     const errorData = await response.json();
+//     throw new Error(errorData.message || 'Login failed');
+//   }
+//   return response.json(); 
+// }
+
+// export async function signUpUser(credentials) {
+//   const response = await fetch('/api/signUp', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(credentials),
+//   });
+
+//   if (!response.ok) {
+//     const errorData = await response.json();
+//     throw new Error(errorData.message || 'Login failed');
+//   }
+
+//   return response.json(); 
+// }
+
+// export async function authorizeUser() {
+//   const token = localStorage.getItem('token');
+//   const response = await fetch(`/api/auth/42`, { 
+//     method: 'GET',
+//     headers: { 
+//       'Content-Type': 'application/json',
+//       'Authorization': `Bearer ${token}`
+//     }
+//   });
+
+//   if (!response.ok) {
+//     const errorData = await response.json();
+//     throw new Error(errorData.message || 'Authorization failed');
+//   }
+
+//   return response.json();
+// }
