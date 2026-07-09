@@ -1,5 +1,5 @@
 // Da dein Fastify-Backend auf Port 3000 läuft
-const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'http://localhost:3000';
 
 // =============================================================================
 // TypeScript Interfaces & Types
@@ -28,7 +28,7 @@ interface ApiErrorResponse {
 // =============================================================================
 
 export async function loginUser(credentials: AuthCredentials): Promise<LoginResponse> {
-  const response = await fetch(`${BASE_URL}/api/login`, {
+  const response = await fetch(`/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -43,7 +43,7 @@ export async function loginUser(credentials: AuthCredentials): Promise<LoginResp
 }
 
 export async function signUpUser(credentials: AuthCredentials): Promise<TokenResponse> {
-  const response = await fetch(`${BASE_URL}/api/signUp`, {
+  const response = await fetch(`/api/signUp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -60,7 +60,7 @@ export async function signUpUser(credentials: AuthCredentials): Promise<TokenRes
 export async function authorizeUser(): Promise<TokenResponse> {
   const token: string | null = localStorage.getItem('token');
   
-  const response = await fetch(`${BASE_URL}/api/auth/42`, { 
+  const response = await fetch(`/api/auth/42`, { 
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json',

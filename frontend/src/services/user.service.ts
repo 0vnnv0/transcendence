@@ -1,4 +1,4 @@
-const BASE_URL = 'http://10.11.5.3:3000';
+// const BASE_URL = 'http://10.11.5.3:3000';
 
 export interface FullUserProfile {
   id: number;
@@ -14,7 +14,7 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
   const token = localStorage.getItem('token');
   
   // Explicitly prepend BASE_URL to target Fastify on port 3000 directly
-  const response = await fetch(`${BASE_URL}/api/users/${login}`, {
+  const response = await fetch(`/api/users/${login}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
