@@ -6,13 +6,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { S3Client } from "@aws-sdk/client-s3";
-import {
-    PutObjectCommand
-} from "@aws-sdk/client-s3";
-
-import {
-    getSignedUrl
-} from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const s3 = new S3Client({
     region: "eu-north-1"
@@ -30,7 +25,6 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
 	if (!userId)
 		return response.code(401).send({ error: "You are not logged in." });
 
-	//const contentType = request.headers["content-type"];
 	const body = request.body as {
 		contentType: string;
 	};
@@ -43,7 +37,7 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
 	else {
 		return response.code(400).send({error: "could not find content type header."});
 	}
-    const key = `uploads/user-${userId}`;
+    const key = `uploads/${userId}`;
 
     const command =
         new PutObjectCommand({
