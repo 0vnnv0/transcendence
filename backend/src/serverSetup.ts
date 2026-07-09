@@ -20,7 +20,13 @@ const fastify = Fastify({
 //building the server using fastify + accepting connections
 async function buildServer() {
 	await fastify.register(cors, {
-		origin: "*",
+		// origin: "*",
+		origin: ['http://localhost:5173', 
+            'http://127.0.0.1:5173', 
+            'http://localhost:5137',
+            'http://10.11.5.3:5173',         // <-- Your direct cluster IP
+            'http://c0c5c3.42berlin.de:5173'], // <-- Your cluster hostname
+		credentials: true,
 	});
 
 	await fastify.register(authRoutes);

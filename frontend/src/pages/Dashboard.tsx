@@ -2,10 +2,17 @@ import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext';
+import { useUserProfile } from '../hooks/useUsers';
 
 function Dashboard() {
-
 	const { userName } = useAuth();
+	const { data: profile, isLoading, isError } = useUserProfile(userName !== "Guest" ? userName : null);
+
+	// if (isLoading) return <div>Loading full profile...</div>;
+	// if (isError || !profile) return <div>Error loading profile data.</div>;
+
+	console.log('User Profile:', profile);
+
 	return (
 		<section
 			className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat"
