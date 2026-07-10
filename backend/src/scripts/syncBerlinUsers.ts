@@ -11,10 +11,11 @@ import { buildUserBase } from "../services/sync/build/buildUserBase.js";
 import { syncToDatabase } from "../services/sync/write/syncToDatabase.js";
 import { fetchRanks } from "../services/sync/fetchRanks.js";
 
-dotenv.config({
-	path: path.resolve(process.cwd(), ".env"),
-});
+// dotenv.config({
+// 	path: path.resolve(process.cwd(), ".env"),
+// });
 
+dotenv.config();
 
 export async function syncBerlinUsers() {
 	const service = new FortyTwoService();
