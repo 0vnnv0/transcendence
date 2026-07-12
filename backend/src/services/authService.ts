@@ -1,6 +1,7 @@
 // bekommt die Daten vom Auth Prozess und gibt json Files zurueck
 
 import prisma from "../lib/prisma.js";
+import { FortyTwoService } from "./fortyTwoService.js";
 
 export class AuthService {
 	// function to verify the given Login data with 42 intra
@@ -34,7 +35,7 @@ export class AuthService {
     return response.json();
   }
 
-  static async upsertUser(userData: any) {
+  static async upsertUser(userData: any, accessToken: string) {
 	const mainCursus = userData.cursus_users.find(
 	(c: any) => c.cursus.slug === '42cursus' || c.cursus_id === 21
 	);
@@ -43,6 +44,18 @@ export class AuthService {
 	
 	// 2. Sicherstellen, dass Campus-Daten existieren (verhindert den "undefined reading '0'" Fehler)
 	const campus = userData.campus && userData.campus.length > 0 ? userData.campus[0] : { id: 0, name: "Unknown" };
+	
+	// 3. Fetch newCore status from API (quest 128)
+	let isNewCore = false;
+	try {
+		const service = new FortyTwoService();
+		const newCoreUsers = await service.fetchQuestUsers(128, accessToken);
+		isNewCore = newCoreUsers.some((entry: any) => entry.user.id === userData.id);
+	} catch (error) {
+		console.error("Error fetching newCore status:", error);
+		isNewCore = false;
+	}
+
 	return prisma.user.upsert({
 		where: {
 			intraName: userData.login
@@ -50,6 +63,7 @@ export class AuthService {
 		update: {
 			currentRank: Math.floor(userData.level || 0),
 			blackholeDate: mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
+			newCore: isNewCore,
 			isOnline: true,	
 		},
 		create: {
@@ -60,6 +74,7 @@ export class AuthService {
 			currentRank: Math.floor(userData.level || 0),
 			paceDeadline: new Date(), // Hier muss aus Quest Datum genommen werden
 			blackholeDate:  mainCursus.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
+			newCore: isNewCore,
 			// student: mainCursus?.grade === 'Cadet',
 			isOnline: true,
 		}

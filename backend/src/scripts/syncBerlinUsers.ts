@@ -13,10 +13,11 @@ import { fetchRanks } from "../services/sync/fetchRanks.js";
 import { getAccessToken } from "../services/token.js";
 import { FortyTwoClient } from "../services/fortyTwoClient.js";
 
-dotenv.config({
-	path: path.resolve(process.cwd(), ".env"),
-});
+// dotenv.config({
+// 	path: path.resolve(process.cwd(), ".env"),
+// });
 
+dotenv.config();
 
 export async function syncBerlinUsers() {
 	const token = await getAccessToken();

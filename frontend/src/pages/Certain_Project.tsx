@@ -23,11 +23,15 @@ function Certain_Project() {
 				<h1 className="font-[Gasoek_One] text-6xl text-black">
 					Welcome to {project.name}
 				</h1>
-				<p className="text-xl font-kyiv">{project.description}</p>
+				<p className="text-subtitle">{project.description}</p>
 				<div className="flex gap-4 font-bold text-gray-500">
                     <span>XP: {project.xpPoints}</span>
                     <span>|</span>
                     <span>about {project.estimatedHours} hours</span>
+					<span>|</span>
+					<span>Skills: {project.skills}</span>
+					<span>|</span>
+					<span>Keywords: {project.keywords[1]}</span>
                 </div>
 				<h2 className="font-[Gasoek_One] text-3xl">Feed</h2>
 				<UserCard 
