@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "seed": "tsx src/forTests/seedUsers.ts",
-    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate",
+	"sync": "tsx src/scripts/askForSync.ts"
   },
   "keywords": [],
   "author": "",

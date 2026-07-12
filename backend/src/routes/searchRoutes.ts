@@ -1,3 +1,5 @@
+//pbohme
+
 import { FastifyInstance } from "fastify";
 import { globalSearch } from '../controllers/searchController.js'; // Pfad zu deinem Controller
 

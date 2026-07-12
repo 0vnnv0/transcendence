@@ -1,60 +1,62 @@
-import dotenv from "dotenv";
-import path from "path";
-import { FortyTwoService } from "../src/services/fortyTwoService.js";
-import { buildProjectUserMap } from "../src/data/buildProjectUserMap.js";
+// //pbohme
 
-dotenv.config({
-	path: path.resolve(process.cwd(), ".env"),
-});
+// import dotenv from "dotenv";
+// import path from "path";
+// import { FortyTwoService } from "../src/services/fortyTwoService.js";
+// import { buildProjectUserMap } from "../src/data/buildProjectUserMap.js";
 
-async function run() {
-	const service = new FortyTwoService();
-	const token = await service.getAccessToken();
+// dotenv.config({
+// 	path: path.resolve(process.cwd(), ".env"),
+// });
 
-	const minishellUsers = await service.fetchProjectUsers(
-		1331, // minishell
-		token
-	);
+// async function run() {
+// 	const service = new FortyTwoService();
+// 	const token = await service.getAccessToken();
 
-	// const cub3dUsers = await service.fetchProjectUsers(
-	// 	1326,
-	// 	token
-	// )
+// 	const minishellUsers = await service.fetchProjectUsers(
+// 		1331, // minishell
+// 		token
+// 	);
 
-	const transcendenceUsers = await service.fetchProjectUsers(
-		1337,
-		token
-	)
+// 	// const cub3dUsers = await service.fetchProjectUsers(
+// 	// 	1326,
+// 	// 	token
+// 	// )
 
-	const projectUserMap = buildProjectUserMap([
-		minishellUsers,
-		// cub3dUsers
-		transcendenceUsers
-	]);
+// 	const transcendenceUsers = await service.fetchProjectUsers(
+// 		1337,
+// 		token
+// 	)
 
-	const projects = projectUserMap.get(180624);
+// 	const projectUserMap = buildProjectUserMap([
+// 		minishellUsers,
+// 		// cub3dUsers
+// 		transcendenceUsers
+// 	]);
 
-	console.log(projects);
+// 	const projects = projectUserMap.get(180624);
+
+// 	console.log(projects);
 
 
 
-	// const userId = 180624;
+// 	// const userId = 180624;
 
-	// console.log("\n=== MINISHELL ===\n");
+// 	// console.log("\n=== MINISHELL ===\n");
 
-	// const minishellEntry = minishellUsers.find(
-	// 	(entry) => entry.user?.id === userId
-	// );
+// 	// const minishellEntry = minishellUsers.find(
+// 	// 	(entry) => entry.user?.id === userId
+// 	// );
 
-	// console.dir(minishellEntry, { depth: null });
+// 	// console.dir(minishellEntry, { depth: null });
 
-	// console.log("\n=== TRANSCENDENCE ===\n");
+// 	// console.log("\n=== TRANSCENDENCE ===\n");
 
-	// const transcendenceEntry = transcendenceUsers.find(
-	// 	(entry) => entry.user?.id === userId
-	// );
+// 	// const transcendenceEntry = transcendenceUsers.find(
+// 	// 	(entry) => entry.user?.id === userId
+// 	// );
 
-	// console.dir(transcendenceEntry, { depth: null });
-}
+// 	// console.dir(transcendenceEntry, { depth: null });
+// }
 
-run().catch(console.error);
+// run().catch(console.error);

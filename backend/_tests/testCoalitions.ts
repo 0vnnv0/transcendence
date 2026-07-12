@@ -1,46 +1,48 @@
-import dotenv from "dotenv";
-import path from "path";
-import axios from "axios";
-import { FortyTwoService } from "../src/services/fortyTwoService.js";
+// //pbohme
 
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
+// import dotenv from "dotenv";
+// import path from "path";
+// import axios from "axios";
+// import { FortyTwoService } from "../src/services/fortyTwoService.js";
 
-const FT_API_URL = "https://api.intra.42.fr/v2";
+// dotenv.config({
+//   path: path.resolve(process.cwd(), ".env"),
+// });
 
-async function fetchCoalitionUsers(coalitionId: number, token: string) {
-  const res = await axios.get(
-    `${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        page: 1,
-        per_page: 50,
-      },
-    }
-  );
+// const FT_API_URL = "https://api.intra.42.fr/v2";
 
-  return res.data;
-}
+// async function fetchCoalitionUsers(coalitionId: number, token: string) {
+//   const res = await axios.get(
+//     `${FT_API_URL}/coalitions/${coalitionId}/coalitions_users`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//       params: {
+//         page: 1,
+//         per_page: 50,
+//       },
+//     }
+//   );
 
-async function test() {
-  const service = new FortyTwoService();
-  const token = await service.getAccessToken();
+//   return res.data;
+// }
 
-  // 🔥 test 1 coalition (Arctos)
-  const arctos = await fetchCoalitionUsers(384, token);
+// async function test() {
+//   const service = new FortyTwoService();
+//   const token = await service.getAccessToken();
 
-  console.log("\n=== RAW RESPONSE (Arctos) ===");
-  console.dir(arctos.slice(0, 3), { depth: null });
+//   // 🔥 test 1 coalition (Arctos)
+//   const arctos = await fetchCoalitionUsers(384, token);
 
-  console.log("\n=== CHECK FIELDS ===");
-  console.log("first item keys:", Object.keys(arctos?.[0] || {}));
+//   console.log("\n=== RAW RESPONSE (Arctos) ===");
+//   console.dir(arctos.slice(0, 3), { depth: null });
 
-  console.log("\n=== USER OBJECT (if nested) ===");
-  console.dir(arctos?.[0]?.user || arctos?.[0], { depth: null });
-}
+//   console.log("\n=== CHECK FIELDS ===");
+//   console.log("first item keys:", Object.keys(arctos?.[0] || {}));
 
-test().catch(console.error);
+//   console.log("\n=== USER OBJECT (if nested) ===");
+//   console.dir(arctos?.[0]?.user || arctos?.[0], { depth: null });
+// }
+
+// test().catch(console.error);

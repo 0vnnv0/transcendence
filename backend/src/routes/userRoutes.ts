@@ -1,3 +1,6 @@
+//pbohme
+//alle routes die irgendwie mit usern bzw den zugehoerigen daten aus der database zu tun haben
+
 import { PrismaClient } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import { getUsers } from "../controllers/user/getUsers.js";

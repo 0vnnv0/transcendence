@@ -1,3 +1,7 @@
+//pbohme
+//script welches alle userdaten aus der api faengt, relevante infos
+//berechnet und baut und sie anschliessend in die database synchronisiert
+
 import dotenv from "dotenv";
 import path from "path";
 
@@ -38,4 +42,4 @@ export async function syncBerlinUsers() {
 	console.log("\nDONEEEE");
 }
 
-syncBerlinUsers().catch(console.error);
+// syncBerlinUsers().catch(console.error);

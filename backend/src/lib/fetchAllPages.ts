@@ -1,3 +1,7 @@
+//pbohme
+//api liefert immer mehrere seiten, per default kriegt man nur die erste
+//funktion liefert alle seiten
+
 export async function fetchAllPages<T>(
   fetchPage: (page: number) => Promise<T[]>,
   perPage = 100
