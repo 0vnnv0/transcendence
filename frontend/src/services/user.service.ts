@@ -1,14 +1,4 @@
-// const BASE_URL = 'http://10.11.5.3:3000';
-
-export interface FullUserProfile {
-  id: number;
-  intraName: string;
-  email: string;
-  avatarUrl: string;
-  firstName: string;
-  lastName: string;
-  // Add any other backend properties here
-}
+import type { FullUserProfile } from "../types/user";
 
 export const fetchUserProfile = async (login: string): Promise<FullUserProfile> => {
   const token = localStorage.getItem('token');
@@ -37,9 +27,17 @@ export async function fetchUsers() {
 }
 
 export async function fetchNextProject(userName: string) {
-    const response = await fetch(`http://localhost:3000/users/${userName}/next-project/current`);
-    if (!response.ok) {
-        throw new Error("Unable to load project");
-    }
-    return response.json();
+	const response = await fetch(`/api/users/${userName}/next-project/current`);
+	if (!response.ok) {
+		throw new Error("Unable to load project");
+	}
+	return response.json();
+}
+
+export async function fetchRecommendedProjects(userName: string) {
+	const response = await fetch(`/api/users/${userName}/next-project`);
+	if (!response.ok) {
+		throw new Error("Unable to load project");
+	}
+	return response.json();
 }
