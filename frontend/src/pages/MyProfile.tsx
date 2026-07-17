@@ -4,10 +4,38 @@ import CardSection from '../components/sections/CardSection'
 import InfoCard from '../components/ui/Cards/InfoCard'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext'
+import { useUserProfile } from '../hooks/useUsers';
+import { useRecommendedProjects } from '../hooks/useProjects'
 
 function MyProfile() {
 
 	const { userName } = useAuth();
+	const { data: profile, isLoading: userLoading, isError: userError } = useUserProfile(userName !== "Guest" ? userName : null);
+	const { data: projects, isLoading: projectsLoading, isError: projectsError } = useRecommendedProjects(userName !== "Guest" ? userName : null);
+
+	let content;
+	if (userLoading || projectsLoading) {
+		content = <p className="text-subtitle text-purple">Loading ...</p>
+	} else if (userError || !profile || projectsError || !projects) {
+		content = <p className="text-subtitle text-red-500">[404] Error trying to load projects</p>
+	} else {
+		content = (
+			<>
+				{projects.availableProjects.map((project: any) => (
+					<ProjectCard 
+						key={project.id}
+						layout="portrait"
+						image="/success.png"
+						title={project.name}
+						subtitle={`Rank ${project.projectRank}`}
+						tags={project.keywords}
+						route={`/project/${project.slug}`}
+						description={project.description}
+					/>
+				))}
+			</>
+		);
+	}
 
   return (
 
@@ -20,7 +48,7 @@ function MyProfile() {
 			<div className="flex flex-col flex-1 p-10 gap-16">
 				<div className="flex flex-row gap-8 w-full">
 					<div className="group relative h-50 w-50 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
-						style={{ backgroundImage: `url('profile.jpg')` }}>
+						style={{ backgroundImage: `url(${profile?.avatarUrl})` }}>
 						<Button 
 							className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
 							size="sm"
@@ -30,14 +58,16 @@ function MyProfile() {
 						>Edit</Button>
 					</div>
 					<div className="flex flex-col justify-center gap-3">
-						<h1 className="text-title">pbohme</h1>
-						<p className="text-subtitle mb-4">Pia Bohme</p>
+						<h1 className="text-title">{userName}</h1>
+						<p className="text-subtitle mb-4">{profile?.firstName} {profile?.lastName}</p>
 						<div className="flex gap-2">
-							<Button 
-								size="md" 
-								icon="message" 
-								onClick={() => console.log("Profilbild geandert!")}
-							>Message</Button>
+							{userName === profile?.intraName &&
+								<Button 
+									size="md" 
+									icon="message" 
+									onClick={() => console.log("Profilbild geandert!")}
+								>Message</Button>
+							}
 							<Button 
 								size="md"
 								variant="secondary"
@@ -47,50 +77,18 @@ function MyProfile() {
 						</div>
 					</div>
 				</div>
-				<CardSection title="Available for projects">
+				<CardSection title="User Info">
 					<CardSection.Body viewMode="grid" columns={4}>
-						<InfoCard
-							image="rank.jpg"
-							title="Hours per Week"
-							description="20h"
-						/>
-						<InfoCard
-							image="rank.jpg"
-							title="Days available"
-							description="4d"
-						/>
 						<InfoCard
 							image="rank.jpg"
 							title="Rank"
 							description="5"
 						/>
-						<InfoCard
-							image="blackhole.jpg"
-							title="Blackhole"
-							description="25.06.26"
-						/>
 					</CardSection.Body>
 				</CardSection>
 				<CardSection title="Recommended next projects">
 					<CardSection.Body viewMode="grid" columns={2}>
-						<ProjectCard
-							image="pacman.jpg"
-							layout="portrait"
-							title="Pac Man"
-							subtitle="One of our favourite games."
-							tags={['2 People', 'Rank 5']}
-							route="/certain_project"
-							description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
-						/>
-						<ProjectCard
-							image="https://imgs.search.brave.com/E8rpYue8Dc5qfulg6dmM2lD4Sjm8Iw8avIFyZi4o0DU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jYW1v/LmdpdGh1YnVzZXJj/b250ZW50LmNvbS9j/MjBjZjJlNmRmMGY0/YzJlZTdkMjk2MDgw/YTA4OTgyMWRmYjIw/M2Y1YTMxNWNjMjY1/ZjdmNjhjZGE4ZjFj/N2VjLzY4NzQ3NDcw/NzMzYTJmMmY2OTJl/Njk2ZDY3NzU3MjJl/NjM2ZjZkMmY3YTcx/NjM3MzVhNjY1OTJl/NzA2ZTY3"
-							layout="portrait"
-							title="Pac Man"
-							subtitle="One of our favourite games."
-							tags={['2 People', 'Rank 5']}
-							route="/certain_project"
-							description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
-						/>
+						{content}
 					</CardSection.Body>
 				</CardSection>
 			</div>
