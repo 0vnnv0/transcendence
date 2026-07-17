@@ -1,3 +1,7 @@
+//pbohme
+//queuet die api requests, da nur 2 pro sekunde erlaubt
+//sonst error
+
 type QueueTask<T> = () => Promise<T>;
 
 export class ApiQueue {

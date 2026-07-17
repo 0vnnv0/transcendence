@@ -37,9 +37,9 @@ export async function fetchUsers() {
 }
 
 export async function fetchNextProject(userName: string) {
-    const response = await fetch(`http://localhost:3000/users/${userName}/next-project/current`);
-    if (!response.ok) {
-        throw new Error("Unable to load project");
-    }
-    return response.json();
+    const response = await fetch(`http://localhost:3000/users/${userName}/next-project/current`);
+    if (!response.ok) {
+        throw new Error("Unable to load project");
+    }
+    return response.json();
 }

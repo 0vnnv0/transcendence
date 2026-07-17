@@ -8,6 +8,7 @@ import { setupChatSockets } from "./sockets/chat.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { userRoutes } from "./routes/userRoutes.js";
 import { PrismaClient } from "@prisma/client";
+import { projectRoutes } from "./routes/projectRoutes.js";
 
 
 // 1. Prisma Adapter Setup (wie im Guide)
@@ -53,6 +54,7 @@ async function start() {
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
 	await userRoutes(app, prisma);
+	await projectRoutes(app);
 	try {
 		await app.listen({
 			port: 3000,

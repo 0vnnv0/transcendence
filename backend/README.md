@@ -309,10 +309,13 @@ Planned next steps:
 * Chat rooms
 
 # USER SYNC
-container starten (make),
+container starten (make).
+
 dann:
 ```
- docker exec -it backend npx tsx src/scripts/syncBerlinUsers.ts
+make sync
  ```
+ Das Terminal fargt, ob die User zur DB gesynct werden sollen und zeigt auch den Zeitpunkt des letzten syncs (sofern es einen gab) an.
 
- alle berlin user aus dem kommon core erscheinen bei prisma studio 
+ n --> programm laeuft normal weiter
+ y --> alle berlin user aus dem kommon core erscheinen bei prisma studio 

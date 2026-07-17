@@ -2,7 +2,7 @@ COMPOSE_FILE = srcs/docker-compose.yml
 DATA_DIR = $(HOME)/data
 DB_DIR = $(HOME)/data/db/
 
-.PHONY: all build up down clean fclean re
+.PHONY: all build up down clean fclean re sync
 
 all: build up
 
@@ -16,6 +16,9 @@ build:
 # -d (detach) containers are run in the background.
 up:
 	docker compose -f $(COMPOSE_FILE) up -d
+
+sync:
+	docker compose -f $(COMPOSE_FILE) exec -it backend npm run sync
 
 down:
 	docker compose -f $(COMPOSE_FILE) down -v

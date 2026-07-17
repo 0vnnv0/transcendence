@@ -1,29 +1,31 @@
-import { getAvailableProjects } from "../src/data/getAvailableProjects.js";
-import prisma from "../src/lib/prisma.js";
+// //pbohme
 
-const userId = Number(process.argv[2]);
+// import { getAvailableProjects } from "../src/data/getAvailableProjects.js";
+// import prisma from "../src/lib/prisma.js";
 
-if (!userId) {
-	console.log("add userId");
-	process.exit(1);
-}
+// const userId = Number(process.argv[2]);
 
-async function run() {
-	const user = await prisma.testUser.findUnique({
-		where: { id: userId },
-	});
+// if (!userId) {
+// 	console.log("add userId");
+// 	process.exit(1);
+// }
 
-	if (!user) {
-		console.log("User not found");
-		return;
-	}
+// async function run() {
+// 	const user = await prisma.testUser.findUnique({
+// 		where: { id: userId },
+// 	});
 
-	const available = getAvailableProjects(user, user.newCore ?? false);
+// 	if (!user) {
+// 		console.log("User not found");
+// 		return;
+// 	}
 
-	console.log("Available projects:");
-	console.dir(available, { depth: null });
-}
+// 	const available = getAvailableProjects(user, user.newCore ?? false);
 
-run().catch(console.error);
+// 	console.log("Available projects:");
+// 	console.dir(available, { depth: null });
+// }
 
-//130662 kmooney -> transcendence
+// run().catch(console.error);
+
+// //130662 kmooney -> transcendence
