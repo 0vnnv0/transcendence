@@ -20,8 +20,10 @@ localhost:3000
 /users/:login                       	alle daten zu einer bestimmten userin
 
 /users/:login/next-project		    	alle naechsten gruppenprojekte einer bestimmten userin
-/users/:login/next-project/current		das naechste gruppenproject
-/users/:login/:slug/matches				generisch alle matches
+/users/:login/projects?view=available
+/users/:login/projects?view=current
+/users/:login/projects?view=recommended
+/users/:login/:slug/matches					generisch alle matches
 /users/:login/:slug/matches?rank=6
 /users/:login/:slug/matches?coalition=arctos
 /users/:login/:slug/matches?completed=webserv

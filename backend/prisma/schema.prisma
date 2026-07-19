@@ -26,6 +26,12 @@ model TestUser {
   campusId    Int?
   campusName  String?
 
+  firstName   String?
+  lastName    String?
+
+  avatarUrl   String?
+  intraUrl    String?
+
   coalitionName String?
   coalitionSlug String?
 
