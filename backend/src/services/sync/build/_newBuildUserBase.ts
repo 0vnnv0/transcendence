@@ -1,7 +1,19 @@
 //pbohme
 
+import { FortyTwoUser } from "../../../types/FortyTwoUser.js";
+
+function buildIntraProfileUrl(apiUrl: string | null) {
+
+	if (!apiUrl) {
+		return null;
+	}
+
+	return apiUrl
+		.replace("api.intra.42.fr/v2/users/", "profile.intra.42.fr/users/");
+}
+
 export function newBuildUserBase(
-	apiUser: any,
+	apiUser: FortyTwoUser,
 	coalition?: {
 		name: string;
 		slug: string;
@@ -17,6 +29,13 @@ export function newBuildUserBase(
 		login: apiUser.login,
 
 		intraEmail: apiUser.email,
+
+		firstName: apiUser.first_name,
+		lastName: apiUser.last_name,
+
+		avatarUrl: apiUser.image?.versions?.large ?? null,
+
+		intraUrl: buildIntraProfileUrl(apiUser.url),
 
 		campusId: 51,
 		campusName: "Berlin",
