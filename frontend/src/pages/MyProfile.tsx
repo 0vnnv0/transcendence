@@ -13,6 +13,8 @@ function MyProfile() {
 	const { data: profile, isLoading: userLoading, isError: userError } = useUserProfile(userName !== "Guest" ? userName : null);
 	const { data: projects, isLoading: projectsLoading, isError: projectsError } = useRecommendedProjects(userName !== "Guest" ? userName : null);
 
+	console.log("profile", profile);
+
 	let content;
 	if (userLoading || projectsLoading) {
 		content = <p className="text-subtitle text-purple">Loading ...</p>
