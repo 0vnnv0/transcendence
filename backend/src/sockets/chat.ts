@@ -34,6 +34,11 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 	});
 }
 
+function onlineCheck(userId: number, onlineUsers: Map<number, string>)
+{
+	
+}
+
 //this temporarily registers different users, needs to be changed once we add authentication
 //it also autoconnects users to the chats they were a part of in the past based on db entries
 //on the frontend we would have sth like socket.emit("register", { userId: 1 })
@@ -76,7 +81,7 @@ async function addUserToChat(
     prisma: PrismaClient,
 	futureUserId: number
 ) {
-	if (!isInChat(socket.data.userId, chatId, prisma)) return;
+	if (!(await isInChat(socket.data.userId, chatId, prisma))) return;
 	try {
         await prisma.chat.update({
             where: {
@@ -193,7 +198,7 @@ async function sendMessage (
 			console.log("NO SENDER ID");
 			return;
 		}
-		if (!isInChat(senderId, chatId, prisma)) return;
+		if (!(await isInChat(senderId, chatId, prisma))) return;
 		if (!content || !String(content).trim()) return;
 
 		const message = await prisma.chatMessage.create({
@@ -227,9 +232,9 @@ async function sendMessage (
 }
 
 //emits a typing signal to the other participants
-function typingSignal(chatId: number, socket: Socket, prisma: PrismaClient){
+async function typingSignal(chatId: number, socket: Socket, prisma: PrismaClient){
 	const userId = socket.data.userId;
-	if (!isInChat(userId, chatId, prisma)) return;
+	if (!(await isInChat(userId, chatId, prisma))) return;
 
 	socket.to(`chat_${chatId}`).emit("typing", {
 		chatId: Number(chatId),
