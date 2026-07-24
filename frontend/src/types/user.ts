@@ -8,6 +8,6 @@ export interface FullUserProfile {
   firstName: string; // wird gebraucht
   lastName: string; // wird gebraucht
   intraUrl: string; // wird gebraucht
-  rank: number; // gibts schon
+  currentRank: number; // gibts schon
   coalitionName: string; // gibts schon
 }

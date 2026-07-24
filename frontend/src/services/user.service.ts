@@ -27,7 +27,7 @@ export async function fetchUsers() {
 }
 
 export async function fetchNextProject(userName: string) {
-	const response = await fetch(`/api/users/${userName}/next-project/current`);
+	const response = await fetch(`/api/users/${userName}/projects?view=current`);
 	if (!response.ok) {
 		throw new Error("Unable to load project");
 	}
@@ -35,7 +35,7 @@ export async function fetchNextProject(userName: string) {
 }
 
 export async function fetchRecommendedProjects(userName: string) {
-	const response = await fetch(`/api/users/${userName}/next-project`);
+	const response = await fetch(`/api/users/${userName}/projects?view=recommended`);
 	if (!response.ok) {
 		throw new Error("Unable to load project");
 	}
