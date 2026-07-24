@@ -1,4 +1,5 @@
-// const BASE_URL = 'http://10.11.5.3:3000';
+import type { ChatUser } from '../types/chat';
+const API_URL = '/api'; 
 
 export interface FullUserProfile {
   id: number;
@@ -14,7 +15,7 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
   const token = localStorage.getItem('token');
   
   // Explicitly prepend BASE_URL to target Fastify on port 3000 directly
-  const response = await fetch(`/api/users/${login}`, {
+  const response = await fetch(`${API_URL}/users/${login}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -30,16 +31,65 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
   return response.json() as Promise<FullUserProfile>;
 };
 
-export async function fetchUsers() {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users');
-  if (!response.ok) throw new Error('Failed to fetch users');
+export const fetchAllUsers = async (): Promise<ChatUser[]> => {
+  const response = await fetch(`${API_URL}/users`);
+  
+  if (!response.ok) {
+    throw new Error('Fehler beim Laden der User');
+  }
+  
   return response.json();
-}
+};
+
+export const fetchUsersBySearch = async (searchQuery: string): Promise<ChatUser[]> => {
+  // 1. Fetch auf den echten Endpunkt mit dem Query-Parameter "q"
+  const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(searchQuery)}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // Wichtig, falls ihr mit Cookies/Sessions arbeitet:
+    // credentials: 'include', 
+  });
+  
+  if (!response.ok) {
+    throw new Error('Error searching user');
+  }
+  
+  const data = await response.json();
+  console.log("Raw Backend Response für", searchQuery, ":", data);
+  // 2. Wir gehen davon aus, dass die Daten als gemischtes Array zurückkommen.
+  // Falls das Backend ein Objekt wie { users: [...], projects: [...] } zurückgibt,
+  // müsstest du hier `const results = data.users || []` verwenden.
+  const results = Array.isArray(data) ? data : (data.users || []);
+  
+  // 3. Adapter-Logik: Filtern und umbauen für das Frontend
+  const users: ChatUser[] = results
+    .filter((item: any) => item.type === 'user') // Projekte ignorieren
+    .map((item: any) => ({
+      id: item.id,
+      intraName: item.title, // Wir mappen 'title' vom Backend zurück auf 'intraName'
+      // avatarUrl: item.avatarUrl // Falls ihr später noch Bilder im Backend hinzufügt
+    }));
+    
+  return users;
+};
 
 export async function fetchNextProject(userName: string) {
-    const response = await fetch(`http://localhost:3000/users/${userName}/next-project/current`);
-    if (!response.ok) {
-        throw new Error("Unable to load project");
-    }
-    return response.json();
+    const response = await fetch(`${API_URL}/users/${userName}/projects?view=current`);
+    
+    if (!response.ok) {
+        throw new Error("Unable to load project");
+    }
+    
+    return response.json();
 }
+
+export async function fetchRecommendedProjects(userName: string) {
+	const response = await fetch(`${API_URL}/users/${userName}/projects?view=recommended`);
+	if (!response.ok) {
+		throw new Error("Unable to load project");
+	}
+	return response.json();
+}
+

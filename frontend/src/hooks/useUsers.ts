@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchUsers, fetchUserProfile } from '../services/user.service';
+import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services/user.service';
+import type { ChatUser } from '../types/chat'
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -10,9 +11,17 @@ export function useUserProfile(login: string | null) {
   });
 }
 
-export function useUsers() {
-  return useQuery({
+export const useUsers = () => {
+  return useQuery<ChatUser[], Error>({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: fetchAllUsers,
   });
-}
+};
+
+export const useUsersSearch = (searchQuery: string) => {
+  return useQuery<ChatUser[], Error>({
+    queryKey: ['users', searchQuery], 
+    queryFn: () => fetchUsersBySearch(searchQuery),
+    enabled: searchQuery.trim().length > 0, 
+  });
+};
