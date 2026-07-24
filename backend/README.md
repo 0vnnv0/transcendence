@@ -93,20 +93,15 @@ Open your config: nano ~/.zshrc
 Add this line at the bottom:
 
 ```bash
-alias docker-clean='pkill -9 -u $(whoami) -f "docker|rootlesskit|containerd" && rm -rf /run/user/$(id -u)/dockerd-rootless /run/user/$(id -u)/docker.sock && echo "Docker processes cleaned."'
-
-alias start-docker='dockerd-rootless.sh --data-root /home/$USER/goinfre/docker_storage'
+alias docker-start='pkill -9 -u $(whoami) -f "docker|rootlesskit|containerd|slirp4netns" 2>/dev/null; sleep 1; rm -rf /run/user/$(id -u)/{dockerd-rootless,docker.sock,containerd} /run/user/$(id -u)/rootlesskit*(N) /goinfre/$USER/docker_storage 2>/dev/null; echo "✅ Docker completely reset & cleaned."; unset DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS; export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock && dockerd-rootless.sh --storage-driver overlay2 --data-root /goinfre/$USER/docker_storage'
 ```
 
 Save and exit (Ctrl+O, Enter, Ctrl+X).
 
 Apply changes: source ~/.zshrc
 
-Start docker:
-- close VS-Code
 ```bash
-docker-clean
-start-docker
+docker-start
 ```
 
 

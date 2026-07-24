@@ -16,6 +16,13 @@ model TestUser {
   login       String   @unique
 
   intraEmail  String?
+
+  firstName   String?
+  lastName    String?
+
+  avatarUrl   String?
+  intraUrl    String?
+  
   campusId    Int?
   campusName  String?
 

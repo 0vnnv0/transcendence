@@ -8,6 +8,7 @@ import { getUser } from "../controllers/user/getUser.js";
 import { getNextProjects } from "../controllers/user/getNextProjects.js";
 import { getCurrentProjects } from "../controllers/user/getCurrentProjects.js";
 import { getMatches } from "../controllers/user/getMatches.js";
+import { getProjects } from "../controllers/user/getProjects.js";
 
 
 export async function userRoutes(
@@ -16,7 +17,13 @@ export async function userRoutes(
 ) {
 	server.get("/users", getUsers(prisma));
 	server.get("/users/:login", getUser(prisma));
+<<<<<<< HEAD
 	server.get("/users/:login/next-project", getNextProjects(prisma));
 	server.get("/users/:login/projects", getCurrentProjects(prisma));
+=======
+	server.get("/users/:login/projects", getProjects(prisma));
+	// server.get("/users/:login/next-project", getNextProjects(prisma));
+	// server.get("/users/:login/next-project/current", getCurrentProjects(prisma));
+>>>>>>> main
 	server.get("/users/:login/:slug/matches", getMatches(prisma)); 
 }

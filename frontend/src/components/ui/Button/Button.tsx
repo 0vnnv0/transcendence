@@ -10,6 +10,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   icon?: CustomIconName;
+  href?: string;
+  externalLink?: boolean;
 }
 
 // FC == Functional Component -> it expects props defined in ButtonProps interface
@@ -24,6 +26,8 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   className = '',
   disabled,
+  href,
+  externalLink,
   ...props
 }) => {
   // Base styles that every button will have
@@ -54,6 +58,17 @@ const Button: React.FC<ButtonProps> = ({
 
   // Read the custom icon from the mapping dictionary
   const IconComponent = icon ? CustomIcons[icon] : null;
+
+	if (href) {
+		return (
+			<a href={href} className={classes} target={external ? "_blank" : undefined}>
+				{IconComponent && (
+					<IconComponent size={16} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
+				)}
+				{children}
+			</a>
+		);
+	}
 
   return (
     <button
