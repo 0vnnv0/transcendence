@@ -1,4 +1,4 @@
-import type { FullUserProfile } from "../types/user";
+import type { FullUserProfile, UpdateAvatarResponse } from "../types/user";
 
 export const fetchUserProfile = async (login: string): Promise<FullUserProfile> => {
   const token = localStorage.getItem('token');
@@ -41,3 +41,31 @@ export async function fetchRecommendedProjects(userName: string) {
 	}
 	return response.json();
 }
+
+export const updateAvatar = async (
+  login: string,
+  file: File
+): Promise<UpdateAvatarResponse> => {
+  const token = localStorage.getItem('token');
+
+  const formData = new FormData();
+  formData.append('avatar', file);
+
+  const response = await fetch(`/api/users/${login}/avatar`, {
+    method: 'PATCH',
+    headers: {
+      // No Content-Type here — the browser sets multipart/form-data
+      // with the correct boundary automatically when body is FormData.
+      // Setting it manually will break the upload.
+      'Authorization': `Bearer ${token || ''}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update avatar');
+  }
+
+  return response.json() as Promise<UpdateAvatarResponse>;
+};

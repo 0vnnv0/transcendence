@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import { useUpdateAvatar } from '../hooks/useUsers'
 import Navbar from '../components/ui/Navbar/Navbar'
 import Button from '../components/ui/Button/Button'
 import CardSection from '../components/sections/CardSection'
@@ -42,6 +44,16 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const updateAvatar = useUpdateAvatar(userKey);
+
+	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const file = e.target.files?.[0]
+		if (!file) return
+		updateAvatar.mutate(file)
+		e.target.value = '' // allow re-selecting the same file later
+	}
+
 	let error;
 	if (isLoading) {
 		error = <p className="text-subtitle text-purple">Loading ...</p>;
@@ -69,8 +81,15 @@ function MyProfile() {
 							size="sm"
 							variant="secondary"
 							icon="edit"
-							onClick={() => console.log("Profilbild geandert!")}
+							onClick={() => fileInputRef.current?.click()}
 						>Edit</Button>
+						<input
+							ref={fileInputRef}
+							type="file"
+							accept="image/*"
+							className="hidden"
+							onChange={handleFileChange}
+						/>
 					</div>
 					<div className="flex flex-col justify-center gap-3">
 						<h1 className="text-title">{userName}</h1>

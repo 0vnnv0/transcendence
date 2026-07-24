@@ -1,4 +1,3 @@
-import type { ProjectData } from "./project";
 
 export interface FullUserProfile {
   id: number; // gibts schon
@@ -10,4 +9,8 @@ export interface FullUserProfile {
   intraUrl: string; // wird gebraucht
   currentRank: number; // gibts schon
   coalitionName: string; // gibts schon
+}
+
+export interface UpdateAvatarResponse {
+  avatarUrl: string
 }
