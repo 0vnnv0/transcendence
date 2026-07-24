@@ -17,13 +17,8 @@ export async function userRoutes(
 ) {
 	server.get("/users", getUsers(prisma));
 	server.get("/users/:login", getUser(prisma));
-<<<<<<< HEAD
-	server.get("/users/:login/next-project", getNextProjects(prisma));
-	server.get("/users/:login/projects", getCurrentProjects(prisma));
-=======
 	server.get("/users/:login/projects", getProjects(prisma));
 	// server.get("/users/:login/next-project", getNextProjects(prisma));
 	// server.get("/users/:login/next-project/current", getCurrentProjects(prisma));
->>>>>>> main
 	server.get("/users/:login/:slug/matches", getMatches(prisma)); 
 }
