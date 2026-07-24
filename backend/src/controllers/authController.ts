@@ -1,18 +1,13 @@
 // kommuniziert mit dem User und steuert den Auth Porzess
+// hreusing
 
 import { FastifyRequest, FastifyReply } from "fastify";
 import { AuthService } from "../services/authService.js";
+import { getAccessToken } from "../services/token.js";
 import Fastify from 'fastify';
-import { request } from "node:http";
 import bcrypt from 'bcrypt';
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import prisma from "../lib/prisma.js";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 const fastify = Fastify({ logger: true });
 
 
@@ -90,14 +85,6 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 			});
 		}
 
-		// const userIsValid = await AuthService.verifyUserCredentials(email, password);
-		// if (!userIsValid) {
-		// 	return reply.status(401).send({
-		// 		error: 'Unautherized',
-		// 		message: '42 Student Credentials not found'
-		// 	});
-		// }
-
 		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
@@ -162,9 +149,9 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
   const { code } = request.query as { code: string };
 
   try {
-    const tokenData: any = await AuthService.getAccessToken(code);
-    const userData = await AuthService.fetchIntraUser(tokenData.access_token);
-    const user = await AuthService.upsertUser(userData, tokenData.access_token);
+    const accessToken = await getAccessToken(code);
+    const userData = await AuthService.fetchIntraUser(accessToken);
+    const user = await AuthService.upsertUser(userData, accessToken);
 
     // JWT erstellen: Wir speichern die ID, den Namen, newCore Status und isOnline im Token
     const token = request.server.jwt.sign({ 
@@ -174,16 +161,10 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
       isOnline: user.isOnline
     }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
-    // Token an den User schicken
-    // return { 
-    //   message: "Login erfolgreich", 
-    //   access_token: token, // Das Frontend speichert das meistens im LocalStorage
-    //   user 
-    // };
 	const frontendRedirectUrl = `http://localhost:8080/authsuccess?token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
-	console.error("DEBUG AUTH ERROR:", error); // Das zeigt uns den echten Fehler im Terminal
+	console.error("DEBUG AUTH ERROR:", error); // Das zeigt den echten Fehler im Terminal
     return reply.code(500).send({ error: "Auth Service Error" });
   }
 };

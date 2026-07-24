@@ -1,5 +1,6 @@
+import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services/user.service';
+import type { ChatUser } from '../types/chat'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchUsers, fetchUserProfile } from '../services/user.service';
 import { updateAvatar } from '../services/user.service';
 
 export function useUserProfile(login: string | null) {
@@ -11,12 +12,21 @@ export function useUserProfile(login: string | null) {
   });
 }
 
-export function useUsers() {
-  return useQuery({
+export const useUsers = () => {
+  return useQuery<ChatUser[], Error>({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: fetchAllUsers,
   });
-}
+};
+
+export const useUsersSearch = (searchQuery: string) => {
+  return useQuery<ChatUser[], Error>({
+    queryKey: ['users', searchQuery], 
+    queryFn: () => fetchUsersBySearch(searchQuery),
+    enabled: searchQuery.trim().length > 0, 
+  });
+};
+
 
 export function useUpdateAvatar(userKey: string | null) {
   const queryClient = useQueryClient()

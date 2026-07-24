@@ -11,11 +11,11 @@ export function useProjects() {
 
 export function useNextProject(userName: string | null) {
 	return useQuery({
-		queryKey: ['nextProject', userName], 
-		
+		queryKey: ['nextProject', userName],
+
 		queryFn: () => fetchNextProject(userName as string),
-		
-		enabled: !!userName && userName !== "Gast", 
+
+		enabled: !!userName && userName !== "Guest",
 	});
 }
 
@@ -23,6 +23,6 @@ export function useRecommendedProjects(userName: string | null) {
 	return useQuery({
 		queryKey: ['recommendedProjects', userName],
 		queryFn: () => fetchRecommendedProjects(userName as string),
-		enabled: !!userName,
+		enabled: !!userName && userName !== "Guest",
 	});
 }
