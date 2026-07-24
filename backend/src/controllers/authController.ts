@@ -2,17 +2,11 @@
 
 import { FastifyRequest, FastifyReply } from "fastify";
 import { AuthService } from "../services/authService.js";
+import { getAccessToken } from "../services/token.js";
 import Fastify from 'fastify';
-import { request } from "node:http";
 import bcrypt from 'bcrypt';
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import prisma from "../lib/prisma.js";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 const fastify = Fastify({ logger: true });
 
 
@@ -162,7 +156,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
   const { code } = request.query as { code: string };
 
   try {
-    const tokenData: any = await AuthService.getAccessToken(code);
+    const tokenData: any = await getAccessToken();
     const userData = await AuthService.fetchIntraUser(tokenData.access_token);
     const user = await AuthService.upsertUser(userData, tokenData.access_token);
 
