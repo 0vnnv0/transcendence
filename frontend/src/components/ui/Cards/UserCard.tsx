@@ -46,7 +46,7 @@ const UserCard = ({
         <h1 className="text-subtitle">{title}</h1>
         <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>
           {tags && <TagList tags={tags} />}
-          {ctaText && <Button onClick={onCtaClick}>{ctaText}</Button>}
+          {ctaText && <Button icon='message' size='sm' onClick={onCtaClick}>{ctaText}</Button>}
         </div>
       </div>
     </div>
