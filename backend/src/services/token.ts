@@ -22,5 +22,5 @@ export async function getAccessToken(code?: string) {
 		},
 	});
 
-	return response.data;
+	return response.data.access_token;
 }

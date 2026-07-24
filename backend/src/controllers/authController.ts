@@ -149,9 +149,9 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
   const { code } = request.query as { code: string };
 
   try {
-    const tokenData: any = await getAccessToken(code);
-    const userData = await AuthService.fetchIntraUser(tokenData.access_token);
-    const user = await AuthService.upsertUser(userData, tokenData.access_token);
+    const accessToken = await getAccessToken(code);
+    const userData = await AuthService.fetchIntraUser(accessToken);
+    const user = await AuthService.upsertUser(userData, accessToken);
 
     // JWT erstellen: Wir speichern die ID, den Namen, newCore Status und isOnline im Token
     const token = request.server.jwt.sign({ 
