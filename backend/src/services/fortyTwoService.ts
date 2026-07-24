@@ -1,8 +1,5 @@
-import axios from 'axios';
 import 'dotenv/config';
-import { AuthTokenResponse, IntraUser } from '../types/fortyTwo.js';
 import { fetchAllPages } from '../lib/fetchAllPages.js';
-import { apiQueue } from '../lib/apiQueue.js';
 import { FortyTwoClient } from './fortyTwoClient.js';
 
 const FT_API_URL = 'https://api.intra.42.fr/v2';
