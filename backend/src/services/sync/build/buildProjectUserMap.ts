@@ -2,6 +2,11 @@
 
 import { UserProjects } from "../../../types/userProjects.js";
 
+function normalizeProjectSlug(slug: string): string {
+	return slug
+		.replace(/^42cursus-/, "")
+		.replace(/^42next-/, "")
+}
 
 const ACTIVE_STATUSES = [
 	"searching_a_group",
@@ -42,7 +47,13 @@ export function buildProjectUserMap(
 
 			const projectInfo = map.get(userId)!;
 
-			const slug = entry.project?.slug;
+			const rawSlug = entry.project?.slug;
+
+			if (!rawSlug) {
+				continue;
+			}
+
+			const slug = normalizeProjectSlug(rawSlug);
 
 			if (!slug) {
 				continue;

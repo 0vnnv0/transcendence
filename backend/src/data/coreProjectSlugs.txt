@@ -1,4 +1,4 @@
-42cursus-minishell
+minishell
 minirt
 cub3d
 webserv
