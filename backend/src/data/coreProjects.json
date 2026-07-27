@@ -2,7 +2,7 @@
 	{
 		"id": 0,
 		"name": "minishell",
-		"slug": "42cursus-minishell",
+		"slug": "minishell",
 		"estimatedHours": 210,
 		"teamSize": {
 			"min": 2,
@@ -147,7 +147,7 @@
 	{
 		"id": 6,
 		"name": "push_swap",
-		"slug": "42next-push_swap",
+		"slug": "push_swap",
 		"estimatedHours": 70,
 		"teamSize": {
 			"min": 2,
