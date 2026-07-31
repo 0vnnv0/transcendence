@@ -63,7 +63,7 @@ const Button: React.FC<ButtonProps> = ({
 		return (
 			<a href={href} className={classes} target={external ? "_blank" : undefined}>
 				{IconComponent && (
-					<IconComponent size={16} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
+					<IconComponent size={16} color='white' className={`${iconSizeClasses[size]}`} aria-hidden="true" />
 				)}
 				{children}
 			</a>
@@ -77,7 +77,7 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
     >
 		{IconComponent && (
-        	<IconComponent size={16} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
+        	<IconComponent size={16} color='white' className={`${iconSizeClasses[size]}`} aria-hidden="true" />
       	)}
 		{children}
     </button>

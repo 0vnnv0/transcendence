@@ -55,7 +55,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
 
   if (debouncedSearch.trim().length === 0) {
     listContent = (
-      <div className="p-8 text-center text-gray-500 font-kyiv">
+      <div className="p-8 text-center text-mild-purple font-kyiv">
         Type in a name to start chatting!
       </div>
     );
@@ -122,7 +122,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
             placeholder="Search user..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            className="w-full bg-mild-purple text-white font-kyiv border border-gray-600 rounded-md p-2 focus:outline-none focus:border-gray-400 transition-colors"
+            className="w-full bg-mild-purple text-purple-dark font-kyiv border border-gray-600 rounded-md p-2 focus:outline-none focus:border-gray-400 transition-colors"
             autoFocus
           />
         </div>

@@ -17,12 +17,12 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 		// parallel search
 		const [users, projects] = await Promise.all([
 			// search user by Intra Name
-			prisma.user.findMany({
+			prisma.testUser.findMany({
 				where: {
-					intraName: { contains: searchTerm, mode: 'insensitive'}
+					login: { contains: searchTerm, mode: 'insensitive'}
 				},
 				take: 5, // return only first 5 elements
-				select: { id: true, intraName: true }
+				select: { id: true, login: true }
 			}),
 
 			// search project by project name
@@ -37,16 +37,16 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 		// save found users and projects
 		const formattedUsers = users.map( (u: any) => ({
 			id: u.id,
-			title: u.intraName,
+			title: u.login,
 			type: 'user',
-			url: '/users/${u.id}'
+			url: `/users/${u.login}`
 		}));
 
 		const formattedProjects = projects.map( (p: any) => ({
 			id: p.id,
 			title: p.name,
 			type: 'project',
-			url: '/projects/${p.id}'
+			url: `/projects/${p.id}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);
