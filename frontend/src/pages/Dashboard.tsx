@@ -67,8 +67,8 @@ function Dashboard() {
 		recommendedContent = <p className="text-subtitle text-red-500">Failed to load recommendations</p>;
 	} else if (recommendedProjects.length === 0) {
 		recommendedContent = (
-			<p className="text-title text-green-400 bg-gray-800 rounded-xl col-span-full">
-				🎉 Congrats! You are near to the end of your core curriculum.
+			<p className="text-subtitle text-purple col-span-full">
+				Congrats! 🎉 You are near to the end of your core curriculum.
 			</p>
 		);
 	} else {
