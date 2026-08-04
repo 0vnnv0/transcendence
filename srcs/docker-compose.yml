@@ -37,6 +37,8 @@ services:
       dockerfile: Dockerfile
     image: backend
     env_file: .env
+    secrets:
+      - jwt_secret
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,6 +58,8 @@ services:
       args:
         - VITE_API_URL=http://localhost:3000 #So React knows where API is
     image: frontend
+    depends_on:
+      - backend
     ports:
       - "8080:80" #Website can be accessed via http://localhost:8080 
     networks:
@@ -111,3 +115,5 @@ volumes:
 secrets:
   db_password:
     file: ../secrets/db_password.txt
+  jwt_secret:
+    file: ../secrets/jwt_secret.txt

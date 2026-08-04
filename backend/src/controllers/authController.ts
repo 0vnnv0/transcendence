@@ -1,22 +1,17 @@
 // kommuniziert mit dem User und steuert den Auth Porzess
+// hreusing
 
 import { FastifyRequest, FastifyReply } from "fastify";
 import { AuthService } from "../services/authService.js";
+import { getAccessToken } from "../services/token.js";
 import Fastify from 'fastify';
-import { request } from "node:http";
 import bcrypt from 'bcrypt';
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import prisma from "../lib/prisma.js";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 const fastify = Fastify({ logger: true });
 
 
-export const registerUser = async (request: FastifyRequest, reply: FastifyReply) => {
+export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { email, password } = request.body as {email?: string, password?: string};
 	if (!email || !password) {
 		return reply.status(400).send({
@@ -33,16 +28,18 @@ export const registerUser = async (request: FastifyRequest, reply: FastifyReply)
   	}
 
 	try {
-		const existingUser = await prisma.user.findUnique({
+		const existingUser = await prisma.loggedUser.findUnique({
 			where: { email }
 		});
 		if (existingUser) {
-			const loginUrl = 'http://localhost:8080/login';
-  			return reply.redirect(loginUrl);
+			return reply.code(400).send({
+			error: "Bad Request",
+			message: "Email already exists, please log in."
+    	});
 		}
 		// secure hashed password
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const newUser = await prisma.user.create({
+		const newUser = await prisma.loggedUser.create({
 			data: {
 				email,
 				password: hashedPassword
@@ -52,7 +49,7 @@ export const registerUser = async (request: FastifyRequest, reply: FastifyReply)
 		reply.code(201); 
 		return {
 			message: "Registration successful!",
-			user: newUser
+			loggedUser: newUser
 		};
 	} catch (error) {
 		request.log.error(error);
@@ -70,13 +67,13 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 	}
 
 	try {
-		const user = await prisma.user.findUnique({
+		const user = await prisma.loggedUser.findUnique({
 			where: { email }
 		});
 		if (!user) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password. Try again."
+				message: "Account does not exist. Try with another e-mail or sign up."
 			});
 		}
 
@@ -84,27 +81,19 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		if (!passwordIsValid) {
 			return reply.code(401).send({
 				error: "Unauthorized",
-				message: "Invalid E-Mail or wrong password. Try again."
+				message: "Wrong password. Try again."
 			});
 		}
 
-		// const userIsValid = await AuthService.verifyUserCredentials(email, password);
-		// if (!userIsValid) {
-		// 	return reply.status(401).send({
-		// 		error: 'Unautherized',
-		// 		message: '42 Student Credentials not found'
-		// 	});
-		// }
-
-		const token = fastify.jwt.sign({
+		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
-		}, { expiresIn: '1d'});
+		}, { expiresIn: '1h'});
 
 		return reply.send({
 			message: 'Login successful',
 			access_token: token,
-			user: { id: user.id, email: user.email }
+			loggedUser: { id: user.id, email: user.email }
 		});
 	} catch (error) {
 		fastify.log.error(error);
@@ -116,6 +105,41 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 
 };
 
+export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) => {
+	try {
+		const authHeader = request.headers.authorization;
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			return reply.code(400).send({ message: 'No Token found'});
+		}
+		const token = authHeader.split(' ')[1];
+
+		const decoded = request.server.jwt.decode<{ exp: number }>(token);
+		if (decoded && decoded.exp) {
+			const expiresAt = new Date(decoded.exp * 1000);
+			
+			await prisma.blacklistedTokens.upsert({
+				where: { token },
+				update: {},
+				create: {
+					token,
+					expiresAt
+				}
+			});
+		}
+		const userId = (request.user as any).id;
+		await prisma.user.update({
+          where: { id: userId },
+          data: { isOnline: false },
+        });
+		return reply.send({
+			message: 'Logout successful. Token blacklisted.'
+		})
+	} catch (error) {
+		request.log.error(error);
+		return reply.status(500).send({error: 'Internal Server Error'});
+	}
+};
+
 export const loginWith42 = async (request: FastifyRequest, reply: FastifyReply) => {
   const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FT_ID}&redirect_uri=${encodeURIComponent(process.env.FT_REDIRECT_URI || "")}&response_type=code&scope=public`;
   return reply.redirect(url);
@@ -125,24 +149,22 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
   const { code } = request.query as { code: string };
 
   try {
-    const tokenData: any = await AuthService.getAccessToken(code);
-    const userData = await AuthService.fetchIntraUser(tokenData.access_token);
-    const user = await AuthService.upsertUser(userData);
+    const accessToken = await getAccessToken(code);
+    const userData = await AuthService.fetchIntraUser(accessToken);
+    const user = await AuthService.upsertUser(userData, accessToken);
 
-    // JWT erstellen: Wir speichern die ID und den Namen im Token
+    // JWT erstellen: Wir speichern die ID, den Namen, newCore Status und isOnline im Token
     const token = request.server.jwt.sign({ 
       id: user.id, 
-      intraName: user.intraName 
-    }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
+      intraName: user.intraName,
+      newCore: user.newCore,
+      isOnline: user.isOnline
+    }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
 
-    // Token an den User schicken
-    return { 
-      message: "Login erfolgreich", 
-      access_token: token, // Das Frontend speichert das meistens im LocalStorage
-      user 
-    };
+	const frontendRedirectUrl = `http://localhost:8080/authsuccess?token=${token}`;
+	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
-	console.error("DEBUG AUTH ERROR:", error); // Das zeigt uns den echten Fehler im Terminal
+	console.error("DEBUG AUTH ERROR:", error); // Das zeigt den echten Fehler im Terminal
     return reply.code(500).send({ error: "Auth Service Error" });
   }
 };

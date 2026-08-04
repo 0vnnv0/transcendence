@@ -1,17 +1,49 @@
-import Navbar from '../components/ui/Navbar/Navbar'
-import ProjectCard from '../components/ui/Cards/ProjectCard'
-import projectsData from '../data/projects.json';
-import { useState } from 'react';
+import Navbar from '../components/ui/Navbar/Navbar';
+import ProjectCard from '../components/ui/Cards/ProjectCard';
+import { useAuthorize } from '../hooks/useAuth';
+import { useProjects } from '../hooks/useProjects';
+import CardSection from '../components/sections/CardSection';
 
 function Projects() {
-	const [userCore, setUserCore] = useState<'newCore' | 'oldCore'>('oldCore');
-	const processedProjects = projectsData
-	.filter((project) => {
-		return project[userCore] === true;
-	})
-	.sort((a, b) => {
-		return a.projectRank - b.projectRank;
-	})
+	// const { userName, userRank, newCore } = useAuthorize();
+
+	const newCore = false;
+	const { data: allProjects, isLoading, isError } = useProjects();
+
+	console.log('Projects: ', allProjects);
+
+	let content;
+	if (isLoading) {
+		content = <p className="text-subtitle text-purple">Loading projects...</p>
+	} else if (isError || !allProjects) {
+		content = <p className="text-subtitle text-red-500">[404] Error trying to load projects</p>
+	} else {
+		const displayProjects = allProjects
+		.filter((project: any) => newCore ? project.newCore : project.oldCore)
+		.sort((a: any, b: any) => a.projectRank - b.projectRank);
+
+		if (displayProjects.length === 0) {
+            content = <p className="text-subtitle">No projects found</p>;
+        } else {
+            content = (
+				<>
+					{displayProjects.map((project: any) => (
+						<ProjectCard 
+							key={project.id}
+							layout="portrait"
+							image="/success.png"
+							title={project.name}
+							subtitle={`Rank ${project.projectRank}`}
+							tags={project.keywords}
+							route={`/project/${project.slug}`}
+							description={project.description}
+						/>
+					))}
+				</>
+            );
+        }
+    }
+
 
 	return (
 		<section
@@ -22,25 +54,17 @@ function Projects() {
 			  	<Navbar />
 		  	</div>
 			<div className="flex flex-col flex-1 p-10 gap-10">				 
-				 <h1 className="font-[Gasoek_One] text-6xl text-black">
+				 <h1 className="text-title text-black">
 			 		 Projects
 			 	 </h1>
-        	<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
-				{processedProjects.map((project) => (
-				<ProjectCard 
-					layout="portrait"
-					image="/success.png"
-					title={project.name}
-					subtitle="eat eat eat"
-					tags={project.keywords}
-					route={`/project/${project.slug}`}
-					description={project.description}
-				/>
-			))}
-	       	 </div>
-		</div>
+				 <CardSection title="All projects">
+					<CardSection.Body viewMode="grid">
+						{content}
+					</CardSection.Body>
+				</CardSection>
+			</div>
 	</section>
-  )
+  );
 }
 
 export default Projects

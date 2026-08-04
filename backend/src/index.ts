@@ -2,12 +2,14 @@
 //dummie for indexfile
 import buildServer from "./serverSetup.js";
 //import { Pool } from 'pg';
-import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { setupChatSockets } from "./sockets/chat.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { profileRoutes } from "./routes/profileRoutes.js";
+import { userRoutes } from "./routes/userRoutes.js";
+import { PrismaClient } from "@prisma/client";
+import { projectRoutes } from "./routes/projectRoutes.js";
 
 
 // 1. Prisma Adapter Setup (wie im Guide)
@@ -36,10 +38,26 @@ async function start() {
         }
     });
 
+	// Alle 60 Minuten abgelaufene Tokens aus der Blacklist löschen
+	setInterval(async () => {
+	try {
+		const deleted = await prisma.blacklistedTokens.deleteMany({
+		where: {
+			expiresAt: { lt: new Date() }
+		}
+		});
+		console.log(`Blacklist cleaned: ${deleted.count} expired tokens deleted.`);
+	} catch (err) {
+		console.error("Error during Blacklist cleaning: ", err);
+	}
+	}, 1000 * 60 * 60);
+
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
 	//await profileRoutes(app, {prisma});
 	app.register(profileRoutes, {prisma});
+	await userRoutes(app, prisma);
+	await projectRoutes(app);
 	try {
 		await app.listen({
 			port: 3000,

@@ -11,20 +11,54 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User { 
-	id				Int			@id @default(autoincrement()) 
-	createdAt		DateTime	@default(now()) 
+model TestUser {
+  id          Int      @id
+  login       String   @unique
+
+  intraEmail  String?
+
+  firstName   String?
+  lastName    String?
+
+  avatarUrl   String?
+  intraUrl    String?
+  
+  campusId    Int?
+  campusName  String?
+
+  coalitionName String?
+  coalitionSlug String?
+
+  currentRank	Int?
+  newCore		Boolean?
+
+  completedProjects Json?
+  activeProjects    Json?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LoggedUser {
+	id				Int			@id @default(autoincrement())
 	email			String		@unique
-	intraEmail		String?		
-	password		String
-	intraName		String?		@unique
-	displayName		String?
-	campusID		Int?			
-	campusName		String?
-	currentRank		Int?
-	paceDeadline	DateTime?
+	password		String?
+	createdAt		DateTime	@default(now())
+}
+
+model User { 
+	id				Int			@id @default(autoincrement()) 	//check
+	createdAt		DateTime	@default(now()) 				//check
+	intraEmail		String		@unique							//check
+	intraName		String		@unique							//check, aber heisst login
+	campusID		Int										//check			
+	campusName		String										//check
+	currentRank		Int
+	paceDeadline	DateTime
 	blackholeDate	DateTime?
-	student			Boolean? //grade:cadet
+
+	coalitionName 	String?										//check
+	coalitionSlug 	String?										//check
 
 	bio				String?
 	quests			UserQuests?
@@ -32,6 +66,8 @@ model User {
 	availability	Availability?
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
+	isOnline		Boolean		@default(false)
+	newCore			Boolean?
 } 
 
 model UserQuests {
@@ -47,27 +83,40 @@ model UserQuests {
 }
 
 model Project {
-	id				Int			@id @default(autoincrement()) 
-	name			String
-	projectRank		Int
-	//users			U
+  id              Int      @id @default(autoincrement())
+
+  name            String
+  slug            String   @unique
+
+  projectRank     Int
+
+  teamSizeMin     Int
+  teamSizeMax     Int
+
+  estimatedHours  Int?
+  xpPoints        Int?
+
+  description     String?
+
+  keywords    String[]
+  skills      String[]
+
+  oldCore         Boolean  @default(false)
+  newCore         Boolean  @default(false)
+
+  users           UserProjects[]
 }
 
-// model UserProjects {
-// 	id				Int			@id @default(autoincrement()) 
-// 	user			User		@relation(fields: [userId], references: [id])
-// 	userId			Int			@unique
-
-// }
-
 model UserProjects {
-	id				Int			@id @default(autoincrement()) 
-	user			User		@relation(fields: [userId], references: [id])
-	userId			Int			@unique
-	//project			Project		@relation(fields: [projectId], references: [id])
-	projectId		Int
-	status			Status		@default(NOT_STARTED)
-	isLookingForGroup	Boolean		@default(false)
+  id         Int      @id @default(autoincrement())
+
+  userId     Int
+  projectId  Int
+
+  user       User     @relation(fields: [userId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  createdAt  DateTime @default(now())
 }
 
 model Availability {
@@ -97,6 +146,13 @@ model ChatMessage {
 	senderId		Int
 	createdAt		DateTime	@default(now())
 	content			String
+}
+
+model BlacklistedTokens {
+	id				Int			@id @default(autoincrement())
+	token			String		@unique
+	expiresAt		DateTime
+	createdAt		DateTime	@default(now())
 }
 
 enum Status {

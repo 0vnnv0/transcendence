@@ -4,9 +4,10 @@ import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Server } from "socket.io";
-import { displayUsersRoutes } from "./routes/displayUsers.js";
+// import { displayUsersRoutes } from "./routes/displayUsers.js";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
+import { searchRoutes } from "./routes/searchRoutes.js"
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
 import fastifyJwt from "@fastify/jwt";
@@ -19,10 +20,17 @@ const fastify = Fastify({
 //building the server using fastify + accepting connections
 async function buildServer() {
 	await fastify.register(cors, {
-		origin: "*",
+		// origin: "*",
+		origin: ['http://localhost:5173', 
+            'http://127.0.0.1:5173', 
+            'http://localhost:5137',
+            'http://10.11.5.3:5173',         // <-- Your direct cluster IP
+            'http://c0c5c3.42berlin.de:5173'], // <-- Your cluster hostname
+		credentials: true,
 	});
 
 	await fastify.register(authRoutes);
+	await fastify.register(searchRoutes);
 	await fastify.register(fastifyJwt, {
 		secret: process.env.JWT_SECRET || 'super-geheimes-passwort-fuer-den-cluster'
 		});
@@ -34,7 +42,7 @@ async function buildServer() {
 		prefix: "/",
 	});
 
-	await displayUsersRoutes(fastify);
+	// await displayUsersRoutes(fastify);
 
 	const io = new Server(fastify.server, {
 		cors: {

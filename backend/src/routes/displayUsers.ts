@@ -1,18 +1,21 @@
-//DUMMIE
-//Displaying the filtered users
-import { FastifyInstance } from "fastify";
+// //DUMMIE
+//pbohme --> kann von mir aus weg
+//junruh--> von mir aus auch
 
-import { users } from "../data/loadUsers.js";
-import { filterUsers } from "../services/filterUsers.js";
+// //Displaying the filtered users
+// import { FastifyInstance } from "fastify";
 
-export async function displayUsersRoutes(server: FastifyInstance) {
+// import { users } from "../data/loadUsers";
+// import { filterUsers } from "../services/filterUsers";
 
-	server.get("/users", async (request, reply) => {
+// export async function displayUsersRoutes(server: FastifyInstance) {
 
-		const query = request.query as Record<string, string>;
+// 	server.get("/users", async (request, reply) => {
 
-		const filteredUsers = filterUsers(users, query);
+// 		const query = request.query as Record<string, string>;
 
-		return filteredUsers;
-	});
-}
+// 		const filteredUsers = filterUsers(users, query);
+
+// 		return filteredUsers;
+// 	});
+// }
