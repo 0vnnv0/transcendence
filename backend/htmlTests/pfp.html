@@ -82,9 +82,7 @@ function getToken()
 
 async function upload()
 {
-    const file =
-        document.getElementById("fileInput")
-            .files[0];
+    const file = document.getElementById("fileInput").files[0];
 
     if (!file)
     {
@@ -94,71 +92,66 @@ async function upload()
 
     try
     {
-        const urlResponse =
-            await fetch(
-                "http://localhost:3000/upload-url",
+        // Step 1: Request pre-signed POST credentials from Fastify
+        const urlResponse = await fetch(
+            "http://localhost:3000/upload-url",
+            {
+                method: "POST",
+                headers:
                 {
-                    method: "POST",
-                    headers:
-                    {
-                        "Content-Type":
-                            "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getToken()}`
+                },
+                body: JSON.stringify({
+                    contentType: file.type
+                })
+            }
+        );
 
-                        "Authorization":
-                            `Bearer ${getToken()}`
-                    },
-                    body: JSON.stringify({
-                        contentType: file.type
-                    })
-                }
-            );
-
-        const urlData =
-            await urlResponse.json();
+        const urlData = await urlResponse.json();
 
         if (!urlResponse.ok)
         {
             show({
                 step: "upload-url",
-                status:
-                    urlResponse.status,
+                status: urlResponse.status,
                 data: urlData
             });
-
             return;
         }
 
-        const uploadResponse =
-            await fetch(
-                urlData.uploadUrl,
-                {
-                    method: "PUT",
-                    headers:
-                    {
-                        "Content-Type":
-                            file.type
-                    },
-                    body: file
-                }
-            );
+        // Step 2: Build FormData object with pre-signed fields
+        const formData = new FormData();
 
-        const uploadText =
-            await uploadResponse.text();
+        // Append all S3 pre-signed fields (Signature, AWS Access Key, Policy, etc.)
+        Object.entries(urlData.fields).forEach(([key, value]) => {
+            formData.append(key, value);
+        });
+
+        // CRITICAL: The file MUST be appended LAST to the FormData object
+        formData.append("file", file);
+
+        // Step 3: POST directly to S3 bucket URL
+        const uploadResponse = await fetch(
+            urlData.url, // Correct property returned by createPresignedPost
+            {
+                method: "POST",
+                body: formData // Do NOT manually set Content-Type header when using FormData
+            }
+        );
+
+        const uploadText = await uploadResponse.text();
 
         show({
-            uploadStatus:
-                uploadResponse.status,
-            uploadOk:
-                uploadResponse.ok,
-            key:
-                urlData.key,
-            s3Response:
-                uploadText
+            uploadStatus: uploadResponse.status,
+            uploadOk: uploadResponse.ok,
+            key: urlData.key,
+            s3Response: uploadText || "Upload Successful! (S3 returns 204 No Content on success)"
         });
     }
     catch (err)
     {
-        show(err);
+        show({ error: err.message || err });
     }
 }
 

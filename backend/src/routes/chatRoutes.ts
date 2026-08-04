@@ -28,8 +28,10 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 	const { cursorId: rawCursorId } = request.query as { cursorId?: string };
 	const cursorId = rawCursorId ? Number(rawCursorId) : undefined;
 
-	if (!isInChat(userId, chatId, prisma))
+	const userInChat = await isInChat(userId, chatId, prisma);
+	if (!userInChat) {
 		return response.code(403).send({ error: "You are not part of this chat." });
+	}
 
 	try {
         const limit = 50;

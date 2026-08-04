@@ -19,8 +19,6 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 		
 		socket.on("register", ({ userId }) => 
 			registerUser(userId, socket, prisma, onlineUsers));
-		socket.on("join_chat", (chatId) => 
-			userJoinChat(chatId, socket, prisma));
 		socket.on("add_user", (chatId, futureUserId) =>
 			addUserToChat(chatId, socket, prisma, futureUserId))
 		socket.on("leave_chat", (chatId) => 
@@ -30,18 +28,25 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 		socket.on("typing", ({ chatId }) => 
 			typingSignal(chatId, socket, prisma));
 		socket.on("disconnect", () => 
-			userDisconnect(onlineUsers, socket));
+			userDisconnect(onlineUsers, socket, io));
 	});
 }
 
-function onlineCheck(userId: number, onlineUsers: Map<number, string>)
-{
-	
-}
+async function getUsernameById(prisma: PrismaClient,userId: number): Promise<string | null> {
+	const user = await prisma.user.findUnique({
+	  where: { id: userId },
+	  select: { displayName: true },
+	});
+  
+	return user ? user.displayName : null;
+  }
 
 //this temporarily registers different users, needs to be changed once we add authentication
 //it also autoconnects users to the chats they were a part of in the past based on db entries
 //on the frontend we would have sth like socket.emit("register", { userId: 1 })
+//
+//also broadcasts to all users that this user is now online so it can be shown to everyone via socket event "user_online"
+//and sends to itself(frontend) an array which contains every user thats currently online so they can be displayed
 async function registerUser(
     userId: unknown,
     socket: Socket,
@@ -51,7 +56,16 @@ async function registerUser(
     const id = Number(userId);
 
     socket.data.userId = id;
-    onlineUsers.set(id, socket.id);
+
+	const username = await getUsernameById(prisma, id);
+	if (!username)
+	{
+		console.warn(`Registration failed: User with ID ${id} not found in database.`);
+        socket.emit("error", { message: "User not found" });
+        socket.disconnect(true);
+        return;
+	}
+    onlineUsers.set(id, username);
 
     const chats = await prisma.chat.findMany({
         where: {
@@ -64,11 +78,14 @@ async function registerUser(
         },
     });
 
+	socket.broadcast.emit("user_online", { userId: id });
+
     // Join room for each chat room
     for (const chat of chats) {
         socket.join(`chat_${chat.id}`);
     }
 	socket.emit("chat_list", chats);
+    socket.emit("initial_online_users", onlineUsers);
 
     console.log(`User ${id} joined ${chats.length} chats`);
 }
@@ -103,48 +120,7 @@ async function addUserToChat(
     }
 }
 
-// adds one user to a chat(room), also adds db relation so
-// when this user logs in in the future they will 
-// automatically be added to the real time chat and will skip this step
-async function userJoinChat(
-    chatId: unknown,
-    socket: Socket,
-    prisma: PrismaClient,
-) {
-	try {
-		const userId = socket.data.userId;
-		if (!userId) {
-			console.log("No userId");
-			return;
-		}
-
-		await prisma.chat.update({
-			where: {
-				id: Number(chatId),
-			},
-
-			data: {
-				users: {
-					connect: {
-						id: Number(userId),
-					},
-				},
-			},
-		});
-
-		socket.join(`chat_${chatId}`);
-
-		console.log(`User ${userId} joined chat ${chatId}`);
-	}
-	catch (err) {
-		console.error(err);
-		socket.emit("error_occurred", {
-			message: "Could not join Chat."
-		});
-	}
-}
-
-//see userJoinChat (directly above this) but reverse
+// deletes user making this request from a given chat (both on socket and in db)
 async function userLeaveChat(
     chatId: unknown,
     socket: Socket,
@@ -231,7 +207,7 @@ async function sendMessage (
 	}
 }
 
-//emits a typing signal to the other participants
+//emits a typing event to the other participants so that can be displayed but it really doesnt have to be there
 async function typingSignal(chatId: number, socket: Socket, prisma: PrismaClient){
 	const userId = socket.data.userId;
 	if (!(await isInChat(userId, chatId, prisma))) return;
@@ -242,12 +218,13 @@ async function typingSignal(chatId: number, socket: Socket, prisma: PrismaClient
 	});
 }
 
-//registers user disconnect, for now only updates the onlineUsers array, might be unnecessary or updated later
-function userDisconnect(onlineUsers: Map<number, string>, socket: Socket) {
+//registers user disconnect and emits socket event "user_offline" to everyone else so they can display online status correctly
+function userDisconnect(onlineUsers: Map<number, string>, socket: Socket, io: Server) {
 	const userId = socket.data.userId;
 
 	if (userId) {
 		onlineUsers.delete(userId);
+		io.emit("user_offline", { userId });
 	}
 
 	console.log("Socket disconnected:", socket.id);

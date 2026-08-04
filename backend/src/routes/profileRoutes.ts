@@ -6,60 +6,20 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { S3Client } from "@aws-sdk/client-s3";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
 export const s3 = new S3Client({
     region: "eu-north-1"
 });
-
 const allowedTypes = [
     "image/png",
     "image/jpeg",
     "image/webp"
 ];
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
-async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
-{
-	const userId = request.user.id;
-	if (!userId)
-		return response.code(401).send({ error: "You are not logged in." });
 
-	const body = request.body as {
-		contentType: string;
-	};
-	const contentType = body.contentType;
-
-	if (typeof contentType === 'string') {
-		if (!allowedTypes.includes(contentType))
-			return response.code(415).send({error: "invalid file type."});
-	}
-	else {
-		return response.code(400).send({error: "could not find content type header."});
-	}
-    const key = `uploads/${userId}`;
-
-    const command =
-        new PutObjectCommand({
-            Bucket: "clusterfuck-s3-bucket",
-            Key: key,
-            ContentType: contentType
-        });
-
-    const uploadUrl =
-        await getSignedUrl(
-            s3,
-            command,
-            {
-                expiresIn: 300
-            }
-        );
-
-	return response.code(200).send({
-		uploadUrl,
-		key
-		});
-}
 
 //schema for validating body for profile modification 
 const updateProfileSchema = {
@@ -223,4 +183,49 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 		fastify.log.error(error);
 		return response.code(500).send({ error: "An error occurred while deleting the profile." });
 	  }
+}
+
+async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
+{
+    const userId = request.user?.id;
+    if (!userId) {
+        return response.code(401).send({ error: "you are not logged in." });
+    }
+
+    const body = request.body as { contentType?: string };
+    const contentType = body?.contentType;
+
+    if (!contentType || typeof contentType !== 'string') {
+        return response.code(400).send({ error: "missing or invalid contentType in request body." });
+    }
+
+    if (!allowedTypes.includes(contentType)) {
+        return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
+    }
+
+    const key = `uploads/${userId}`;
+
+    try {
+        const { url, fields } = await createPresignedPost(s3, {
+            Bucket: "clusterfuck-s3-bucket",
+            Key: key,
+            Conditions: [
+                ["eq", "$Content-Type", contentType],
+                ["content-length-range", 1, MAX_FILE_SIZE],
+            ],
+            Fields: {
+                "Content-Type": contentType,
+            },
+            Expires: 300,
+        });
+
+        return response.code(200).send({
+            url,
+            fields,
+            key,
+        });
+    } catch (err) {
+        request.log.error(err);
+        return response.code(500).send({ error: "failed to generate upload URL." });
+    }
 }
