@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { PROJECTS } from "../types/coreProjects.js";
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export const globalSearch = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -26,13 +27,21 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			}),
 
 			// search project by project name
-			prisma.project.findMany({
-				where: {
-					name: { contains: searchTerm, mode: 'insensitive'}
-				},
-				take: 5,
-				select: { id: true, name: true}
-			})
+			Promise.resolve(
+				PROJECTS.filter((project) => {
+					const searchableText = [
+						project.name,
+						project.slug,
+						project.description,
+						...(project.keywords ?? []),
+						...(project.skills ?? [])
+					]
+						.join(" ")
+						.toLowerCase();
+
+					return searchableText.includes(searchTerm.toLowerCase());
+				}).slice(0, 5)
+			)
 		]);
 		// save found users and projects
 		const formattedUsers = users.map( (u: any) => ({
@@ -46,7 +55,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			id: p.id,
 			title: p.name,
 			type: 'project',
-			url: `/projects/${p.id}`
+			url: `/project/${p.name}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);
