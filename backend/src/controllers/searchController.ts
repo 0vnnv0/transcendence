@@ -55,7 +55,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			id: p.id,
 			title: p.name,
 			type: 'project',
-			url: `/projects/${p.id}`
+			url: `/project/${p.name}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);
