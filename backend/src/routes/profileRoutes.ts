@@ -3,6 +3,7 @@
 //todo:
 // - wie soll availability aussehen??
 // - add checks for blocked users
+// - BALD: update this to new prisma schema!!
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { S3Client } from "@aws-sdk/client-s3";
@@ -27,7 +28,6 @@ const updateProfileSchema = {
 	  type: 'object',
 	  properties: {
 		bio: { type: 'string', maxLength: 300 },
-		displayName: { type: 'string', maxLength: 50 },
 //		availability: {type: }
 	  },
 	  additionalProperties: false
@@ -94,7 +94,6 @@ async function modProfileInfo(request: FastifyRequest, response: FastifyReply, f
 		  data: body,
 		  select: {
 			id: true,
-			displayName: true,
 			bio: true
 		  }
 		});
@@ -127,14 +126,11 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
             },
             select: {
 				id: true,
-				email: true,
 				intraName: true,
-				displayName: true,
 				campusName: true,
 				currentRank: true,
 				paceDeadline: true,
 				blackholeDate: true,
-				student: true,
 				availability: true,
 				bio: true,
 				quests: {
