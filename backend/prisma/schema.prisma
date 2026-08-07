@@ -64,6 +64,8 @@ model User {
 	quests			UserQuests?
 	projects		UserProjects[]
 	availability	Availability?
+	friends			UserFriends[]
+	friendRequest	UserRequests[]
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
 	isOnline		Boolean		@default(false)
@@ -146,6 +148,18 @@ model ChatMessage {
 	senderId		Int
 	createdAt		DateTime	@default(now())
 	content			String
+}
+
+model UserFriends {
+	id				Int			@id @default(autoincrement())
+	userId     		Int
+	friends			User[]
+}
+
+model UserRequests {
+	id				Int			@id @default(autoincrement())
+	userId     		Int
+	request			User[]
 }
 
 model BlacklistedTokens {
