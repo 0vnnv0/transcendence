@@ -15,21 +15,18 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
   onClose, 
   currentUserId 
 }) => {
-  // State für das Eingabefeld
   const [inputValue, setInputValue] = useState('');
-  // State für den verzögerten Suchbegriff (verhindert Spam ans Backend)
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const { mutate: startChat, isPending: isStartingChat } = useStartChat();
   const { data: users, isLoading, isError } = useUsersSearch(debouncedSearch);
 
-  // Debounce Logik: Warte 300ms nach dem letzten Tastendruck
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(inputValue);
     }, 300);
 
-    return () => clearTimeout(timer); // Cleanup, wenn der User weitertippt
+    return () => clearTimeout(timer); 
   }, [inputValue]);
 
   useEffect(() => {
@@ -37,20 +34,15 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
       setInputValue('');
       setDebouncedSearch('');
     }
-  }, [isOpen]); // Dieser Effekt wird jedes Mal ausgeführt, wenn sich isOpen ändert
-  
-  // Early Return, wenn Modal geschlossen ist
+  }, [isOpen]); 
   if (!isOpen) return null;
 
   const handleUserClick = (targetUserId: number) => {
     startChat({ currentUserId, targetUserId });
     onClose();
-    setInputValue(''); // Reset nach Erfolg
+    setInputValue('');
   };
 
-  // --------------------------------------------------------
-  // Sauberes bedingtes Rendern für die Liste
-  // --------------------------------------------------------
   let listContent = null;
 
   if (debouncedSearch.trim().length === 0) {
@@ -82,7 +74,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                 ${isStartingChat ? 'opacity-50 pointer-events-none' : 'hover:bg-gray-700'}`}
             >
               <img 
-                src={user.avatarUrl || "/profile.jpg"} 
+                src={user.avatarUrl} 
                 className="h-8 w-8 rounded-full object-cover"
                 alt={user.intraName}
               />
@@ -94,8 +86,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
     }
   }
 
-  // Das eigentliche Modal-UI
-  // Wir nutzen einen sehr hohen z-index (z-[9999]), um sicherzugehen.
+
   const modalUI = (
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
@@ -127,7 +118,6 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
           />
         </div>
         
-        {/* Listen-Bereich mit Scrollbar, falls viele Ergebnisse kommen */}
         <div className="overflow-y-auto flex-1 min-h-[150px]">
           {listContent}
         </div>
@@ -135,6 +125,5 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
     </div>
   );
 
-  // WICHTIG: createPortal heftet das HTML direkt an den <body> an!
   return createPortal(modalUI, document.body);
 };

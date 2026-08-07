@@ -26,7 +26,6 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 				select: { id: true, login: true, avatarUrl: true }
 			}),
 
-			// search project by project name
 			Promise.resolve(
 				PROJECTS.filter((project) => {
 					const searchableText = [
@@ -43,7 +42,6 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 				}).slice(0, 5)
 			)
 		]);
-		// save found users and projects
 		const formattedUsers = users.map( (u: any) => ({
 			id: u.id,
 			title: u.login,
