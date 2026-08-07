@@ -23,7 +23,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 					login: { contains: searchTerm, mode: 'insensitive'}
 				},
 				take: 5, // return only first 5 elements
-				select: { id: true, login: true }
+				select: { id: true, login: true, avatarUrl: true }
 			}),
 
 			// search project by project name
@@ -47,6 +47,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 		const formattedUsers = users.map( (u: any) => ({
 			id: u.id,
 			title: u.login,
+			avatarUrl: u.avatarUrl,
 			type: 'user',
 			url: `/users/${u.login}`
 		}));
