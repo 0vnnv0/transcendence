@@ -1,43 +1,44 @@
-// components/Chat/MessageInput.tsx
-import { useState } from 'react';
-import type { Socket } from 'socket.io-client';
+import React, { useState } from 'react';
 
 interface MessageInputProps {
-  chatId: number;
-  socket: Socket | null;
+    onSendMessage: (content: string) => void;
+    disabled?: boolean;
 }
 
-export function MessageInput({ chatId, socket }: MessageInputProps) {
-  const [content, setContent] = useState('');
+const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) => {
+    const [content, setContent] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!content.trim() || !socket) return;
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (content.trim().length === 0 || disabled) return;
 
-    socket.emit('send_message', { chatId, content });
-        setContent('');
-  };
+        onSendMessage(content.trim());
+        setContent(''); // Feld nach dem Senden leeren
+    };
 
-  return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white border-t flex gap-2">
-      <input
-        type="text"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Nachricht schreiben..."
-        className="flex-1 p-2 border rounded focus:outline-none focus:border-blue-500 text-black"
-      />
-      <button 
-        type="submit" 
-        disabled={!content.trim()}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-      >
-        Senden
-      </button>
-    </form>
-  );
-}
+    return (
+        <form 
+            onSubmit={handleSubmit} 
+            className="p-4 border-t border-gray-700 bg-gray-800 flex gap-2"
+        >
+            <input
+                type="text"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Type a message..."
+                disabled={disabled}
+                className="flex-1 bg-gray-900 border border-gray-600 text-white p-3 rounded-md focus:outline-none focus:border-purple-500 disabled:opacity-50"
+            />
+            <button 
+                type="submit"
+                disabled={disabled || content.trim().length === 0}
+                className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-md transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                Send
+            </button>
+        </form>
+    );
+};
 
 // import { useState } from 'react'
 // import { socket } from '../../../services/socket'

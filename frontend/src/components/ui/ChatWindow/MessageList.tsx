@@ -1,56 +1,52 @@
-// components/Chat/MessageList.tsx
-import { useChatMessages } from '../../../hooks/useChat';
-import type { Socket } from 'socket.io-client';
+import React, { useEffect, useRef } from 'react';
+import type { ChatMessage } from '../../../types/chat';
 
 interface MessageListProps {
-  chatId: number;
-  userId: number;
-  socket: Socket | null;
+    messages: ChatMessage[];
+    currentUserId: number;
 }
 
-export function MessageList({ chatId, userId, socket }: MessageListProps) {
-  const { data, isLoading, isError } = useChatMessages(chatId, userId, socket);
+const MessageList: React.FC<MessageListProps> = ({ messages, currentUserId }) => {
+    const endOfListRef = useRef<HTMLDivElement>(null);
 
-  let content = null;
+    // Auto-Scroll nach unten, sobald sich die Nachrichten ändern
+    useEffect(() => {
+        endOfListRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
 
-  if (isLoading) {
-    content = <div className="p-4 text-gray-500 text-center">Lade Nachrichten...</div>;
-  } else if (isError) {
-    content = <div className="p-4 text-red-500 text-center">Fehler beim Laden des Chats.</div>;
-  } else if (!data || data.messages.length === 0) {
-    content = <div className="p-4 text-gray-500 text-center">Noch keine Nachrichten. Schreib das erste "Hallo"!</div>;
-  } else {
-    content = (
-      <div className="flex flex-col gap-3 p-4">
-        {data.messages.map((msg) => {
-          const isOwnMessage = msg.senderId === userId;
-          
-          return (
-            <div 
-              key={msg.id} 
-              className={`max-w-[70%] p-3 rounded-lg ${
-                isOwnMessage 
-                  ? 'bg-blue-500 text-white self-end rounded-br-none' 
-                  : 'bg-gray-200 text-black self-start rounded-bl-none'
-              }`}
-            >
-              <div className="text-xs opacity-75 mb-1 font-semibold">
-                {msg.sender.intraName}
-              </div>
-              <div>{msg.content}</div>
-            </div>
-          );
-        })}
-      </div>
+    return (
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+            {messages.map((msg) => {
+                const isMe = msg.senderId === currentUserId;
+                
+                return (
+                    <div 
+                        key={msg.id} 
+                        className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
+                    >
+                        <div 
+                            className={`max-w-[70%] p-3 rounded-lg text-white font-kyiv flex flex-col gap-1 ${
+                                isMe ? 'bg-purple-600 rounded-br-none' : 'bg-gray-700 rounded-bl-none'
+                            }`}
+                        >
+                            {/* Optional: Absendername anzeigen, falls es nicht man selbst ist */}
+                            {!isMe && msg.sender?.intraName && (
+                                <span className="text-xs text-gray-300 font-bold">
+                                    {msg.sender.intraName}
+                                </span>
+                            )}
+                            <span>{msg.content}</span>
+                        </div>
+                    </div>
+                );
+            })}
+            
+            {/* Unsichtbarer Anker für den Auto-Scroll */}
+            <div ref={endOfListRef} />
+        </div>
     );
-  }
+};
 
-  return (
-    <div className="flex-1 overflow-y-auto bg-gray-50">
-      {content}
-    </div>
-  );
-}
 
 // import { useState, useEffect } from "react";
 // import { socket } from '../../../services/socket';

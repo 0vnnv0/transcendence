@@ -52,7 +52,17 @@ export const useStartChat = () => {
       createNewChat(data.currentUserId, data.targetUserId),
     
     onSuccess: (response) => {
-      navigate(`/chat/${response.chatId}`);
+      console.log("Erfolgreich Chat erstellt! Backend-Antwort:", response);
+      
+      // Prüfen, ob die ID vielleicht 'id' statt 'chatId' heißt
+      const finalChatId = response.chatId || response.chatid;
+      
+      if (!finalChatId) {
+         console.error("FEHLER: Das Backend hat keine ID zurückgegeben!");
+         return;
+      }
+      
+      navigate(`/chat/${finalChatId}`);
     },
     onError: (error) => {
       console.error("Fehler beim Erstellen des Chats:", error);
@@ -64,6 +74,6 @@ export const useRecentChats = (userId: number) => {
     return useQuery({
         queryKey: ['recentChats', userId],
         queryFn: () => fetchRecentChats(userId),
-        enabled: !!userId, // Nur ausführen, wenn die ID bekannt ist
+        enabled: !!userId, 
     });
 };

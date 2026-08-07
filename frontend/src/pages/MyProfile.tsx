@@ -119,7 +119,7 @@ function MyProfile() {
 							description={`${profile?.currentRank}`}
 						/>
 						<InfoCard
-							image="rank.jpg"
+							image="arctos.png"
 							title="Coalition"
 							description={`${profile?.coalitionName}`}
 						/>
