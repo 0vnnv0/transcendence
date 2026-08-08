@@ -64,12 +64,14 @@ model User {
 	quests			UserQuests?
 	projects		UserProjects[]
 	availability	Availability?
-	friends			UserFriends[]
-	friendRequest	UserRequests[]
+
 	chats			Chat[]		@relation("UserToChat")
 	sentMessages	ChatMessage[]
 	isOnline		Boolean		@default(false)
 	newCore			Boolean?
+
+	sentFriendships     Friendship[] @relation("SentFriendships")
+  	receivedFriendships Friendship[] @relation("ReceivedFriendships")
 } 
 
 model UserQuests {
@@ -150,16 +152,22 @@ model ChatMessage {
 	content			String
 }
 
-model UserFriends {
-	id				Int			@id @default(autoincrement())
-	userId     		Int
-	friends			User[]
-}
+model Friendship {
+  id          Int              @id @default(autoincrement())
+  
+  senderId    Int
+  sender      User             @relation("SentFriendships", fields: [senderId], references: [id], onDelete: Cascade)
 
-model UserRequests {
-	id				Int			@id @default(autoincrement())
-	userId     		Int
-	request			User[]
+  receiverId  Int
+  receiver    User             @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  status      FriendshipStatus @default(PENDING)
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Stellt sicher, dass A an B nur EINE Anfrage gleichzeitig schicken kann
+  @@unique([senderId, receiverId])
 }
 
 model BlacklistedTokens {
@@ -173,4 +181,10 @@ enum Status {
 	NOT_STARTED
 	IN_PROGRESS
 	FINISHED
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
 }
