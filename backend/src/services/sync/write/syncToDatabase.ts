@@ -5,6 +5,16 @@ import { PrismaClient } from "@prisma/client";
 export async function syncToDatabase(prisma: PrismaClient, users: any[]) {
 	console.log("Syncing to DB...");
 
+	const userIds = users.map(user => user.id);
+
+	await prisma.testUser.deleteMany({
+		where: {
+			id: {
+				notIn: userIds,
+			}
+		}
+	})
+
 	for (const user of users) {
 		await prisma.testUser.upsert({
 			where: { id: user.id },
