@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
 import { searchRoutes } from "./routes/searchRoutes.js"
+import { friendRoutes } from "./routes/friendRoutes.js";
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
 import fastifyJwt from "@fastify/jwt";
@@ -29,11 +30,22 @@ async function buildServer() {
 		credentials: true,
 	});
 
-	await fastify.register(authRoutes);
-	await fastify.register(searchRoutes);
 	await fastify.register(fastifyJwt, {
 		secret: process.env.JWT_SECRET || 'super-geheimes-passwort-fuer-den-cluster'
 		});
+
+	fastify.decorate('authenticate', async (request, reply) => {
+		try {
+			await request.jwtVerify();
+		} catch (err) {
+			return reply.status(401).send(err);
+		}
+	});
+
+	await fastify.register(authRoutes);
+	await fastify.register(searchRoutes);
+	await fastify.register(friendRoutes);
+
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
 

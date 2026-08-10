@@ -30,7 +30,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 				PROJECTS.filter((project) => {
 					const searchableText = [
 						project.name,
-						project.slug,
+						// project.slug,
 						// project.description,
 						// ...(project.keywords ?? []),
 						// ...(project.skills ?? [])

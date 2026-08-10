@@ -1,4 +1,5 @@
 import 'fastify';
+import { onRequestHookHandler } from 'fastify';
 
 //this file is for modifying the fastify request type to explicitly take and give user properties
 
@@ -13,6 +14,10 @@ export interface CustomJWTPayload {
 declare module 'fastify' {
   interface FastifyRequest {
     user: CustomJWTPayload;
+  }
+
+  interface FastifyInstance {
+	authenticate: onRequestHookHandler;
   }
 }
 
