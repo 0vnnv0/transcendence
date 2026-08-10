@@ -10,6 +10,8 @@ export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 		loadChats(fastify, prisma, request, response));
 	fastify.get('/chat/:chatId', async (request, response) =>
 		loadMessages(fastify, prisma, request, response));
+	fastify.post('/chats', async (request, response) =>
+        createChat(fastify, prisma, request, response));
 }
 
 //loads the past 50 messages once you open chat and has the capacity to load the next 50 messages on a cursor request until the end (but havent tested this)
@@ -103,4 +105,52 @@ async function loadChats(fastify: FastifyInstance, prisma: PrismaClient, request
 		fastify.log.error(error);
 		return response.code(500).send({ error: "Failed to load chats." });
 	}
+}
+
+// creates a new 1-on-1 chat or returns the existing one if they already have a chat history
+async function createChat(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
+{
+    const { currentUserId, targetUserId } = request.body as { 
+        currentUserId: number; 
+        targetUserId: number; 
+    };
+
+    if (!currentUserId || !targetUserId) {
+        return response.code(400).send({ error: "Missing currentUserId or targetUserId in body" });
+    }
+
+    try {
+        // 1. Check if a chat between these exact two users already exists
+        const existingChat = await prisma.chat.findFirst({
+            where: {
+                AND: [
+                    { users: { some: { id: currentUserId } } },
+                    { users: { some: { id: targetUserId } } }
+                ]
+            }
+        });
+
+        if (existingChat) {
+            // Return existing chat ID so frontend can redirect there
+            return { chatId: existingChat.id };
+        }
+
+        // 2. Create a new chat connecting both users
+        const newChat = await prisma.chat.create({
+            data: {
+                users: {
+                    connect: [
+                        { id: currentUserId },
+                        { id: targetUserId }
+                    ]
+                }
+            }
+        });
+
+        return { chatId: newChat.id };
+        
+    } catch (error) {
+        fastify.log.error(error);
+        return response.code(500).send({ error: "Failed to create chat." });
+    }
 }

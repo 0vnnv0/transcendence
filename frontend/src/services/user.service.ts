@@ -60,18 +60,14 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<ChatUser[
   
   const data = await response.json();
   console.log("Raw Backend Response für", searchQuery, ":", data);
-  // 2. Wir gehen davon aus, dass die Daten als gemischtes Array zurückkommen.
-  // Falls das Backend ein Objekt wie { users: [...], projects: [...] } zurückgibt,
-  // müsstest du hier `const results = data.users || []` verwenden.
   const results = Array.isArray(data) ? data : (data.users || []);
   
-  // 3. Adapter-Logik: Filtern und umbauen für das Frontend
   const users: ChatUser[] = results
-    .filter((item: any) => item.type === 'user') // Projekte ignorieren
+    .filter((item: any) => item.type === 'user')
     .map((item: any) => ({
       id: item.id,
-      intraName: item.title, // Wir mappen 'title' vom Backend zurück auf 'intraName'
-      // avatarUrl: item.avatarUrl // Falls ihr später noch Bilder im Backend hinzufügt
+      intraName: item.title, 
+      avatarUrl: item.avatarUrl
     }));
     
   return users;

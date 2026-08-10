@@ -4,37 +4,47 @@ import NavItem from './NavItem'
 import ChatMenu from './ChatMenu'
 import Button from '../../../components/ui/Button/Button'
 import { useLogoutLogic } from '../../../hooks/useAuth'
+import { useAuth } from '../../../components/context/AuthContext'
+import { useUserProfile } from '../../../hooks/useUsers';
 
 function Navbar() {
-  const navigate = useNavigate()
-  const { performLogout } = useLogoutLogic();
+    const navigate = useNavigate()
+    const { performLogout } = useLogoutLogic();
+    const { userName } = useAuth();
+    const userKey = userName !== "Guest" ? userName : null;
+    const { data: profile, isLoading, isError } = useUserProfile(userKey);
 
   return (
-	<nav className="fixed left-0 top-0 h-screen w-70 flex flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-black">
-		<div className="top-6 w-full">
-			<SearchBar />
-		</div>
-		<ul className="flex flex-col mt-50 gap-2 w-full">
-			<NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
-			<NavItem label="Feed" iconPath="/feed.svg" route="/feed" />
-			<NavItem label="Projects" iconPath="/projects.svg" route="/projects" />		
-		</ul>
-		<ChatMenu />
-		<div className="bottom-6 mt-auto">
-			<div className="relative inline-block">
-			<img
-				src="/profile.jpg"
-				className="w-12 h-12 rounded-md object-cover transition-all hover:scale-110 cursor-pointer"
-				onClick={() => navigate ('/myprofile')}
-			/>
-			<span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-black rounded-full"></span>
-		</div>
-		<div>
-			<Button type="button" onClick={performLogout} className="mt-4">Logout</Button>
-		</div>
-		</div>
+    <nav className="fixed left-0 top-0 h-screen w-70 flex flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-black">
+        <div className="top-6 w-full">
+            <SearchBar />
+        </div>
+        <ul className="flex flex-col mt-50 gap-2 w-full">
+            <NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
+            <NavItem label="Feed" iconPath="/feed.svg" route="/feed" />
+            <NavItem label="Projects" iconPath="/projects.svg" route="/projects" />     
+        </ul>
+        <ChatMenu />
+        
+        <div className="bottom-6 mt-auto">
+            <div className="relative inline-block">
+                <div 
+                    className="w-12 h-12 rounded-md bg-cover bg-center bg-no-repeat transition-all hover:scale-110 cursor-pointer bg-gray-800"
+                    onClick={() => navigate('/myprofile')}
+                    style={{ 
+                        backgroundImage: profile?.avatarUrl ? `url(${profile.avatarUrl})` : 'none' 
+                    }}
+                >
+                </div> 
+                <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-black rounded-full"></span>
+            </div>
+            
+            <div>
+                <Button type="button" onClick={performLogout} className="mt-4">Logout</Button>
+            </div>
+        </div>
     </nav>
   )
 }
 
-export default Navbar
+export default Navbar;

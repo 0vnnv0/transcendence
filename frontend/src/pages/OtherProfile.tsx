@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Button from '../components/ui/Button/Button'
 import { fetchUserProfile } from '../services/user.service';
+import { useStartChat } from '../hooks/useChat';
 
 export function useUserProfile(login: string | null | undefined) {
     return useQuery({
@@ -18,9 +19,9 @@ export function useUserProfile(login: string | null | undefined) {
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
     const userKey = username !== "Guest" ? username : null;
-
+	const currentUserId = 1;
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
-
+	const { mutate: startChat, isPending: isStartingChat } = useStartChat();
 
     let mainContent = null;
 
@@ -61,8 +62,10 @@ function OtherProfile() {
                             <Button 
                                 size="md" 
                                 icon="message"
+								onClick={() => startChat({ currentUserId, targetUserId: profile.id })}
+								disabled={isStartingChat}
                             >
-                                Message
+								{isStartingChat ? 'Starting...' : 'Message'}
                             </Button>
                             
                             <Button 
