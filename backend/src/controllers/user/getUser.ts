@@ -18,18 +18,26 @@ export function getUser(prisma: PrismaClient) {
 		// }); --> ist jetzt target_user
 
 		// 2. Zuerst in der Haupt-User-Tabelle suchen
-        let targetUser: any = await prisma.user.findUnique({
+        let mainUser: any = await prisma.user.findUnique({
             where: { intraName: login }
         });
 
+        let testUser: any = null;
+
         // 3. Falls nicht in User, in TestUser suchen
-        if (!targetUser) {
-            targetUser = await prisma.testUser.findUnique({
+        if (!mainUser) {
+            testUser = await prisma.testUser.findUnique({
                 where: { login }
+            });
+        } else {
+            testUser = await prisma.testUser.findUnique({
+                where: { login: mainUser.intraName }
             });
         }
 
-		if (!targetUser) {
+		const user = mainUser ?? testUser;
+
+		if (!user) {
             return reply.status(404).send({
                 error: "User not found"
             });
@@ -39,17 +47,18 @@ export function getUser(prisma: PrismaClient) {
         let friendshipStatus = 'NONE';
         let friendshipId: number | null = null;
 
-		if (currentUserId && 'intraName' in targetUser) {
+		if (currentUserId && 'intraName' in user) {
             const result = await friendService.getFriendshipStatusWith(
                 currentUserId,
-                targetUser.id
+                user.id
             );
             friendshipStatus = result.status;
             friendshipId = result.friendshipId;
         }
 
 		return reply.send({
-            ...targetUser,
+            ...user,
+            avatarUrl: testUser?.avatarUrl ?? null,
             friendshipStatus,
             friendshipId
         });
