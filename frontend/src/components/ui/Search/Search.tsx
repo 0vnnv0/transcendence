@@ -69,7 +69,7 @@ const SearchBar: React.FC = () => {
                         <span className="font-medium text-gray-800 text-sm font-kyiv">
                             {result.title}
                         </span>
-                        <span className="text-xs text-purple bg-mild-purple px-2 py-1 rounded-full uppercase font-kyiv">
+                        <span className="text-tag text-purple bg-mild-purple px-2 py-1 rounded-full uppercase">
                             {result.type}
                         </span>
                     </li>

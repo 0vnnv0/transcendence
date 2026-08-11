@@ -22,7 +22,8 @@ function Navbar() {
         <ul className="flex flex-col mt-50 gap-2 w-full">
             <NavItem label="Dashboard" iconPath="/home.svg" route="/dashboard" />
             <NavItem label="Feed" iconPath="/feed.svg" route="/feed" />
-            <NavItem label="Projects" iconPath="/projects.svg" route="/projects" />     
+            <NavItem label="Projects" iconPath="/projects.svg" route="/projects" /> 
+            <NavItem label="Friends" iconPath="/home.svg" route="/friends" />    
         </ul>
         <ChatMenu />
         
