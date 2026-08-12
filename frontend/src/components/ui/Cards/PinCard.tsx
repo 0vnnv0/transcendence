@@ -14,7 +14,7 @@ const PinCard = ({
   altText,
   username,
   message,
-  ctaText = 'Kontaktieren',
+  ctaText = 'Message',
   onCtaClick,
 }: PinCardProps) => {
   return (

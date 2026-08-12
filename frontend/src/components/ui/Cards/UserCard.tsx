@@ -6,6 +6,8 @@ interface UserCardProps {
   layout?: 'portrait' | 'landscape';
   image: string;
   title?: string;
+  isOnline?: boolean;
+  route?: string;
   tags?: string[];
   ctaText?: string;
   onCtaClick?: () => void;

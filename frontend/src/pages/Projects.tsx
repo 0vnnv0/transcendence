@@ -10,8 +10,6 @@ function Projects() {
 	const newCore = false;
 	const { data: allProjects, isLoading, isError } = useProjects();
 
-	console.log('Projects: ', allProjects);
-
 	let content;
 	if (isLoading) {
 		content = <p className="text-subtitle text-purple">Loading projects...</p>
