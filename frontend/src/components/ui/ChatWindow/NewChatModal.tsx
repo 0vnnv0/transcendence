@@ -93,10 +93,9 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
       onClick={onClose} 
     >
       <div 
-        className="bg-purple-dark border border-black rounded-lg shadow-2xl w-[450px] max-h-[80vh] flex flex-col"
+        className="bg-purple-dark border border-black rounded-lg shadow-2xl w-[300px] max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()} 
       >
-        {/* Header & Suchleiste */}
         <div className="p-4 border-b border-gray-600 flex flex-col gap-3">
           <div className="flex justify-between items-center">
             <h2 className="text-white font-kyiv text-lg">Start a new chat</h2>

@@ -3,7 +3,7 @@ import React from 'react';
 
 // Main Wrapper Props
 type CardSectionProps = {
-  title: string;
+  title?: string;
   children: React.ReactNode;
 };
 
