@@ -34,9 +34,9 @@ export async function syncBerlinUsers() {
 	const rankMap = await fetchRanks(service, activeUsers);
 	const projectMap = await fetchProjects(service);
 
-	const users = activeUsers.map(u =>
-		buildUserBase(u, coalitionMap, rankMap, projectMap)
-	);
+	const users = activeUsers
+		.map(u => buildUserBase(u, coalitionMap, rankMap, projectMap))
+		.filter(u => u !== null);
 
 	await syncToDatabase(prisma, users);
 	console.log("\nDONEEEE");

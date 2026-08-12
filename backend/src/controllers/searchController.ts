@@ -30,10 +30,10 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 				PROJECTS.filter((project) => {
 					const searchableText = [
 						project.name,
-						project.slug,
-						project.description,
-						...(project.keywords ?? []),
-						...(project.skills ?? [])
+						// project.slug,
+						// project.description,
+						// ...(project.keywords ?? []),
+						// ...(project.skills ?? [])
 					]
 						.join(" ")
 						.toLowerCase();
@@ -54,7 +54,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			id: p.id,
 			title: p.name,
 			type: 'project',
-			url: `/project/${p.name}`
+			url: `/project/${(p.name).toLowerCase()}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);
