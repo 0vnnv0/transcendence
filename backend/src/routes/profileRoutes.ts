@@ -1,8 +1,9 @@
 /// <reference path="../types/fastify.d.ts" />
 
 //todo:
-// - wie soll availability aussehen??
-// - add checks for blocked users
+
+//if using delete need to add deleting the pfp
+
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { S3Client } from "@aws-sdk/client-s3";
@@ -27,8 +28,21 @@ const updateProfileSchema = {
 	  type: 'object',
 	  properties: {
 		bio: { type: 'string', maxLength: 300 },
-		displayName: { type: 'string', maxLength: 50 },
-//		availability: {type: }
+		availability: {
+			type: 'object',
+			properties: {
+			  workDaysPerWeek: { type: 'integer', minimum: 1, maximum: 7 },
+			  startDate: { type: 'string', format: 'date-time' },
+			  endDate: { type: 'string', format: 'date-time' },
+			  preferredDays: {
+				type: 'array',
+				items: { type: 'string' }
+			  },
+			  isRemote: { type: 'boolean' }
+			},
+			required: ['workDaysPerWeek', 'startDate', 'endDate', 'preferredDays'],
+			additionalProperties: false
+		  }
 	  },
 	  additionalProperties: false
 	},
@@ -41,10 +55,18 @@ const updateProfileSchema = {
 	}
 };
 
-//+availability?
+interface AvailabilityInput {
+    workDaysPerWeek: number;
+    startDate: string;
+    endDate: string;
+    preferredDays: string[];
+    isRemote?: boolean;
+}
+
 interface updateProfileBody {
 	bio?: string;
 	displayName?: string;
+	availability?: AvailabilityInput;
 }
 
 interface ProfileRoutesOptions {
@@ -67,53 +89,78 @@ export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoute
 		modProfileInfo(request, response, fastify, prisma));
 	fastify.delete('/profile/:userId', async (request, response) =>
 		deleteProfile(request, response, fastify, prisma));
-	fastify.post("/upload-url", async (req, reply) =>
+	fastify.get("/upload-url", async (req, reply) =>
 		getS3Url(req, reply, fastify, prisma));
 }
 
 
-async function modProfileInfo(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
-{
-	// use these next parts to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
-	const usingUserId = request.user.id;
-	if (!usingUserId)
-		return response.code(401).send({ error: "You are not logged in." });
+async function modProfileInfo(
+    request: FastifyRequest, 
+    response: FastifyReply, 
+    fastify: FastifyInstance, 
+    prisma: PrismaClient
+) {
+    const usingUserId = request.user?.id;
+    if (!usingUserId) {
+        return response.code(401).send({ error: "You are not logged in." });
+    }
 
-	const { userId } = request.params as { userId: Number };
-	if (Number(usingUserId) !== Number(userId))
-		return response.code(403).send({error: "you can't modify this Users account."})
+    const { userId } = request.params as { userId: number };
+    if (Number(usingUserId) !== Number(userId)) {
+        return response.code(403).send({ error: "You can't modify this user's account." });
+    }
 
-	const body = request.body as updateProfileBody;
-	if (Object.keys(body).length === 0) {
-		return response.code(400).send({ error: "No update data provided." });
-	}
+    const { availability, ...userFields } = request.body as updateProfileBody;
 
-	try {
-		const updatedUser = await prisma.user.update({
-		  where: { id: Number(userId) },
-		  data: body,
-		  select: {
-			id: true,
-			displayName: true,
-			bio: true
-		  }
-		});
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id: Number(userId) },
+            data: {
+                ...userFields,
+                ...(availability && {
+                    availability: {
+                        upsert: {
+                            create: {
+                                workDaysPerWeek: availability.workDaysPerWeek ?? 5,
+                                startDate: availability.startDate ? new Date(availability.startDate) : new Date(),
+                                endDate: availability.endDate ? new Date(availability.endDate) : new Date(),
+                                preferredDays: availability.preferredDays ?? [],
+                                isRemote: availability.isRemote ?? false
+                            },
+                            update: {
+                                ...(availability.workDaysPerWeek !== undefined && { workDaysPerWeek: availability.workDaysPerWeek }),
+                                ...(availability.startDate && { startDate: new Date(availability.startDate) }),
+                                ...(availability.endDate && { endDate: new Date(availability.endDate) }),
+                                ...(availability.preferredDays && { preferredDays: availability.preferredDays }),
+                                ...(availability.isRemote !== undefined && { isRemote: availability.isRemote })
+                            }
+                        }
+                    }
+                })
+            },
+            select: {
+                id: true,
+                bio: true,
+                intraName: true,
+                availability: true
+            }
+        });
 
-		return response.code(200).send({
-		  message: "Profile updated successfully.",
-		  user: updatedUser
-		});
-	
-	  } catch (error) {
-		fastify.log.error(error);
-		return response.code(500).send({ error: "An error occurred while updating the profile." });
-	  }
+        return response.code(200).send({
+            message: "Profile updated successfully.",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        fastify.log.error(error);
+        return response.code(500).send({ error: "An error occurred while updating the profile." });
+    }
 }
+
 
 async function getProfileInfo(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
-	// use this next part to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
-	const usingUserId = request.user.id;
+	const usingUserId = request.user?.id;
 	if (!usingUserId)
 		return response.code(401).send({ error: "You are not logged in." });
 
@@ -127,15 +174,12 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
             },
             select: {
 				id: true,
-				email: true,
 				intraName: true,
-				displayName: true,
 				campusName: true,
 				currentRank: true,
 				paceDeadline: true,
 				blackholeDate: true,
-				student: true,
-				availability: true,
+				coalitionName:true,
 				bio: true,
 				quests: {
 					include: {}
@@ -143,6 +187,10 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
 				projects: {
 					include: {}
 				},
+				availability: {
+					include: {}
+				},
+				newCore: true,
 			}
         });
 		if (!userData) {

@@ -7,7 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "seed": "tsx src/forTests/seedUsers.ts",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate",
-	"sync": "tsx src/scripts/askForSync.ts"
+    "sync": "tsx src/scripts/askForSync.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,11 +25,13 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
+    "jsonwebtoken": "^9.0.3",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "dotenv": "^17.4.2",
