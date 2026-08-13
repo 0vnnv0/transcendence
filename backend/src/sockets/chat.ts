@@ -1,18 +1,42 @@
 //TODO on this: 
-// - create chat function but for rest route 
-// - use online Users array?
-// - replace register with some form of authentication
-// - maybe mod the db schemas to improve this
-// - rn everything fails silently by returning and maybe logging, better error handling?
+
 
 
 import { Server } from "socket.io";
 import { Socket } from "socket.io";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+
+interface JwtPayload {
+    id: number;
+    username?: string;
+}
+
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 //this sets up all socket events needed for chatting
 export function setupChatSockets(io: Server, prisma: PrismaClient) {
 	const onlineUsers = new Map<number, string>();
+
+	io.use(async (socket: Socket, next) => {
+        try {
+            const token =
+                socket.handshake.auth?.token ||
+                socket.handshake.headers?.authorization?.split(" ")[1];
+            if (!token) {
+                return next(new Error("Authentication error: Token missing"));
+            }
+            const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+            if (!decoded?.id) {
+                return next(new Error("Authentication error: Invalid payload"));
+            }
+            socket.data.userId = Number(decoded.id);
+            next();
+        } catch (err) {
+            return next(new Error("Authentication error: Unauthorized"));
+        }
+    });
 
 	io.on("connection", (socket) => {
 		console.log("Socket connected:", socket.id);
@@ -35,10 +59,10 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 async function getUsernameById(prisma: PrismaClient,userId: number): Promise<string | null> {
 	const user = await prisma.user.findUnique({
 	  where: { id: userId },
-	  select: { displayName: true },
+	  select: { intraName: true },
 	});
   
-	return user ? user.displayName : null;
+	return user ? user.intraName : null;
   }
 
 //this temporarily registers different users, needs to be changed once we add authentication
@@ -53,9 +77,7 @@ async function registerUser(
     prisma: PrismaClient,
     onlineUsers: Map<number, string>
 ) {
-    const id = Number(userId);
-
-    socket.data.userId = id;
+    const id = socket.data.userId as number;
 
 	const username = await getUsernameById(prisma, id);
 	if (!username)

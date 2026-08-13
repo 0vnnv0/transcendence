@@ -138,7 +138,7 @@ async function upload() {
 
         // Step 1: Request pre-signed POST credentials
         const urlResponse = await fetch("http://localhost:3000/upload-url", {
-            method: "POST",
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
