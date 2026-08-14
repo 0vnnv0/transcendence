@@ -48,6 +48,7 @@ function MyProfile() {
 
 	const { userName } = useAuth();
 	const userKey = userName !== "Guest" ? userName : null;
+	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
 	const { data: profile, isLoading, isError } = useUserProfile(userKey);
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
@@ -74,7 +75,13 @@ function MyProfile() {
 				location: formData.location,
 			},
 			{
-				onSuccess: () => setIsEditing(false),
+				onSuccess: () => {
+					setIsEditing(false);
+					setErrorMsg(null); // clear any previous error on a fresh success
+				},
+				onError: (error) => {
+					setErrorMsg(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+				},
 			}
 		);
 	};
@@ -88,7 +95,8 @@ function MyProfile() {
 		});
 	}, [profile, reset]);
 
-	const hasSavedData = (profile?.preferredDays?.length ?? 0) > 0;
+	const hasSavedData: boolean = (profile?.preferredDays?.length ?? 0) > 0;
+	const disabled = hasSavedData && !isEditing;
 
 	let error;
 	if (isLoading) {
@@ -145,7 +153,7 @@ function MyProfile() {
 				<div>
 					<h2 className="text-lead mb-2">Your availability</h2>
 					<div className="group relative p-6 bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow">
-						{!isEditing && !hasSavedData && (
+						{!isEditing && hasSavedData && (
 							<Button
 								className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
 								size="sm"
@@ -160,7 +168,7 @@ function MyProfile() {
 							className="flex flex-row justify-between"
 						>
 							<div className="flex flex-row gap-6">
-								<div className="mb-1">
+								<div>
 									<label className="text-black block text-xs font-medium mb-2">Days per week</label>
 									<Controller
 										name="days"
@@ -180,14 +188,13 @@ function MyProfile() {
 												]}
 												value={value}
 												onChange={onChange}
-												disabled={!hasSavedData}
+												disabled={disabled}
 											/>
 										)}
 									/>
-									{errors.days && <p className="text-red-500 text-xs mt-1">{String(errors.days.message)}</p>}
 								</div>
 
-								<div className="mb-1">
+								<div>
 									<label className="text-black block text-xs font-medium mb-2">Working from</label>
 									<Controller
 										name="location"
@@ -201,31 +208,27 @@ function MyProfile() {
 													{ value: 'campus', label: 'Campus' },
 													{ value: 'remote', label: 'Remote' },
 												]}
-												disabled={!hasSavedData}
+												disabled={disabled}
 											/>
 										)}
 									/>
 								</div>
 							</div>
 
-							{isEditing && (
+							{(isEditing || !hasSavedData) && (
 								<div className="flex gap-2 h-min self-end">
-									<Button 
-										type="button"
-										variant="secondary"
-										size='sm'
-										onClick={() => setIsEditing(false)}
-									>Cancel</Button>
 									<Button 
 										type="submit" 
 										size='sm'
-										disabled={updateProfileMutation.isPending} 
+										disabled={updateProfileMutation.isPending}
 									>
 										{updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
 									</Button>
 								</div>
 							)}
 						</form>
+						{errors.days && <p className="text-red-500 text-xs mt-2">{String(errors.days.message)}</p>}
+						{errorMsg && <p className="text-red-500 text-xs mt-2">{errorMsg}</p>}
 					</div>
 				</div>
 				<CardSection title="User Info">
