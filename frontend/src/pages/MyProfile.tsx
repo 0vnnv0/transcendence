@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { useUpdateAvatar } from '../hooks/useUsers'
+import { useRef, useState, useEffect } from 'react'
+import { useUpdateAvatar, useUpdateProfile } from '../hooks/useUsers'
 import Navbar from '../components/ui/Navbar/Navbar'
 import Button from '../components/ui/Button/Button'
 import CardSection from '../components/sections/CardSection'
@@ -9,6 +9,15 @@ import { useAuth } from '../components/context/AuthContext'
 import { useUserProfile } from '../hooks/useUsers';
 import { useRecommendedProjects } from '../hooks/useProjects'
 import { useNextProject } from '../hooks/useProjects'
+import { useForm } from 'react-hook-form'
+import { Controller } from "react-hook-form";
+import Toggle from '../components/ui/Toggle/Toggle'
+import MultiSelect from '../components/ui/Multiselect/Multiselect'
+
+type ProfileFormValues = {
+	days: string[];
+	location: 'campus' | 'remote';
+};
 
 function renderProjects(data: any, isLoading: boolean, isError: boolean, label: string) {
 	if (isLoading) {
@@ -47,12 +56,39 @@ function MyProfile() {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const updateAvatar = useUpdateAvatar(userKey);
 
+	const { handleSubmit, control, reset, formState: { errors } } = useForm<ProfileFormValues>({ defaultValues: { days: [], location: 'campus' } });
+	const updateProfileMutation = useUpdateProfile(userName);
+	const [isEditing, setIsEditing] = useState(false);
+
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0]
 		if (!file) return
 		updateAvatar.mutate(file)
 		e.target.value = '' // allow re-selecting the same file later
 	}
+
+	const updateUserData = (formData: any) => {
+		updateProfileMutation.mutate(
+			{
+				days: formData.days,
+				location: formData.location,
+			},
+			{
+				onSuccess: () => setIsEditing(false),
+			}
+		);
+	};
+
+	// we need this cause the controller's defaultValue only fires on first mount
+	useEffect(() => {
+		if (!profile) return;
+		reset({
+			days: profile.preferredDays ?? [],
+			location: profile.isRemote ? 'remote' : 'campus',
+		});
+	}, [profile, reset]);
+
+	const hasSavedData = (profile?.preferredDays?.length ?? 0) > 0;
 
 	let error;
 	if (isLoading) {
@@ -63,7 +99,6 @@ function MyProfile() {
 	const content = renderProjects(currentProject, currentProjectLoading, currentProjectError, "current project");
 	const recContent = renderProjects(recProjects, recProjectsLoading, recProjectsError, "recommended projects");
 
-	console.log('Profile ', profile);
   return (
 		<section
 			className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat"
@@ -95,20 +130,102 @@ function MyProfile() {
 						<h1 className="text-title">{userName}</h1>
 						<p className="text-subtitle mb-4">{profile?.firstName} {profile?.lastName}</p>
 						<div className="flex gap-2">
-							{userName === profile?.intraName &&
-								<Button 
-									size="md" 
-									icon="message" 
-								>Message</Button>
+							{userName === profile?.login &&
+								<Button size="md" icon="message">Message</Button>
 							}
 							<Button 
 								size="md"
-								variant="secondary"
-								icon="message" 
+								variant="tertiary"
 								href={profile?.intraUrl}
 								externalLink
 							>Intra Profile</Button>
 						</div>
+					</div>
+				</div>
+				<div>
+					<h2 className="text-lead mb-2">Your availability</h2>
+					<div className="group relative p-6 bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+						{!isEditing && !hasSavedData && (
+							<Button
+								className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+								size="sm"
+								variant="secondary"
+								icon="edit"
+								onClick={() => setIsEditing(true)}
+							>Edit</Button>
+						)}
+
+						<form 
+							onSubmit={handleSubmit(updateUserData)} 
+							className="flex flex-row justify-between"
+						>
+							<div className="flex flex-row gap-6">
+								<div className="mb-1">
+									<label className="text-black block text-xs font-medium mb-2">Days per week</label>
+									<Controller
+										name="days"
+										control={control}
+										defaultValue={profile?.preferredDays ?? []}
+										rules={{ validate: (value) => value.length > 0 || "Select at least one day" }}
+										render={({ field: { value, onChange } }) => (
+											<MultiSelect
+												options={[
+													{ label: "Mon", value: "monday" },
+													{ label: "Tue", value: "tuesday" },
+													{ label: "Wed", value: "wednesday" },
+													{ label: "Thu", value: "thursday" },
+													{ label: "Fri", value: "friday" },
+													{ label: "Sat", value: "saturday" },
+													{ label: "Sun", value: "sunday" },
+												]}
+												value={value}
+												onChange={onChange}
+												disabled={!hasSavedData}
+											/>
+										)}
+									/>
+									{errors.days && <p className="text-red-500 text-xs mt-1">{String(errors.days.message)}</p>}
+								</div>
+
+								<div className="mb-1">
+									<label className="text-black block text-xs font-medium mb-2">Working from</label>
+									<Controller
+										name="location"
+										control={control}
+										defaultValue={profile?.isRemote ? "remote" : "campus"}
+										render={({ field: { value, onChange } }) => (
+											<Toggle
+												value={value}
+												onChange={onChange}
+												options={[
+													{ value: 'campus', label: 'Campus' },
+													{ value: 'remote', label: 'Remote' },
+												]}
+												disabled={!hasSavedData}
+											/>
+										)}
+									/>
+								</div>
+							</div>
+
+							{isEditing && (
+								<div className="flex gap-2 h-min self-end">
+									<Button 
+										type="button"
+										variant="secondary"
+										size='sm'
+										onClick={() => setIsEditing(false)}
+									>Cancel</Button>
+									<Button 
+										type="submit" 
+										size='sm'
+										disabled={updateProfileMutation.isPending} 
+									>
+										{updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
+									</Button>
+								</div>
+							)}
+						</form>
 					</div>
 				</div>
 				<CardSection title="User Info">
@@ -125,6 +242,7 @@ function MyProfile() {
 						/>
 					</CardSection.Body>
 				</CardSection>
+
 				{currentProject &&
 					<CardSection title="Current projects">
 						<CardSection.Body viewMode="grid" columns={2}>

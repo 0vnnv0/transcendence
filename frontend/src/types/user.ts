@@ -23,8 +23,22 @@ export interface FullUserProfile {
   coalitionName: string; // gibts schon
   activeProjects: ActiveProject[];
   friendship?: Friendship | null;
+  preferredDays: ("Mon" | "Tue" | "Wed" | "Thurs" | "Fri" | "Sat" | "Sun")[];
+  isRemote: boolean;
 }
 
 export interface UpdateAvatarResponse {
   avatarUrl: string
+}
+
+export interface UpdateProfilePayload {
+	days: string[];
+	location: string;
+}
+
+export interface UpdateProfileResponse {
+	// shape this to match what modProfileInfo actually returns
+	id: string;
+	days: string[];
+	location: string;
 }
