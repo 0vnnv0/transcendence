@@ -118,3 +118,15 @@ export const updateAvatar = async (
 
   return response.json() as Promise<UpdateAvatarResponse>;
 };
+
+export const fetchActiveUsersByProject = async (projectName: string): Promise<FullUserProfile[]> => {
+  const response = await fetch(
+    `${API_URL}/users?active=${encodeURIComponent(projectName)}`
+  );
+
+  if (!response.ok) {
+    throw new Error('Fehler beim Laden der aktiven User');
+  }
+
+  return response.json();
+};
