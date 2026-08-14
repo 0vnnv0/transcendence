@@ -1,7 +1,8 @@
 import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services/user.service';
 import type { ChatUser } from '../types/chat'
+import type { FullUserProfile } from '../types/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateAvatar } from '../services/user.service';
+import { updateAvatar, fetchActiveUsersByProject } from '../services/user.service';
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -78,3 +79,11 @@ export function useUpdateAvatar(userKey: string | null) {
     // },
   })
 }
+
+export const useActiveUsersByProject = (projectName: string | undefined) => {
+  return useQuery<FullUserProfile[], Error>({
+    queryKey: ['users', 'active', projectName],
+    queryFn: () => fetchActiveUsersByProject(projectName as string),
+    enabled: !!projectName && projectName.trim().length > 0,
+  });
+};
