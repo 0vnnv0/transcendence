@@ -1,5 +1,5 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useFriends } from '../hooks/useFriends';
+import { useFriends, useAddFriend } from '../hooks/useFriends';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 
