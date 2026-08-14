@@ -1,5 +1,5 @@
 import type { ChatUser } from '../types/chat';
-import type { FullUserProfile, UpdateAvatarResponse } from "../types/user";
+import type { FullUserProfile, UpdateAvatarResponse, UpdateProfilePayload, UpdateProfileResponse } from "../types/user";
 
 const API_URL = '/api'; 
 
@@ -100,7 +100,7 @@ export const updateAvatar = async (
   const formData = new FormData();
   formData.append('avatar', file);
 
-  const response = await fetch(`/api/users/${login}/avatar`, {
+  const response = await fetch(`/api/users/${login}/upload-url`, {
     method: 'PATCH',
     headers: {
       // No Content-Type here — the browser sets multipart/form-data
@@ -129,4 +129,27 @@ export const fetchActiveUsersByProject = async (projectName: string): Promise<Fu
   }
 
   return response.json();
+};
+
+export const updateUserProfile = async (
+	userId: string,
+	data: UpdateProfilePayload
+): Promise<UpdateProfileResponse> => {
+	const token = localStorage.getItem('token');
+
+	const response = await fetch(`/profile/${userId}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token || ''}`,
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json().catch(() => ({}));
+		throw new Error(errorData.message || 'Failed to update profile');
+	}
+
+	return response.json() as Promise<UpdateProfileResponse>;
 };

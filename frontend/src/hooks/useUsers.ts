@@ -2,7 +2,7 @@ import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services
 import type { ChatUser } from '../types/chat'
 import type { FullUserProfile } from '../types/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateAvatar, fetchActiveUsersByProject } from '../services/user.service';
+import { updateAvatar, fetchActiveUsersByProject, updateUserProfile } from '../services/user.service';
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -87,3 +87,15 @@ export const useActiveUsersByProject = (projectName: string | undefined) => {
     enabled: !!projectName && projectName.trim().length > 0,
   });
 };
+
+export function useUpdateProfile(userId: string) {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: { days: string[]; location: string }) =>
+			updateUserProfile(userId, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+		},
+	});
+}

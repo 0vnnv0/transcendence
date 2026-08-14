@@ -1,5 +1,4 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import projectsData from '../data/projects.json';
 import UserCard from '../components/ui/Cards/UserCard';
@@ -7,12 +6,9 @@ import CardSection from '../components/sections/CardSection';
 import TagList from '../components/ui/TagList/TagList';
 import type { TagData } from '../components/ui/TagList/TagList';
 import Button from '../components/ui/Button/Button';
-import ViewModeToggle from '../components/ui/Toggle/Toggle';
+import ViewModeToggle from '../components/ui/Toggle/ViewModeToggle';
 import { useActiveUsersByProject } from '../hooks/useUsers';
 import { useViewModeStore } from '../store/viewModeStore';
-
-
-type ViewMode = 'grid' | 'list';
 
 function Certain_Project() {
 
@@ -57,16 +53,16 @@ function Certain_Project() {
 				<Navbar />
 			</div>
 			<div className="flex flex-col flex-1 p-10 gap-6">
-				{project?.keywords && (
-					<div className="absolute top-4 right-4">
+				<div className="flex flex-row justify-between">
+					<Button 
+						size="sm"
+						variant="secondary"
+						icon="arrowLeft"
+					>Back</Button>
+					{project?.keywords && (
 						<TagList tags={projectTags}/>
-					</div>
-				)}
-				<Button 
-					size="sm"
-					variant="secondary"
-					icon="arrowLeft"
-				>Back</Button>
+					)}
+				</div>
 				<h1 className="font-[Gasoek_One] text-6xl text-black">
 					{project?.name}
 				</h1>
