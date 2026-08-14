@@ -17,47 +17,40 @@ export function getUser(prisma: PrismaClient) {
 		// 	where: { login }
 		// }); --> ist jetzt target_user
 
-		// 2. Zuerst in der Haupt-User-Tabelle suchen
-        let mainUser: any = await prisma.user.findUnique({
-            where: { intraName: login }
-        });
+		// 2. Parallel oder nacheinander in beiden Tabellen suchen
+        const [mainUser, testUser] = await Promise.all([
+            prisma.user.findUnique({ where: { intraName: login } }),
+            prisma.testUser.findUnique({ where: { login } })
+        ]);
 
-        let testUser: any = null;
-
-        // 3. Falls nicht in User, in TestUser suchen
-        if (!mainUser) {
-            testUser = await prisma.testUser.findUnique({
-                where: { login }
-            });
-        } else {
-            testUser = await prisma.testUser.findUnique({
-                where: { login: mainUser.intraName }
-            });
-        }
-
-		const user = mainUser ?? testUser;
-
-		if (!user) {
+        // 3. Falls weder mainUser noch testUser existieren -> 404
+        if (!mainUser && !testUser) {
             return reply.status(404).send({
                 error: "User not found"
             });
         }
-
-		// 5. Freundschaftsstatus ermitteln (Standard ist 'NONE')
+// 4. Freundschaftsstatus initialisieren
         let friendshipStatus = 'NONE';
         let friendshipId: number | null = null;
 
-		if (currentUserId && 'intraName' in user) {
+        // 5. Status ermitteln, WENN mainUser existiert und ein Token mitgeschickt wurde
+        if (currentUserId && mainUser) {
             const result = await friendService.getFriendshipStatusWith(
                 currentUserId,
-                user.id
+                mainUser.id
             );
             friendshipStatus = result.status;
             friendshipId = result.friendshipId;
         }
 
-		return reply.send({
-            ...user,
+        // 6. Antwort zusammenbauen: 
+        // WICHTIG: mainUser hat Vorrang vor testUser, damit id & intraName stimmen!
+        const baseData = mainUser ?? testUser;
+
+        return reply.send({
+            ...baseData,
+            // Sicherstellen, dass login/intraName konsistent zurückgegeben werden
+            intraName: mainUser?.intraName ?? testUser?.login,
             avatarUrl: testUser?.avatarUrl ?? null,
             friendshipStatus,
             friendshipId

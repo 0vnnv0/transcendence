@@ -5,37 +5,41 @@ import prisma from "../lib/prisma.js";
 export class FriendService {
 
 	async getFriendsList(userId: number) {
-		const friendships = await prisma.friendship.findMany({
-			where: {
-				status: 'ACCEPTED',
-				OR: [
-					{ senderId: userId },
-					{ receiverId: userId }
-				]
-			},
-			include: {
-				sender: {
-					select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true}
-				},
-				receiver: {
-					select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true}
-				}
-			}
-		});
-		// senderId und receiverId tauschen, damit immer friend in der map landet
-		return friendships.map((f: any) => {
-			const friendProfile = friendships.senderId === userId ? friendships.receiver : friendships.sender;
-			return {
-				friendshipId: f.id,
-				avatarUrl: f.avatarUrl,
-				...friendProfile
-			};
-		});
-		
-	}
+    const friendships = await prisma.friendship.findMany({
+        where: {
+            status: 'ACCEPTED',
+            OR: [
+                { senderId: userId },
+                { receiverId: userId }
+            ]
+        },
+        include: {
+            sender: {
+                select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true }
+            },
+            receiver: {
+                select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true }
+            }
+        }
+    });
+
+    return friendships.map((f: any) => {
+        // Richtige Variable 'f' nutzen!
+        const friendProfile = f.senderId === userId ? f.receiver : f.sender;
+
+        return {
+            friendshipId: f.id,
+            id: friendProfile.id,
+            intraName: friendProfile.intraName,
+            intraEmail: friendProfile.intraEmail,
+            isOnline: friendProfile.isOnline,
+            avatarUrl: friendProfile.avatarUrl
+        };
+    });
+}
 
 	async getPendingRequests(userId: number) {
-		return prisma.friendship.findMany({
+		const requests = await prisma.friendship.findMany({
 			where: {
 				receiverId: userId,
 				status: 'PENDING'
@@ -46,6 +50,14 @@ export class FriendService {
 				}
 			}
 		});
+
+		return requests.map((r: any) => ({
+			friendshipId: r.id,
+			id: r.sender.id,
+			intraName: r.sender.intraName,
+			intraEmail: r.sender.intraEmail,
+			avatarUrl: r.sender.avatarUrl
+		}));
 	}
 
 	async getFriendshipStatusWith(currentUserId: number, targetUserId: number) {
@@ -81,25 +93,30 @@ export class FriendService {
 		return { status: 'NONE', friendshipId: null };
 	}
 
-	async sendFriendRequest(senderId: number, targetIntraName: string) {
+	async sendFriendRequest(senderId: number, receiverId: number) {
 		// in User Tabelle suchen, ob existiert
-		let targetUser = await prisma.user.findUnique({
-			where: { intraName: targetIntraName }
+		let receiver = await prisma.user.findUnique({
+			where: { id: receiverId }
 		});
 
-		if (!targetUser) {
+		if (!receiver) {
+			const recId = await prisma.testUser.findUnique({
+				where: { id: receiverId }
+			});
+			const intraName = recId.login;
 			const testUser = await prisma.testUser.findUnique({
-				where: { login: targetIntraName }
+				where: { login: intraName }
 			});
 
 			if (!testUser) {
 				throw new Error('User not found');
 			}
 
-			targetUser = await prisma.user.create({
+			receiver = await prisma.user.create({
 				data: {
 					intraName: testUser.login,
 					intraEmail: testUser.intraEmail || `${testUser.login}@student.42berlin.de`,
+					avatarUrl: testUser.avatarUrl,
 					campusID: testUser.campusId || 51,
 					campusName: testUser.campusName || 'Berlin',
 					currentRank: testUser.currentRank || 0,
@@ -111,7 +128,7 @@ export class FriendService {
 			});
 		}
 
-		if (targetUser.id === senderId) {
+		if (receiver.id === senderId) {
 			throw new Error('Cannot add yourself as a friend');
 		}
 
@@ -119,8 +136,8 @@ export class FriendService {
 		const existing = await prisma.friendship.findFirst({
 			where: {
 				OR: [
-					{ senderId, receiverId: targetUser.id },
-					{ senderId: targetUser.id, receiverId: senderId }
+					{ senderId, receiverId: receiver.id },
+					{ senderId: receiver.id, receiverId: senderId }
 				]
 			}
 		});
@@ -133,25 +150,30 @@ export class FriendService {
 		return prisma.friendship.create({
 			data: {
 				senderId,
-				receiverId: targetUser.id,
+				receiverId: receiver.id,
 				status: 'PENDING'
 			}
 		});
 	}
 
-	async acceptFriendRequest(userId: number, friendshipId: number) {
+
+	async acceptFriendRequest(receiverId: number, senderId: number) {
 
 		const request = await prisma.friendship.findUnique({
-			where: { id: friendshipId }
+			where: {
+				senderId: senderId,
+				receiverId: receiverId,
+				status: 'PENDING'
+			}
 		});
 
-		if (!request || request.receiverId !== userId) {
-			throw new Error('Request not found or unauthorized');
-		}
+		if (!request) {
+        throw new Error('Friend request not found or already accepted');
+    }
 
 		return prisma.friendship.update({
-			where: { id: friendshipId },
-			data: { status: 'ACCEPTED' }
+			where: { id: request.id },
+        	data: { status: 'ACCEPTED' }
 		});
 	}
 

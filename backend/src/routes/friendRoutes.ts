@@ -9,6 +9,6 @@ export async function friendRoutes(server: FastifyInstance) {
   server.get('/friends', controller.getFriends);
   server.get('/friends/requests', controller.getPendingRequests);
   server.post('/friends/request', controller.sendRequest);
-  server.put('/friends/accept/:id', controller.acceptRequest);
+  server.put('/api/friends/request', controller.acceptRequest);
   server.delete('/friends/remove/:id', controller.removeFriend);
 }

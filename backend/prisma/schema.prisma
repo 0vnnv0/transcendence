@@ -61,6 +61,7 @@ model User {
 	coalitionSlug 	String?										//check
 
 	bio				String?
+	avatarUrl		String?
 	quests			UserQuests?
 	projects		UserProjects[]
 	availability	Availability?
