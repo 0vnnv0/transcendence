@@ -18,14 +18,14 @@ const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
     <div className={`inline-flex gap-1 ${className}`}>
       <Button
         icon="grid" 
-        variant={viewMode === 'grid' ? 'primary' : 'secondary'}
+        variant={viewMode === 'grid' ? 'secondary' : 'tertiary'}
         size="sm"
         onClick={() => onToggle('grid')}
         aria-label="Grid view"
       />
       <Button
         icon="list"
-        variant={viewMode === 'list' ? 'primary' : 'secondary'}
+        variant={viewMode === 'list' ? 'secondary' : 'tertiary'}
         size="sm"
         onClick={() => onToggle('list')}
         aria-label="List view"

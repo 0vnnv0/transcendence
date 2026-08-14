@@ -9,6 +9,7 @@ import type { TagData } from '../components/ui/TagList/TagList';
 import Button from '../components/ui/Button/Button';
 import ViewModeToggle from '../components/ui/Toggle/Toggle';
 import { useActiveUsersByProject } from '../hooks/useUsers';
+import { useViewModeStore } from '../store/viewModeStore';
 
 
 type ViewMode = 'grid' | 'list';
@@ -19,7 +20,8 @@ function Certain_Project() {
 	const project = projectsData.find(p => p.slug === id);
 	const { data: activeUsers, isLoading } = useActiveUsersByProject(project?.name);
 
-	const [viewMode, setViewMode] = useState<ViewMode>('grid');
+	// const [viewMode, setViewMode] = useState<ViewMode>('grid');
+	const { viewMode, setViewMode } = useViewModeStore();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
 	const teamSize = (project?.teamSize?.min === project?.teamSize?.max) ? project?.teamSize?.min : `${project?.teamSize?.min} - ${project?.teamSize?.max}`;
