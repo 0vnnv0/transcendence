@@ -80,13 +80,14 @@ export function useUpdateAvatar(userKey: string | null) {
   })
 }
 
-export const useActiveUsersByProject = (projectName: string | undefined) => {
-  return useQuery<FullUserProfile[], Error>({
-    queryKey: ['users', 'active', projectName],
-    queryFn: () => fetchActiveUsersByProject(projectName as string),
-    enabled: !!projectName && projectName.trim().length > 0,
-  });
-};
+export function useActiveUsersByProject(username: string | null, projectName: string) {
+	return useQuery({
+		queryKey: ['activeUsers', username, projectName],
+		queryFn: () => fetchActiveUsersByProject(username!, projectName),
+		enabled: !!username, // don't fire the request at all when there's no real user
+		retry: false,
+	});
+}
 
 export function useUpdateProfile(userId: string) {
 	const queryClient = useQueryClient();

@@ -119,16 +119,16 @@ export const updateAvatar = async (
   return response.json() as Promise<UpdateAvatarResponse>;
 };
 
-export const fetchActiveUsersByProject = async (projectName: string): Promise<FullUserProfile[]> => {
-  const response = await fetch(
-    `${API_URL}/users?active=${encodeURIComponent(projectName)}`
-  );
+export const fetchActiveUsersByProject = async (username: string, projectName: string): Promise<FullUserProfile[]> => {
+  const response = await fetch(`/api/users/${username}/${projectName}/matches`);
 
   if (!response.ok) {
-    throw new Error('Fehler beim Laden der aktiven User');
+    const errorBody = await response.json().catch(() => null);
+    throw new Error(errorBody?.error ?? 'Fehler beim Laden der aktiven User');
   }
 
-  return response.json();
+  const data: { matches: FullUserProfile[] } = await response.json();
+  return data.matches;
 };
 
 export const updateUserProfile = async (

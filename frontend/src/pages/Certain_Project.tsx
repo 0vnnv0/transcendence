@@ -9,13 +9,15 @@ import Button from '../components/ui/Button/Button';
 import ViewModeToggle from '../components/ui/Toggle/ViewModeToggle';
 import { useActiveUsersByProject } from '../hooks/useUsers';
 import { useViewModeStore } from '../store/viewModeStore';
+import { useAuth } from '../components/context/AuthContext';
 
 function Certain_Project() {
 
 	const { id } = useParams<{ id: string }>();
+	const { userName } = useAuth();
 	const project = projectsData.find(p => p.slug === id);
-	const { data: activeUsers, isLoading } = useActiveUsersByProject(project?.name);
-
+	const { data: activeUsers, isLoading, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
+	console.log("Active Users: ", activeUsers);
 	// const [viewMode, setViewMode] = useState<ViewMode>('grid');
 	const { viewMode, setViewMode } = useViewModeStore();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
@@ -83,6 +85,9 @@ function Certain_Project() {
 						{availableUsers}
 					</CardSection.Body>
 				</CardSection>
+				{isError && 
+					<p className="text-subtitle text-red-500">{error instanceof Error ? error.message : 'Something went wrong'}</p>
+				}
 			</div>
 		</section>
   )
