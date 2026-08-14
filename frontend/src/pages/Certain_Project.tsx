@@ -71,7 +71,7 @@ function Certain_Project() {
 					{project?.name}
 				</h1>
 				<p className="text-paragraph-big-bold">{project.description}</p>
-				<CardSection title="Feed">
+				{/* <CardSection title="Feed">
 					<CardSection.Body viewMode="list">
 						<UserCard
 							username="junruh"
@@ -80,7 +80,7 @@ function Certain_Project() {
 							ctaText='Contact'
 						/>
 					</CardSection.Body>
-				</CardSection>
+				</CardSection> */}
 				<ViewModeToggle viewMode={viewMode} onToggle={setViewMode} />
 				<CardSection title="Available Students">
 					<CardSection.Body viewMode={viewMode}>
