@@ -22,14 +22,14 @@ export class FriendController {
 	// POST /api/friends/request
 	async sendRequest(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { targetIntraName } = request.body as { targetIntraName: string };
+		const { targetUserId } = request.body as { targetUserId: number };
 
-		if (!targetIntraName) {
-			return reply.status(400).send({ error: 'targetIntraName is required'});
+		if (!targetUserId) {
+			return reply.status(400).send({ error: 'targetUserId is required'});
 		}
 
 		try {
-			const friendship = await friendService.sendFriendRequest(userId, targetIntraName);
+			const friendship = await friendService.sendFriendRequest(userId, targetUserId);
 			return reply.status(201).send({ message: 'Friend request sent', friendship });
 		} catch (err: any) {
 			return reply.status(400).send({ error: err.message });
@@ -39,10 +39,13 @@ export class FriendController {
 	// PUT /api/friends/accept/:id
 	async acceptRequest(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { id } = request.params as { id: string };
+		const { senderId } = request.params as { senderId: string };
 
+		if (!senderId) {
+			return reply.status(400).send({ error: 'senderId is required' });
+		}
 		try {
-			await friendService.acceptFriendRequest(userId, parseInt(id, 10));
+			await friendService.acceptFriendRequest(userId, parseInt(senderId, 10));
 			return reply.send({ message: 'Friend request accepted' });
 		} catch (err: any) {
 			return reply.status(400).send({ error: err.message });

@@ -50,6 +50,7 @@ export class AuthService {
 		create: {
 			intraName: userData.login,
 			intraEmail: userData.email,
+			avatarUrl: userData.url,
 			campusID: campus.id,
 			campusName: campus.name,
 			currentRank: Math.floor(userData.level || 0),
