@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Button from '../components/ui/Button/Button'
 import { fetchUserProfile } from '../services/user.service';
 import { useStartChat } from '../hooks/useChat';
+import { useAddFriend } from '../hooks/useFriends';
 
 export function useUserProfile(login: string | null | undefined) {
     return useQuery({
@@ -22,7 +23,7 @@ function OtherProfile() {
 	const currentUserId = 1;
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
 	const { mutate: startChat, isPending: isStartingChat } = useStartChat();
-
+    const { mutate: addFriend, isPending: isAddingFriend, isSuccess: isFriendRequestSent } = useAddFriend();
     let mainContent = null;
 
     if (isLoading) {
@@ -41,8 +42,6 @@ function OtherProfile() {
             </div>
         );
     } else {
-        // Die Daten sind da! Wir rendern das Profil.
-        // Das <input type="file"> ist entfernt, da Fremd-Profil.
         mainContent = (
             <div className="flex flex-col flex-1 gap-16">
                 <div className="flex flex-row gap-8 w-full">
@@ -77,6 +76,19 @@ function OtherProfile() {
                             >
                                 Intra Profile
                             </Button>
+                            <Button
+                                size="md"
+                                icon="message"
+                                //icon={isFriendRequestSent ? "check" : "user-plus"} 
+                                onClick={() => addFriend(profile.id)}
+                                disabled={isAddingFriend || isFriendRequestSent} 
+                            >
+                                {isAddingFriend 
+                                    ? 'Sending...' 
+                                    : isFriendRequestSent 
+                                        ? 'Request Sent' 
+                                        : 'Add as Friend'}
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -107,9 +119,6 @@ function OtherProfile() {
         );
     }
 
-    // --------------------------------------------------------
-    // Das finale Seiten-Gerüst
-    // --------------------------------------------------------
     return (
         <section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
             <div className="w-70 flex-none">

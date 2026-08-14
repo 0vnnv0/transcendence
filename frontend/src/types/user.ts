@@ -1,3 +1,9 @@
+export interface Friendship {
+  id: number;
+  senderId: number;
+  receiverId: number;
+  status: 'PENDING' | 'ACCEPTED' | 'BLOCKED'; // je nachdem, was dein Backend nutzt
+}
 
 export interface ActiveProject {
   slug: string;
@@ -16,6 +22,7 @@ export interface FullUserProfile {
   currentRank: number; // gibts schon
   coalitionName: string; // gibts schon
   activeProjects: ActiveProject[];
+  friendship?: Friendship | null;
 }
 
 export interface UpdateAvatarResponse {
