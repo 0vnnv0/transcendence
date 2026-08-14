@@ -57,16 +57,16 @@ function Certain_Project() {
 				<Navbar />
 			</div>
 			<div className="flex flex-col flex-1 p-10 gap-6">
-				{project?.keywords && (
-					<div className="absolute top-4 right-4">
+				<div className="flex flex-row justify-between">
+					<Button 
+						size="sm"
+						variant="secondary"
+						icon="arrowLeft"
+					>Back</Button>
+					{project?.keywords && (
 						<TagList tags={projectTags}/>
-					</div>
-				)}
-				<Button 
-					size="sm"
-					variant="secondary"
-					icon="arrowLeft"
-				>Back</Button>
+					)}
+				</div>
 				<h1 className="font-[Gasoek_One] text-6xl text-black">
 					{project?.name}
 				</h1>
