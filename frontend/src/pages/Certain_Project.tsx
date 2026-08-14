@@ -9,6 +9,7 @@ import type { TagData } from '../components/ui/TagList/TagList';
 import Button from '../components/ui/Button/Button';
 import ViewModeToggle from '../components/ui/Toggle/Toggle';
 import { useActiveUsersByProject } from '../hooks/useUsers';
+import { useViewModeStore } from '../store/viewModeStore';
 
 
 type ViewMode = 'grid' | 'list';
@@ -19,7 +20,8 @@ function Certain_Project() {
 	const project = projectsData.find(p => p.slug === id);
 	const { data: activeUsers, isLoading } = useActiveUsersByProject(project?.name);
 
-	const [viewMode, setViewMode] = useState<ViewMode>('grid');
+	// const [viewMode, setViewMode] = useState<ViewMode>('grid');
+	const { viewMode, setViewMode } = useViewModeStore();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
 	const teamSize = (project?.teamSize?.min === project?.teamSize?.max) ? project?.teamSize?.min : `${project?.teamSize?.min} - ${project?.teamSize?.max}`;
@@ -69,7 +71,7 @@ function Certain_Project() {
 					{project?.name}
 				</h1>
 				<p className="text-paragraph-big-bold">{project.description}</p>
-				<CardSection title="Feed">
+				{/* <CardSection title="Feed">
 					<CardSection.Body viewMode="list">
 						<UserCard
 							username="junruh"
@@ -78,7 +80,7 @@ function Certain_Project() {
 							ctaText='Contact'
 						/>
 					</CardSection.Body>
-				</CardSection>
+				</CardSection> */}
 				<ViewModeToggle viewMode={viewMode} onToggle={setViewMode} />
 				<CardSection title="Available Students">
 					<CardSection.Body viewMode={viewMode}>

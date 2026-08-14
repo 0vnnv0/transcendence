@@ -7,7 +7,7 @@ import type { CustomIconName } from '../Icon/CustomIcons';
 // ButtonHTMLAttributes tells TS the Button should accept any standard HTML button attribute
 // has to be HTMLButtonElement and not <a> or <div>
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   icon?: CustomIconName;
   href?: string;
@@ -37,6 +37,7 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: "bg-purple hover:bg-purple-dark",
     secondary: "bg-black hover:bg-purple-dark",
+	tertiary: "bg-background-dark hover:bg-purple-dark",
 	danger: "text-white hover:bg-purple-dark"
   };
 
@@ -58,12 +59,13 @@ const Button: React.FC<ButtonProps> = ({
 
   // Read the custom icon from the mapping dictionary
   const IconComponent = icon ? CustomIcons[icon] : null;
+  const iconColor = variant === 'tertiary' ? 'black' : 'white';
 
 	if (href) {
 		return (
 			<a href={href} className={classes} target={external ? "_blank" : undefined}>
 				{IconComponent && (
-					<IconComponent size={16} color='white' className={`${iconSizeClasses[size]}`} aria-hidden="true" />
+					<IconComponent size={16} color={iconColor} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
 				)}
 				{children}
 			</a>
@@ -77,7 +79,7 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
     >
 		{IconComponent && (
-        	<IconComponent size={16} color='white' className={`${iconSizeClasses[size]}`} aria-hidden="true" />
+        	<IconComponent size={16} color={iconColor} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
       	)}
 		{children}
     </button>
