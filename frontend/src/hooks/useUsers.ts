@@ -6,7 +6,7 @@ import { updateAvatar, fetchActiveUsersByProject, updateUserProfile } from '../s
 
 export function useUserProfile(login: string | null) {
   return useQuery({
-    queryKey: ['userProfile', login], // Unique cache key per user
+    queryKey: ['userProfile', login], 
     queryFn: () => fetchUserProfile(login!),
     enabled: !!login, // ONLY run the query if 'login' is not null/empty
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes (prevents endless network calls)
