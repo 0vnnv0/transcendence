@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { fetchAllFriends, sendFriendRequest, acceptFriendRequest } from '../services/friends.service';
-import { fetchRequestedFriends } from '../services/friends.service';
+import { fetchAllFriends, sendFriendRequest, acceptFriendRequest, fetchRequestedFriends, removeFriendOrRequest  } from '../services/friends.service';
 
 export function useFriends() {
 	return useQuery({
@@ -10,10 +9,14 @@ export function useFriends() {
 }
 
 export function useAddFriend() {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (targetUserId: number) => sendFriendRequest(targetUserId),
         onSuccess: () => {
             console.log("Friend request sent successfully!");
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+            queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
         },
         onError: (error) => {
             console.error("Error sending friend request:", error);
@@ -41,5 +44,18 @@ export function useFriendRequests() {
         queryKey: ['friendRequests'],
         queryFn: fetchRequestedFriends,
         staleTime: 1000 * 45,
+    });
+}
+
+export function useRemoveFriend() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (targetId: number) => removeFriendOrRequest(targetId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
+            queryClient.invalidateQueries({ queryKey: ['allFriends'] });
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] }); 
+        }
     });
 }

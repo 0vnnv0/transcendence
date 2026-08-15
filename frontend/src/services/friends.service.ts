@@ -45,6 +45,17 @@ export const acceptFriendRequest = async (senderId: number): Promise<void> => {
     }
 };
 
+export const removeFriendOrRequest = async (targetId: number): Promise<void> => {
+    const response = await fetch(`/api/friends/remove/${targetId}`, {
+        method: 'DELETE', 
+        headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to remove friend or decline request');
+    }
+};
+
 export const fetchRequestedFriends = async (): Promise<Friends[]> => {
   const response = await fetch(`/api/friends/requests`, {
     headers: getAuthHeaders(),

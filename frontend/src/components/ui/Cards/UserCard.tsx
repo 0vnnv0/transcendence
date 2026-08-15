@@ -12,6 +12,8 @@ interface UserCardProps {
   tags?: TagData[];
   ctaText?: string;
   onCtaClick?: () => void;
+  onAccept?: () => void;
+  onDecline?: () => void;
 }
 
 const UserCard = ({
@@ -21,6 +23,8 @@ const UserCard = ({
   tags,
   ctaText,
   onCtaClick,
+  onAccept,
+  onDecline,
 }: UserCardProps) => {
 
   const isLandscape = layout === 'landscape';
@@ -51,19 +55,47 @@ const UserCard = ({
         <h1 className="text-subtitle">{username}</h1>
         <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>
           {tags && <TagList tags={tags} />}
-          {ctaText && (
+
+            {onAccept && onDecline ? (
+            <div className={`flex gap-2 ${isLandscape ? '' : 'w-full'}`}>
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={(e) => {
+                  e.preventDefault(); 
+                  e.stopPropagation();
+                  onAccept();
+                }}
+              >
+                Accept
+              </Button>
+              
+              <Button
+                size="sm"
+                variant="secondary" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDecline();
+                }}
+              >
+                Decline
+              </Button>
+            </div>
+          ) : ctaText ? (
             <Button
               icon="message"
               size="sm"
               onClick={(e) => {
-                e.preventDefault(); // stop the Link navigation
+                e.preventDefault();
                 e.stopPropagation();
                 onCtaClick?.();
               }}
             >
               {ctaText}
             </Button>
-          )}
+          ) : null}
+          
         </div>
       </div>
     </Link>
