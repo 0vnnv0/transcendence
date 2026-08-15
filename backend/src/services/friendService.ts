@@ -75,7 +75,7 @@ export class FriendService {
 		});
 
 		if (!friendship) {
-			return { status: 'NONE' };
+			return { status: 'NONE', friendshipId: null };
 		}
 
 		if (friendship.status === 'ACCEPTED') {
