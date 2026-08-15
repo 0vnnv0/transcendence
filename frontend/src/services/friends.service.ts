@@ -1,7 +1,17 @@
 import type { Friends } from "../types/friends";
 
+export const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`,
+    };
+};
+
 export const fetchAllFriends = async (): Promise<Friends[]> => {
-  const response = await fetch(`/api/friends`);
+  const response = await fetch(`/api/friends`, {
+    headers: getAuthHeaders(),
+});
   
   if (!response.ok) {
     throw new Error('Error trying to load friends');
@@ -11,26 +21,22 @@ export const fetchAllFriends = async (): Promise<Friends[]> => {
 };
 
 export const sendFriendRequest = async (targetUserId: number): Promise<void> => {
+
     const response = await fetch('/api/friends/request', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            //'Authorization': `Bearer ${token}` // Falls ihr JWT nutzt
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ targetUserId }), 
     });
 
     if (!response.ok) {
         throw new Error('Failed to send friend request');
     }
-    };
+};
 
 export const acceptFriendRequest = async (senderId: number): Promise<void> => {
     const response = await fetch('/api/friends/request', {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ senderId }), 
     });
 
@@ -40,7 +46,10 @@ export const acceptFriendRequest = async (senderId: number): Promise<void> => {
 };
 
 export const fetchRequestedFriends = async (): Promise<Friends[]> => {
-  const response = await fetch(`/api/friends/requests`);
+  const response = await fetch(`/api/friends/requests`, {
+    headers: getAuthHeaders(),
+  }
+  );
   
   if (!response.ok) {
     throw new Error('Error trying to load your friend requests');

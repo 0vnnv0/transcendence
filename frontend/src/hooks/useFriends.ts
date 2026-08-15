@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { fetchAllFriends, sendFriendRequest, acceptFriendRequest } from '../services/friends.service';
+import { fetchRequestedFriends } from '../services/friends.service';
 
 export function useFriends() {
 	return useQuery({
@@ -32,5 +33,13 @@ export function useAcceptFriend() {
         onError: (error) => {
             console.error("Error accepting friend request:", error);
         }
+    });
+}
+
+export function useFriendRequests() {
+    return useQuery({
+        queryKey: ['friendRequests'],
+        queryFn: fetchRequestedFriends,
+        staleTime: 1000 * 45,
     });
 }
