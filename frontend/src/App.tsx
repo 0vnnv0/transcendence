@@ -44,7 +44,7 @@ function App() {
         <Route path="/myprofile" element={<MyProfile />} />
         <Route path="/chats" element={<Chats />} />
         <Route path="/project/:id" element={<Certain_Project />} />
-        <Route path="/chat/:username" element={<Chats />} />
+        <Route path="/chat/:chatId" element={<Chats />} />
         <Route path="friends" element={<Friends />} />
 		 <Route path="/users/:username" element={<OtherProfile />} />
 	 	 <Route path="/authsuccess" element={<AuthSuccess />} />

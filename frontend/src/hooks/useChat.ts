@@ -8,13 +8,13 @@ import type { ChatMessage, LoadMessagesResponse } from '../types/chat';
 import type { Socket } from 'socket.io-client';
 import { createNewChat, fetchRecentChats } from '../services/chat.service';
 
-export const useChatMessages = (chatId: number, userId: number, socket: Socket | null) => {
+export const useChatMessages = (chatId: number, userId: number | null, socket: Socket | null) => {
   const queryClient = useQueryClient();
   const queryKey = ['chat', chatId, 'messages'];
 
   const queryInfo = useQuery({
     queryKey,
-    queryFn: () => fetchChatHistory(chatId, userId),
+    queryFn: () => fetchChatHistory(chatId, userId!),
     enabled: !!chatId && !!userId, 
   });
 
@@ -55,7 +55,7 @@ export const useStartChat = () => {
     onSuccess: (response) => {
       console.log("Erfolgreich Chat erstellt! Backend-Antwort:", response);
       
-      const finalChatId = response.chatId || response.chatid;
+      const finalChatId = response.chatId;
       
       if (!finalChatId) {
          console.error("FEHLER: Das Backend hat keine ID zurückgegeben!");
