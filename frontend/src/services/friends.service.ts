@@ -3,7 +3,6 @@ import type { Friends } from "../types/friends";
 export const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token || ''}`,
     };
 };
@@ -46,9 +45,10 @@ export const acceptFriendRequest = async (senderId: number): Promise<void> => {
 };
 
 export const removeFriendOrRequest = async (targetId: number): Promise<void> => {
-    const response = await fetch(`/api/friends/remove/${targetId}`, {
-        method: 'DELETE', 
+    const response = await fetch(`/api/friends/remove`, {
+        method: 'DELETE',
         headers: getAuthHeaders(),
+		body: JSON.stringify({ targetId }),
     });
 
     if (!response.ok) {
