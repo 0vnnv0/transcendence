@@ -75,7 +75,7 @@ export class FriendService {
 		});
 
 		if (!friendship) {
-			return { status: 'NONE' };
+			return { status: 'NONE', friendshipId: null };
 		}
 
 		if (friendship.status === 'ACCEPTED') {
@@ -159,7 +159,7 @@ export class FriendService {
 
 	async acceptFriendRequest(receiverId: number, senderId: number) {
 
-		const request = await prisma.friendship.findUnique({
+		const request = await prisma.friendship.findFirst({
 			where: {
 				senderId: senderId,
 				receiverId: receiverId,
@@ -168,8 +168,8 @@ export class FriendService {
 		});
 
 		if (!request) {
-        throw new Error('Friend request not found or already accepted');
-    }
+			throw new Error('Friend request not found or already accepted');
+		}
 
 		return prisma.friendship.update({
 			where: { id: request.id },
@@ -177,17 +177,34 @@ export class FriendService {
 		});
 	}
 
-	async removeFriendOrRequest(userId: number, friendshipId: number) {
-		const friendship = await prisma.friendship.findUnique({
-			where: { id: friendshipId }
-		});
+	async removeFriendOrRequest(userId: number, targetId: number) {
 
-		if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
-			throw new Error('Friendship not found or unauthorized');
+		const request = await prisma.friendship.findFirst({
+			where: {
+				senderId: targetId,
+				receiverId: userId,
+				status: 'PENDING'
+			}
+		});
+		if (!request) {
+			throw new Error('Friend request not found or already accepted');
 		}
+		// const parsedFriendshipId = Number(friendshipId);
+
+		// if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
+		// 	throw new Error(`Invalid friendshipId: ${friendshipId}`);
+		// }
+
+		// const friendship = await prisma.friendship.findUnique({
+		// 	where: { id: parsedFriendshipId }
+		// });
+
+		// if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
+		// 	throw new Error('Friendship not found or unauthorized');
+		// }
 		
 		return prisma.friendship.delete({
-			where: { id: friendshipId }
+			where: { id: request.id },
 		});
 	}
 }

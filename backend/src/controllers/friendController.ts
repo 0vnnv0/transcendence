@@ -36,16 +36,15 @@ export class FriendController {
 		}
 	}
 
-	// PUT /api/friends/accept/:id
+	// PUT /api/friends/accept
 	async acceptRequest(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { senderId } = request.params as { senderId: string };
-
+		const { senderId } = request.body as { senderId: number };
 		if (!senderId) {
 			return reply.status(400).send({ error: 'senderId is required' });
 		}
 		try {
-			await friendService.acceptFriendRequest(userId, parseInt(senderId, 10));
+			await friendService.acceptFriendRequest(userId, senderId);
 			return reply.send({ message: 'Friend request accepted' });
 		} catch (err: any) {
 			return reply.status(400).send({ error: err.message });
@@ -55,10 +54,10 @@ export class FriendController {
 	// DELETE /api/friends/:id
 	async removeFriend(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { id } = request.params as { id: string };
+		const { targetId } = request.body as { targetId: number };
 
 		try {
-			await friendService.removeFriendOrRequest(userId, parseInt(id, 10));
+			await friendService.removeFriendOrRequest(userId, targetId);
 			return reply.send({ message: 'Friend or request removed' });
 		} catch (err: any) {
 			return reply.status(400).send({ error: err.message });
