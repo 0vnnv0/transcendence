@@ -31,7 +31,7 @@ function Friends() {
                             username={request.intraName}
                             isOnline={request.isOnline}
                             onAccept={() => acceptFriend(request.id)}
-                            onDecline={() => removeFriend(request.id)}
+                            onDecline={() => removeFriend(request.friendshipId)}
                         />
                     ))}
                 </>

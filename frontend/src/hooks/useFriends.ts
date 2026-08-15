@@ -13,13 +13,20 @@ export function useAddFriend() {
 
     return useMutation({
         mutationFn: (targetUserId: number) => sendFriendRequest(targetUserId),
-        onSuccess: () => {
-            console.log("Friend request sent successfully!");
-            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-            queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
-        },
-        onError: (error) => {
-            console.error("Error sending friend request:", error);
+        onSuccess: async () => {
+            console.log("Friend request sent successfully! Forcing reload...");
+            
+            await queryClient.invalidateQueries({ 
+                queryKey: ['userProfile'], 
+                exact: false 
+            });
+
+            await queryClient.refetchQueries({ 
+                queryKey: ['userProfile'],
+                type: 'active' 
+            });
+            
+            await queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
         }
     });
 }
@@ -51,7 +58,7 @@ export function useRemoveFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (targetId: number) => removeFriendOrRequest(targetId),
+        mutationFn: (friendshipId: number) => removeFriendOrRequest(friendshipId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
             queryClient.invalidateQueries({ queryKey: ['allFriends'] });
