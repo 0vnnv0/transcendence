@@ -48,8 +48,8 @@ export const useStartChat = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: { currentUserId: number; targetUserId: number }) => 
-      createNewChat(data.currentUserId, data.targetUserId),
+    mutationFn: (data: { currentUserId: number; : number }) => 
+      createNewChat(data.currentUserId, data.),
     
     onSuccess: (response) => {
       console.log("Erfolgreich Chat erstellt! Backend-Antwort:", response);

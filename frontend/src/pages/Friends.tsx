@@ -1,5 +1,5 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useFriends, useAddFriend, useFriendRequests } from '../hooks/useFriends';
+import { useFriends, useFriendRequests, useAcceptFriend, useRemoveFriend } from '../hooks/useFriends';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 
@@ -7,7 +7,9 @@ import CardSection from '../components/sections/CardSection';
 function Friends() {
     const { data: allFriends, isLoading, isError } = useFriends();
     const { data: requests, isLoading: isLoadingReq, isError: isErrorReq } = useFriendRequests();
-    
+    const { mutate: acceptFriend } = useAcceptFriend();
+    const { mutate: removeFriend } = useRemoveFriend();
+
     let requestsContent;
     if (isLoadingReq) {
         requestsContent = <p className="text-subtitle text-purple">Loading requests...</p>
@@ -27,8 +29,9 @@ function Friends() {
                             image={request.avatarUrl}
                             route={`/users/${request.intraName}`} 
                             username={request.intraName}
-                            ctaText="View Profile" 
                             isOnline={request.isOnline}
+                            onAccept={() => acceptFriend(request.id)}
+                            onDecline={() => removeFriend(request.id)}
                         />
                     ))}
                 </>
