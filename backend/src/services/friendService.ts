@@ -168,8 +168,8 @@ export class FriendService {
 		});
 
 		if (!request) {
-        throw new Error('Friend request not found or already accepted');
-    }
+			throw new Error('Friend request not found or already accepted');
+		}
 
 		return prisma.friendship.update({
 			where: { id: request.id },
@@ -177,27 +177,34 @@ export class FriendService {
 		});
 	}
 
-	async removeFriendOrRequest(userId: number, friendshipId: number) {
+	async removeFriendOrRequest(userId: number, targetId: number) {
 
-		console.log("🔍 friendshipId aus Controller:", friendshipId); // Check im Log!
-		const parsedFriendshipId = Number(friendshipId);
-
-		if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
-			throw new Error(`Invalid friendshipId: ${friendshipId}`);
-		}
-
-		console.log("🔍 parsedFriendshipId:", parsedFriendshipId); // Check im Log!
-
-		const friendship = await prisma.friendship.findUnique({
-			where: { id: parsedFriendshipId }
+		const request = await prisma.friendship.findFirst({
+			where: {
+				senderId: targetId,
+				receiverId: userId,
+				status: 'PENDING'
+			}
 		});
-
-		if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
-			throw new Error('Friendship not found or unauthorized');
+		if (!request) {
+			throw new Error('Friend request not found or already accepted');
 		}
+		// const parsedFriendshipId = Number(friendshipId);
+
+		// if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
+		// 	throw new Error(`Invalid friendshipId: ${friendshipId}`);
+		// }
+
+		// const friendship = await prisma.friendship.findUnique({
+		// 	where: { id: parsedFriendshipId }
+		// });
+
+		// if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
+		// 	throw new Error('Friendship not found or unauthorized');
+		// }
 		
 		return prisma.friendship.delete({
-			where: { id: parsedFriendshipId }
+			where: { id: request.id },
 		});
 	}
 }
