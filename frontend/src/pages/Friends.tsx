@@ -1,11 +1,40 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useFriends, useAddFriend } from '../hooks/useFriends';
+import { useFriends, useAddFriend, useFriendRequests } from '../hooks/useFriends';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 
 
 function Friends() {
     const { data: allFriends, isLoading, isError } = useFriends();
+    const { data: requests, isLoading: isLoadingReq, isError: isErrorReq } = useFriendRequests();
+    
+    let requestsContent;
+    if (isLoadingReq) {
+        requestsContent = <p className="text-subtitle text-purple">Loading requests...</p>
+    } else if (isErrorReq || !requests) {
+        requestsContent = <p className="text-subtitle text-red-500">Error trying to load requests</p>
+    } else {
+        if (requests.length === 0) {
+            requestsContent = <p className="text-subtitle">No pending requests</p>;
+        } else {
+            requestsContent = (
+                <>
+                    {requests.map((request: any) => (
+                        <UserCard 
+                            key={request.intraName}
+                            layout="portrait"
+                            title={request.intraName}
+                            image={request.avatarUrl}
+                            route={`/users/${request.intraName}`} 
+                            username={request.intraName}
+                            ctaText="View Profile" 
+                            isOnline={request.isOnline}
+                        />
+                    ))}
+                </>
+            );
+        }
+    }
     
     let content;
     if (isLoading) {
@@ -21,12 +50,14 @@ function Friends() {
                 <>
                 {displayFriends.map((friend: any) => (
 						<UserCard 
+                            key={friend.intraName}
                             layout="portrait"
                             title={friend.intraName}
 							image={friend.avatarUrl}
+        					route={`/users/${friend.intraName}`}
+                            username={friend.intraName}
 							ctaText="message"
-					//		isOnline={`Rank ${project.projectRank}`}
-							route={`/users/${friend.intraName}`}
+							isOnline={friend.isOnline}
 						/>
 					))}
                 </>
@@ -45,8 +76,16 @@ function Friends() {
 		  	</div>
 			<div className="flex flex-col flex-1 p-10 gap-10">				 
 				 <h1 className="text-title text-black">
-			 		 Your friends
+			 		 Your friend requests
 			 	 </h1>
+                <CardSection>
+                    <CardSection.Body viewMode="grid">
+                            {requestsContent}
+                    </CardSection.Body>
+                </CardSection>
+                <h1 className="text-title text-black">
+                    Your friends
+                </h1>
                 <CardSection>
                     <CardSection.Body viewMode="grid">
                             {content}

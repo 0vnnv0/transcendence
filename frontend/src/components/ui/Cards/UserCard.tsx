@@ -7,6 +7,7 @@ interface UserCardProps {
   image: string;
   title?: string;
   isOnline?: boolean;
+  route?: string;
   username: string; // used to build the profile link
   tags?: TagData[];
   ctaText?: string;
