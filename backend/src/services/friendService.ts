@@ -159,7 +159,7 @@ export class FriendService {
 
 	async acceptFriendRequest(receiverId: number, senderId: number) {
 
-		const request = await prisma.friendship.findUnique({
+		const request = await prisma.friendship.findFirst({
 			where: {
 				senderId: senderId,
 				receiverId: receiverId,
@@ -178,8 +178,18 @@ export class FriendService {
 	}
 
 	async removeFriendOrRequest(userId: number, friendshipId: number) {
+
+		console.log("🔍 friendshipId aus Controller:", friendshipId); // Check im Log!
+		const parsedFriendshipId = Number(friendshipId);
+
+		if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
+			throw new Error(`Invalid friendshipId: ${friendshipId}`);
+		}
+
+		console.log("🔍 parsedFriendshipId:", parsedFriendshipId); // Check im Log!
+
 		const friendship = await prisma.friendship.findUnique({
-			where: { id: friendshipId }
+			where: { id: parsedFriendshipId }
 		});
 
 		if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
@@ -187,7 +197,7 @@ export class FriendService {
 		}
 		
 		return prisma.friendship.delete({
-			where: { id: friendshipId }
+			where: { id: parsedFriendshipId }
 		});
 	}
 }
