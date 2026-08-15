@@ -88,7 +88,7 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
 		const token = request.server.jwt.sign({
 			id: user.id,
 			email: user.email,
-		}, { expiresIn: '1h'});
+		}, { expiresIn: '1d'});
 
 		return reply.send({
 			message: 'Login successful',
@@ -159,7 +159,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
       intraName: user.intraName,
       newCore: user.newCore,
       isOnline: user.isOnline
-    }, { expiresIn: '1h' }); // Token ist 1 Tag gültig
+    }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
 	const frontendRedirectUrl = `http://localhost:8080/authsuccess?token=${token}`; // const frontendRedirectUrl = `http://c0c7c2.42berlin.de:8080/authsuccess?token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
