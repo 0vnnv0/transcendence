@@ -10,8 +10,7 @@ import { useAuth } from '../components/context/AuthContext'; // WICHTIG: AuthCon
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
-    const userKey = username !== "Guest" ? username : null;
-    
+    const userKey = (username && username !== "Guest") ? username : null;    
     const { userId: currentUserId } = useAuth(); 
 
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
