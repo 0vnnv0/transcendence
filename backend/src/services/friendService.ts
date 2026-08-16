@@ -177,11 +177,14 @@ export class FriendService {
 		});
 	}
 
-	async removeFriendOrRequest(userId: number, targetId: number) {
+	async removeFriendOrRequest(userId: number, targetId: number | string) {
 
+		const parsedSenderId = Number(targetId);
+		console.log("targetId: ", targetId);
+		console.log("parsedSenderId: ", parsedSenderId);
 		const request = await prisma.friendship.findFirst({
 			where: {
-				senderId: targetId,
+				senderId: parsedSenderId,
 				receiverId: userId,
 				status: 'PENDING'
 			}
