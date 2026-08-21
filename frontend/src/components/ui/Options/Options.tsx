@@ -20,17 +20,17 @@ const Option: React.FC<OptionProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = "text-tag border border-black inline-flex items-center justify-center w-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "text-tag border inline-flex items-center justify-center w-fit transition-all duration-200 rounded-md gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Matches Button's secondary/tertiary look — selected = black, unselected = dark background
   const variants = {
-    selected: "bg-black hover:bg-purple-dark text-white",
-    unselected: "bg-background-dark hover:bg-purple-dark text-black",
+    selected: "bg-white text-black border-black hover:border-purple-dark hover:bg-mild-purple",
+    unselected: "bg-background-dark text-black border-transparent hover:bg-white",
   };
 
   const sizes = {
     sm: "px-2 py-2 text-xs",
-    md: "px-2 pt-1.5 pb-2 text-xs",
+    md: "px-1.5 pt-1 pb-1.5 text-xs",
     lg: "px-8 py-3 text-lg",
   };
 
@@ -44,15 +44,15 @@ const Option: React.FC<OptionProps> = ({
   // Not disabled: normal hover + active-scale feedback.
   const stateStyles = disabled ? "pointer-events-none cursor-default disabled:opacity-100" : "active:scale-98";
 
-  const classes = `${baseStyles} ${selected ? variants.selected : variants.unselected} ${sizes[size]} ${stateStyles} ${className}`;
+  const classes = `${baseStyles} ${icon ? 'pt-0.5' : ''} ${selected ? variants.selected : variants.unselected} ${sizes[size]} ${stateStyles} ${className}`;
 
   const IconComponent = icon ? CustomIcons[icon] : null;
-  const iconColor = selected ? 'white' : 'black';
+//   const iconColor = selected ? 'white' : 'black';
 
   return (
     <button type="button" className={classes} disabled={disabled} {...props}>
       {IconComponent && (
-        <IconComponent size={16} color={iconColor} className={iconSizeClasses[size]} aria-hidden="true" />
+        <IconComponent size={16} className={iconSizeClasses[size]} aria-hidden="true" />
       )}
       {label}
     </button>

@@ -45,8 +45,7 @@ function Projects() {
 
 	return (
 		<section
-			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
-			style={{ backgroundColor: "white" }} 
+			className="flex min-h-screen bg-cover bg-center bg-no-repeat bg-background-neutral"
      	>
 		  	<div className="w-70 flex-none">
 			  	<Navbar />

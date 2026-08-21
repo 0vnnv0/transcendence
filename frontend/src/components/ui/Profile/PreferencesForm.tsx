@@ -16,13 +16,13 @@ interface PreferencesFormProps {
 }
 
 const DAY_OPTIONS = [
-	{ label: "Mon", value: "monday" },
-	{ label: "Tue", value: "tuesday" },
-	{ label: "Wed", value: "wednesday" },
-	{ label: "Thu", value: "thursday" },
-	{ label: "Fri", value: "friday" },
-	{ label: "Sat", value: "saturday" },
-	{ label: "Sun", value: "sunday" },
+	{ label: "Mon", value: "Mon" },
+	{ label: "Tue", value: "Tue" },
+	{ label: "Wed", value: "Wed" },
+	{ label: "Thu", value: "Thurs" },
+	{ label: "Fri", value: "Fri" },
+	{ label: "Sat", value: "Sat" },
+	{ label: "Sun", value: "Sun" },
 ];
 
 const LOCATION_OPTIONS = [
