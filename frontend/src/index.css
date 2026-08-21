@@ -53,6 +53,11 @@
 	@apply font-kyiv text-[10px] uppercase font-medium;
 }
 
+/* Kyiv / Medium / 14px */
+@utility text-tag-big {
+	@apply font-kyiv text-[14px] uppercase;
+}
+
 /* Kyiv / Regular / 10px */
 @utility text-tag {
 	@apply font-kyiv text-[10px] uppercase;

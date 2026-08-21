@@ -31,20 +31,20 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "border border-black inline-flex items-center justify-center w-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "border border-black inline-flex items-center justify-center w-fit h-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {
     primary: "bg-purple hover:bg-purple-dark text-white text-cta-bold",
     secondary: "bg-black hover:bg-purple-dark text-white text-cta-bold",
-	tertiary: "bg-background-dark hover:bg-purple-dark text-black text-cta uppercase",
+	tertiary: "bg-white hover:bg-purple-dark hover:text-white text-black text-cta uppercase",
 	danger: "text-white hover:bg-purple-dark text-cta-bold"
   };
 
   // Size-specific styles
   const sizes = {
 	sm: "px-2 py-2 text-xs",
-    md: "px-2 py-2 text-sm",
+    md: "px-2 py-1.75 text-sm",
     lg: "px-8 py-3 text-lg"
   };
 

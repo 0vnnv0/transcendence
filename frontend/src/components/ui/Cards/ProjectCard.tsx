@@ -53,7 +53,7 @@ const ProjectCard = ({
           <h1 className="text-subtitle">{title}</h1>
           {subtitle && <h2 className="text-paragraph-bold">{subtitle}</h2>}
         </div>
-        {description && <p className="text-paragraph">{description}</p>}
+        {description && <p className="text-paragraph line-clamp-3">{description}</p>}
       </div>
     </div>
   );
