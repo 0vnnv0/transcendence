@@ -1,25 +1,26 @@
 import Navbar from '../components/ui/Navbar/Navbar'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import projectsData from '../data/projects.json';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 import TagList from '../components/ui/TagList/TagList';
 import type { TagData } from '../components/ui/TagList/TagList';
 import Button from '../components/ui/Button/Button';
-import ViewModeToggle from '../components/ui/Toggle/ViewModeToggle';
 import { useActiveUsersByProject } from '../hooks/useUsers';
-import { useViewModeStore } from '../store/viewModeStore';
 import { useAuth } from '../components/context/AuthContext';
+import { useProjectFilters } from '../store/useProjectFilters';
+import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
+import { mockUsers } from '../types/mockUser';
 
 function Certain_Project() {
 
+	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const { userName } = useAuth();
 	const project = projectsData.find(p => p.slug === id);
-	const { data: activeUsers, isLoading, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
-	console.log("Active Users: ", activeUsers);
-	// const [viewMode, setViewMode] = useState<ViewMode>('grid');
-	const { viewMode, setViewMode } = useViewModeStore();
+	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
+	// console.log("Active Users: ", activeUsers);
+	const { viewMode, days: selectedDays } = useProjectFilters();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
 	const teamSize = (project?.teamSize?.min === project?.teamSize?.max) ? project?.teamSize?.min : `${project?.teamSize?.min} - ${project?.teamSize?.max}`;
@@ -31,9 +32,16 @@ function Certain_Project() {
 
 	const availableUsers = activeUsers?.filter(user => 
 		user.activeProjects?.some(p => p?.status === "searching_a_group"))
+		.filter(user => {
+			if (selectedDays.length === 0) return true;
+			if (isFullyAvailable(user.preferredDays)) return true;
+			return user.preferredDays.some(day => selectedDays.includes(day));
+		})
 		.map(user => {
+			const days = formatAvailability(user?.preferredDays);
 			const userTags: TagData[] = [
-				{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
+			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
+			{ icon: 'clock', description: days },
 			];
 
 			return (<UserCard
@@ -45,6 +53,33 @@ function Certain_Project() {
 				tags={userTags}
 			/>)
 	});
+
+	// const availableUsers = mockUsers?.filter(user => 
+	// 	user.activeProjects?.some(p => p?.status === "searching_a_group"))
+	// 	.filter(user => {
+	// 		// no days selected -> don't filter by availability, show everyone
+	// 		if (selectedDays.length === 0) return true;
+	// 		// otherwise: user must be free on at least one of the selected days
+	// 		return user.preferredDays.some(day => selectedDays.includes(day));
+	// 	})
+	// 	.map(user => {
+	// 		const days = formatAvailability(user?.preferredDays);
+	// 		const userTags: TagData[] = [
+	// 			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
+	// 			{ icon: 'clock', description: days },
+	// 		];
+
+	// 		return (
+	// 			<UserCard
+	// 				key={user.id}
+	// 				username={user.login}
+	// 				layout={layout}
+	// 				image={user.avatarUrl as string}
+	// 				ctaText="Contact"
+	// 				tags={userTags}
+	// 			/>
+	// 		);
+	// });
 
 	if (!project) {
 		return <div className="p-10 text-white text-2xl">Project not found!</div>;
@@ -58,8 +93,9 @@ function Certain_Project() {
 				<div className="flex flex-row justify-between">
 					<Button 
 						size="sm"
-						variant="secondary"
+						variant="tertiary"
 						icon="arrowLeft"
+						onClick={() => navigate(-1)}
 					>Back</Button>
 					{project?.keywords && (
 						<TagList tags={projectTags}/>
@@ -79,8 +115,8 @@ function Certain_Project() {
 						/>
 					</CardSection.Body>
 				</CardSection> */}
-				<ViewModeToggle viewMode={viewMode} onToggle={setViewMode} />
-				<CardSection title="Available Students">
+
+				<CardSection title="Available Students" filter>
 					<CardSection.Body viewMode={viewMode}>
 						{availableUsers}
 					</CardSection.Body>

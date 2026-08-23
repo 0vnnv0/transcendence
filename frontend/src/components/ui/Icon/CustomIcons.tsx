@@ -1,6 +1,6 @@
 import React from 'react';
 
-type AllowedIconSizes = 16 | 24;
+type AllowedIconSizes = 16 | 20;
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   size?: AllowedIconSizes;

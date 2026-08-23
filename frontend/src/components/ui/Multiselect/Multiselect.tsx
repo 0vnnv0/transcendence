@@ -26,7 +26,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ options, value, onChange, dis
   };
 
   return (
-    <div className={`flex gap-1 ${className}`}>
+    <div className={`flex gap-0.5 bg-background-dark rounded-lg p-0.75 ${className}`}>
       {options.map((option) => (
         <Option
           key={option.value}
