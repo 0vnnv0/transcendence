@@ -10,8 +10,8 @@ import Authorize from './pages/Authorize'
 import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
 import Friends from './pages/Friends'
- import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
-
+import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
+import { Toaster } from 'react-hot-toast'
 
 // function App() {
 //   return (
@@ -36,6 +36,7 @@ import Friends from './pages/Friends'
 function App() {
   return (
     <Routes>
+        <Toaster position="top-center" />
         <Route path="/" element={<Login />} />
         <Route path="/authorize" element={<Authorize />} />
         <Route path="/dashboard" element={<Dashboard />} />

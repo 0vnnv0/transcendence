@@ -7,6 +7,7 @@ import { fetchChatHistory } from '../services/chat.service';
 import type { ChatMessage, LoadMessagesResponse } from '../types/chat';
 import type { Socket } from 'socket.io-client';
 import { createNewChat, fetchRecentChats } from '../services/chat.service';
+import toast from 'react-hot-toast';
 
 export const useChatMessages = (chatId: number, userId: number | null, socket: Socket | null) => {
   const queryClient = useQueryClient();
@@ -53,7 +54,7 @@ export const useStartChat = () => {
     
     
     onSuccess: (response) => {
-      console.log("Erfolgreich Chat erstellt! Backend-Antwort:", response);
+      toast.success('Chat created successfully');  
       
       const finalChatId = response.chatId;
       
@@ -64,8 +65,8 @@ export const useStartChat = () => {
       
       navigate(`/chat/${finalChatId}`);
     },
-    onError: (error) => {
-      console.error("Fehler beim Erstellen des Chats:", error);
+    onError: () => {
+      toast.error('Error trying to create chat');
     }
   });
 };
