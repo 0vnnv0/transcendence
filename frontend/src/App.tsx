@@ -36,7 +36,7 @@ import { Toaster } from 'react-hot-toast'
 function App() {
   return (
     <Routes>
-        <Toaster position="bottom-right" />
+        <Toaster position="top-center" />
         <Route path="/" element={<Login />} />
         <Route path="/authorize" element={<Authorize />} />
         <Route path="/dashboard" element={<Dashboard />} />

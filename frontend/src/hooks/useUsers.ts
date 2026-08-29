@@ -3,6 +3,7 @@ import type { ChatUser } from '../types/chat'
 import type { FullUserProfile } from '../types/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateAvatar, fetchActiveUsersByProject, updateUserProfile } from '../services/user.service';
+import { toast } from 'react-hot-toast';
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -57,6 +58,7 @@ export function useUpdateAvatar(userKey: string | null) {
 
     // Real server response arrived and succeeded — replace preview with the real URL
     onSuccess: (data) => {
+      toast.success('Profile picture changed successfully.');
       queryClient.setQueryData(['userProfile', userKey], (old: any) =>
         old ? { ...old, avatarUrl: data.avatarUrl } : old
       )
@@ -96,6 +98,7 @@ export function useUpdateProfile(userId: string) {
 		mutationFn: (data: { days: string[]; location: string }) =>
 			updateUserProfile(userId, data),
 		onSuccess: () => {
+      toast.success('Information saved successfully!');
 			queryClient.invalidateQueries({ queryKey: ["profile", userId] });
 		},
 	});
