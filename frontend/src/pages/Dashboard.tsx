@@ -3,11 +3,13 @@ import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext';
 import { useNextProject, useRecommendedProjects } from '../hooks/useProjects';
+import projectsData from '../data/projects.json'
 
 interface ProjectData {
 	id: number;
 	name: string;
 	slug: string;
+	image: string;
 	description: string;
 	projectRank: number;
 	teamSize: {
@@ -26,30 +28,37 @@ function Dashboard() {
 	const { userName } = useAuth();
 
 	const { data: nextProjectData, isLoading: isNextLoading, isError: isNextError } = useNextProject(userName);
-    
-    const { 
-        data: recommendedData, 
-        isLoading: isRecLoading, 
-        isError: isRecError 
+
+    const {
+        data: recommendedData,
+        isLoading: isRecLoading,
+        isError: isRecError
     } = useRecommendedProjects(userName);
 
-    const nextProject: ProjectData | undefined = nextProjectData?.projects?.[0];
-    
-    const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
+	// CHANGED HERE //
+    // const nextProject: ProjectData | undefined = nextProjectData?.projects?.[0];
+	const nextProject: ProjectData | undefined = projectsData[0];
+	console.log('Next, ', nextProject)
+
+	// CHANGED HERE //
+    // const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
+	const recommendedProjects: ProjectData[] = projectsData || [];
+	console.log('Recommended, ', recommendedProjects);
 	let nextProjectContent;
-	
+
 	if (isNextLoading) {
 			nextProjectContent = <p className="text-subtitle text-purple">Looking for project...</p>;
 		} else if (isNextError) {
 			nextProjectContent = <p className="text-subtitle text-red-500">[404] Error trying to connect with server</p>;
 		} else if (nextProject) {
+			const nrOfUsers = nextProject.teamSize.min == nextProject.teamSize.max ? `${nextProject.teamSize.max}` : `${nextProject.teamSize.min}-${nextProject.teamSize.max}`
 			nextProjectContent = (
 				<ProjectCard
 					layout="landscape"
-					image="allowed.png" 
+					image={nextProject.image}
 					title={nextProject.name}
 					tags={[
-						`${nextProject.teamSize.min}-${nextProject.teamSize.max} People`, 
+						`${nrOfUsers} People`,
 						...nextProject.keywords
 					]}
 					route={`/project/${nextProject.slug}`}
@@ -72,21 +81,23 @@ function Dashboard() {
 			</p>
 		);
 	} else {
-        recommendedContent = recommendedProjects.map((project: ProjectData) => (
-            <ProjectCard
-                key={project.id}
-                layout="portrait"
-                image="thumb.jpg"
-                title={project.name}
-                subtitle={`Rank ${project.projectRank} Group Project`}
-                tags={[
-                    `${project.teamSize.min}-${project.teamSize.max} People`, 
-                    ...project.keywords
-                ]}
-                route={`/project/${project.slug}`}
-                description={project.description}
-            />
-        ));
+        recommendedContent = recommendedProjects.map((project: ProjectData) => {
+			const nrOfUsers = project.teamSize.min == project.teamSize.max ? `${project.teamSize.max}` : `${project.teamSize.min}-${project.teamSize.max}`
+			return (
+				<ProjectCard
+					key={project.id}
+					layout="portrait"
+					image={nextProject.image}
+					title={project.name}
+					subtitle={`Rank ${project.projectRank} Group Project`}
+					tags={[
+						`${nrOfUsers} People`,
+						...project.keywords
+					]}
+					route={`/project/${project.slug}`}
+					description={project.description}
+				/>
+        )});
     }
 
 return (
@@ -98,7 +109,7 @@ return (
                 <h1 className="text-title">
                     welcome to cluster fuck, {userName}!
                 </h1>
-                
+
                 <CardSection title="Your next project available">
                     <CardSection.Body viewMode="list">
                         {nextProjectContent}

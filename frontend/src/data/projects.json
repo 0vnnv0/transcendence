@@ -3,6 +3,7 @@
 		"id": 0,
 		"name": "minishell",
 		"slug": "minishell",
+		"image": "/Test2.jpg",
 		"estimatedHours": 210,
 		"teamSize": {
 			"min": 2,
@@ -27,6 +28,7 @@
 		"id": 1,
 		"name": "miniRT",
 		"slug": "minirt",
+		"image": "/Test2.jpg",
 		"estimatedHours": 280,
 		"teamSize": {
 			"min": 2,
@@ -52,6 +54,7 @@
 		"id": 2,
 		"name": "cub3d",
 		"slug": "cub3d",
+		"image": "/Test2.jpg",
 		"estimatedHours": 280,
 		"teamSize": {
 			"min": 2,
@@ -76,6 +79,7 @@
 		"id": 3,
 		"name": "webserv",
 		"slug": "webserv",
+		"image": "/Test2.jpg",
 		"estimatedHours": 175,
 		"teamSize": {
 			"min": 2,
@@ -99,6 +103,7 @@
 		"id": 4,
 		"name": "ft_irc",
 		"slug": "ft_irc",
+		"image": "/Test2.jpg",
 		"estimatedHours": 175,
 		"teamSize": {
 			"min": 2,
@@ -123,6 +128,7 @@
 		"id": 5,
 		"name": "ft_transcendence",
 		"slug": "ft_transcendence",
+		"image": "/Test2.jpg",
 		"estimatedHours": 245,
 		"teamSize": {
 			"min": 4,
@@ -148,6 +154,7 @@
 		"id": 6,
 		"name": "push_swap",
 		"slug": "push_swap",
+		"image": "/Test2.jpg",
 		"estimatedHours": 70,
 		"teamSize": {
 			"min": 2,
@@ -175,6 +182,7 @@
 		"id": 7,
 		"name": "A-Maze-ing",
 		"slug": "a-maze-ing",
+		"image": "/Test2.jpg",
 		"estimatedHours": 50,
 		"teamSize": {
 			"min": 2,
@@ -201,6 +209,7 @@
 		"id": 8,
 		"name": "Pac-Man",
 		"slug": "pac-man",
+		"image": "/Test2.jpg",
 		"estimatedHours": 150,
 		"teamSize": {
 			"min": 2,
@@ -227,6 +236,7 @@
 		"id": 9,
 		"name": "Agent Smith",
 		"slug": "agent-smith",
+		"image": "/Test2.jpg",
 		"estimatedHours": 100,
 		"teamSize": {
 			"min": 2,
@@ -251,6 +261,7 @@
 		"id": 10,
 		"name": "The Answer Protocol",
 		"slug": "the-answer-protocol",
+		"image": "/Test2.jpg",
 		"estimatedHours": 150,
 		"teamSize": {
 			"min": 2,
@@ -278,6 +289,7 @@
 		"id": 11,
 		"name": "42_Collaborative_resume",
 		"slug": "42_collaborative_resume",
+		"image": "/Test2.jpg",
 		"estimatedHours": 15,
 		"teamSize": {
 			"min": 2,
