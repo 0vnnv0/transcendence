@@ -36,7 +36,7 @@ const ProjectCard = ({
     >
       {/* Tags positioned absolutely for project cards */}
       {tags && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 max-w-[300px]">
           <TagList tags={tags} amount={3}/>
         </div>
       )}
@@ -44,7 +44,7 @@ const ProjectCard = ({
         src={image}
         alt=""
         className={`bg-gray-400 w-full flex-1 rounded-2xl object-cover
-		${isLandscape ? 'h-65 max-w-1/2' : 'h-50 max-h-50'}`}
+		${isLandscape ? 'h-70 max-w-1/2' : 'h-50 max-h-50'}`}
       />
       <div
         className={`

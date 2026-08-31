@@ -16,7 +16,7 @@ const TagList = ({ tags, amount = 'all', className = '' }: TagListProps) => {
   const visibleTags = amount === 'all' ? tags : tags.slice(0, amount);
 
   return (
-	<div className={`flex flex-wrap gap-1 ${className}`}>
+	<div className={`flex flex-wrap gap-1 justify-end ${className}`}>
 		{visibleTags.map((tag) => {
 		const normalized: TagData = typeof tag === 'string' ? { description: tag } : tag;
 		return (

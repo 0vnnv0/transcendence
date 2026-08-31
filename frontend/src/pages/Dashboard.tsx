@@ -87,7 +87,7 @@ function Dashboard() {
 				<ProjectCard
 					key={project.id}
 					layout="portrait"
-					image={nextProject.image}
+					image={project.image}
 					title={project.name}
 					subtitle={`Rank ${project.projectRank} Group Project`}
 					tags={[
