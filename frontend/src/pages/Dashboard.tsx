@@ -42,7 +42,7 @@ function Dashboard() {
 
 	// CHANGED HERE //
     // const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
-	const recommendedProjects: ProjectData[] = projectsData || [];
+	const recommendedProjects: ProjectData[] = projectsData ? projectsData.slice(1) : [];
 	console.log('Recommended, ', recommendedProjects);
 	let nextProjectContent;
 
@@ -89,7 +89,7 @@ function Dashboard() {
 					layout="portrait"
 					image={project.image}
 					title={project.name}
-					subtitle={`Rank ${project.projectRank} Group Project`}
+					subtitle={`Rank ${project.projectRank}`}
 					tags={[
 						`${nrOfUsers} People`,
 						...project.keywords
@@ -107,7 +107,7 @@ return (
             </div>
             <div className="flex flex-col flex-1 p-10 gap-10">
                 <h1 className="text-title">
-                    welcome to cluster fuck, {userName}!
+                    Hello again, {userName}!
                 </h1>
 
                 <CardSection title="Your next project available">

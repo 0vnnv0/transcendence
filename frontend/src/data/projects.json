@@ -128,7 +128,7 @@
 		"id": 5,
 		"name": "ft_transcendence",
 		"slug": "ft_transcendence",
-		"image": "/XX.jpg",
+		"image": "/Transcendence.jpg",
 		"estimatedHours": 245,
 		"teamSize": {
 			"min": 4,
@@ -289,7 +289,7 @@
 		"id": 11,
 		"name": "42_Collaborative_resume",
 		"slug": "42_collaborative_resume",
-		"image": "/XX2.jpg",
+		"image": "/Collaborative-Resume.jpg",
 		"estimatedHours": 15,
 		"teamSize": {
 			"min": 2,

@@ -30,13 +30,13 @@ const ProjectCard = ({
 	  onClick={() => navigate(route)}
       className={`
 	  	group relative flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm h-auto
-        hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
+        hover:shadow-md border border-white hover:border-black hover:scale-101 transition-all transition-colors transition-transform cursor-pointer transition-shadow
         ${isLandscape ? 'flex-row justify-between' : 'flex-col'}
       `}
     >
       {/* Tags positioned absolutely for project cards */}
       {tags && (
-        <div className="absolute top-4 right-4 max-w-[300px]">
+        <div className="absolute top-4 right-4 max-w-[300px] h-6 overflow-hidden">
           <TagList tags={tags} amount={3}/>
         </div>
       )}
