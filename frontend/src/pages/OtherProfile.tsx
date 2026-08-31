@@ -7,6 +7,13 @@ import { useStartChat } from '../hooks/useChat';
 import { useUserProfile } from '../hooks/useUsers';
 import { useAddFriend, useRemoveFriend, useAcceptFriend } from '../hooks/useFriends';
 import { useAuth } from '../components/context/AuthContext'; // WICHTIG: AuthContext importieren
+import Tag from '../components/ui/TagList/Tag';
+import { useRecommendedProjects, useNextProject } from '../hooks/useProjects';
+import ProjectsList from '../components/ui/Profile/ProjectsList';
+import PreferencesForm from '../components/ui/Profile/PreferencesForm';
+import TagList from '../components/ui/TagList/TagList';
+import { formatAvailability } from '../utils/formatAvailability';
+import type { TagData } from '../components/ui/TagList/TagList';
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
@@ -20,7 +27,17 @@ function OtherProfile() {
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
     const { mutate: acceptFriend, isPending: isAcceptingFriend } = useAcceptFriend();
 
+	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
+	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
+
     let mainContent = null;
+
+	const days = formatAvailability(profile?.preferredDays);
+	const userTags: TagData[] = [
+		{ icon: 'trophy', description: `Rank ${profile?.currentRank}` },
+		{ icon: 'flame', description: `Rank ${profile?.coalitionName}` },
+		{ icon: 'clock', description: days },
+	];
 
     if (isLoading) {
         mainContent = (
@@ -55,7 +72,7 @@ function OtherProfile() {
             );
         } else if (friendship?.status === 'PENDING' && friendship.senderId === currentUserId) {
             friendActionButton = (
-                <Button size="md" icon="clock" disabled>
+                <Button size="md" icon="clock" variant="secondary" disabled>
                     Pending
                 </Button>
             );
@@ -64,6 +81,7 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
+					variant="secondary"
                     onClick={() => acceptFriend(profile.id)}
                     disabled={isAcceptingFriend}
                 >
@@ -75,6 +93,7 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
+					variant="secondary"
                     onClick={() => addFriend(profile.id)}
                     disabled={isAddingFriend}
                 >
@@ -86,16 +105,19 @@ function OtherProfile() {
             <div className="flex flex-col flex-1 gap-16">
                 <div className="flex flex-row gap-8 w-full">
                     <div
-                        className="group relative h-50 w-50 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
+                        className="group relative border border-black h-54 w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
                         style={{ backgroundImage: `url(${profile.avatarUrl || '/default_avatar.jpg'})` }}
                     >
                     </div>
 
-                    <div className="flex flex-col justify-center gap-3">
-                        <h1 className="text-title">{username}</h1>
-                        <p className="text-subtitle mb-4">
-                            {profile.firstName} {profile.lastName}
-                        </p>
+                    <div className="flex flex-col justify-center gap-1">
+						{ friendship?.status === 'ACCEPTED' &&
+							<Tag description='Friends' icon='smiley' color='orange' />
+						}
+                        <h1 className="text-title mb-1">{username}</h1>
+						<p className="text-subtitle mb-4">
+							{profile.firstName} {profile.lastName}
+						</p>
 
                         <div className="flex gap-2">
                             <Button
@@ -122,28 +144,33 @@ function OtherProfile() {
                     </div>
                 </div>
 
-                <CardSection title="Available for projects">
-                    <CardSection.Body viewMode="grid">
-                        <ProjectCard
-                            layout="portrait"
-                            image="allowed.png"
-                            title="webserv"
-                            subtitle='Why do URLs start with HTTP?'
-                            tags={['2 People', 'Rank 5']}
-                            route="#"
-                            description="This project is about writing your own HTTP server. You will be able to test it with an actual browser. HTTP is one of the most widely used protocols on the internet."
-                        />
-                        <ProjectCard
-                            layout="portrait"
-                            image="allowed.png"
-                            title="ft_irc"
-                            subtitle='One of our favourite games.'
-                            tags={['2 People', 'Rank 5']}
-                            route="#"
-                            description="Who can guess the Hammerhai? Maybe some don't wear a crown but rather a hat."
-                        />
-                    </CardSection.Body>
-                </CardSection>
+				<TagList tags={userTags} size='large' />
+
+                {currentProject && (
+					<CardSection title="Current projects">
+						<CardSection.Body viewMode="grid" columns={2}>
+							<ProjectsList
+								data={currentProject}
+								isLoading={currentProjectLoading}
+								isError={currentProjectError}
+								label="current project"
+							/>
+						</CardSection.Body>
+					</CardSection>
+				)}
+
+				{recProjects?.projects.length !== 0 && (
+					<CardSection title="Recommended next projects">
+						<CardSection.Body viewMode="grid" columns={2}>
+							<ProjectsList
+								data={recProjects}
+								isLoading={recProjectsLoading}
+								isError={recProjectsError}
+								label="recommended projects"
+							/>
+						</CardSection.Body>
+					</CardSection>
+				)}
             </div>
         );
     }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../Button/Button';
 import TagList, { type TagData } from '../TagList/TagList';
+import Tag from '../TagList/Tag';
 
 interface UserCardProps {
   layout?: 'portrait' | 'landscape';
@@ -11,6 +12,7 @@ interface UserCardProps {
   username: string; // used to build the profile link
   tags?: TagData[];
   ctaText?: string;
+  friendship?: boolean;
   onCtaClick?: () => void;
   onAccept?: () => void;
   onDecline?: () => void;
@@ -22,6 +24,7 @@ const UserCard = ({
   username,
   tags,
   ctaText,
+  friendship = true,
   onCtaClick,
   onAccept,
   onDecline,
@@ -33,19 +36,23 @@ const UserCard = ({
     <Link
 		to={`/users/${username}`}
 		className={`
-			flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm
+			flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm relative
 			hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
 			${isLandscape ? 'flex-row justify-between' : 'flex-col'}
 		`}
-	>
-      <img
-        src={image}
-        alt=""
-        className={`
-          bg-gray-400 rounded-2xl object-cover
-          ${isLandscape ? 'w-18 h-full' : 'w-full h-50 flex-1'}
-        `}
-      />
+	>  
+	  { friendship && !isLandscape && (
+		<div className="absolute top-4 right-4">
+		  <Tag description='Friends' icon='smiley' color='orange' />
+		 </div>
+	  )}
+      <div className="w-22 h-22 rounded-2xl overflow-hidden bg-gray-400"> {/* fixed size lives here */}
+		<img
+			src={image}
+			alt=""
+			className="w-full h-full object-cover"
+		/>
+	  </div>
       <div
         className={`
           flex flex-1 flex-col
@@ -53,8 +60,13 @@ const UserCard = ({
         `}
       >
         <h1 className="text-subtitle">{username}</h1>
-        <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>
-          {tags && <TagList tags={tags} />}
+        <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>     
+			<div className="flex flex-row gap-1">
+				{tags && <TagList tags={tags} />}
+				{ friendship && isLandscape &&
+					<Tag description='Friends' icon='smiley' color='orange' />
+				}
+			</div>
 
             {onAccept && onDecline ? (
             <div className={`flex gap-2 ${isLandscape ? '' : 'w-full'}`}>
