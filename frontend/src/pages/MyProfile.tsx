@@ -4,11 +4,9 @@ import { useRecommendedProjects, useNextProject } from '../hooks/useProjects'
 import Navbar from '../components/ui/Navbar/Navbar'
 import Button from '../components/ui/Button/Button'
 import CardSection from '../components/sections/CardSection'
-import InfoCard from '../components/ui/Cards/InfoCard'
 import AvatarUpload from '../components/ui/Profile/AvatarUpload'
 import PreferencesForm from '../components/ui/Profile/PreferencesForm'
 import ProjectsList from '../components/ui/Profile/ProjectsList'
-import { formatAvailability } from '../utils/formatAvailability'
 
 function MyProfile() {
 	const { userName } = useAuth();
@@ -18,6 +16,7 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
+	console.log("Profile: ", profile)
 	return (
 		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
 			<div className="w-70 flex-none">

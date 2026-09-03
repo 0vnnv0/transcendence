@@ -46,13 +46,13 @@ function PreferencesForm({ profile, userId }: PreferencesFormProps) {
 	// only applies on first mount, so this is what actually populates the fields
 	// once the profile query resolves.
 	useEffect(() => {
-	if (!profile) return;
-		reset({
-			days: profile.availability?.preferredDays?.length
-				? profile.availability.preferredDays   // <-- use saved data if it exists
-				: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"], // <-- fallback only if empty/missing
-			location: profile.availability?.isRemote ? 'remote' : 'campus',
-		});
+		if (!profile) return;
+			reset({
+				days: profile.availability?.preferredDays?.length
+					? profile.availability.preferredDays   // <-- use saved data if it exists
+					: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"], // <-- fallback only if empty/missing
+				location: profile.availability?.isRemote ? 'remote' : 'campus',
+			});
 	}, [profile, reset]);
 
 	// No saved days yet -> treat as "no data", form starts active/editable.
