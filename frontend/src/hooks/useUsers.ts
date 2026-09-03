@@ -91,7 +91,7 @@ export function useActiveUsersByProject(username: string | null, projectName: st
 	});
 }
 
-export function useUpdateProfile(userId: number) {
+export function useUpdateProfile(userId: number, login: string) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -99,7 +99,7 @@ export function useUpdateProfile(userId: number) {
 			updateUserProfile(userId, data),
 		onSuccess: () => {
       toast.success('Information saved successfully!');
-			queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+			queryClient.invalidateQueries({ queryKey: ["userProfile", login] });
 		},
 	});
 }

@@ -48,7 +48,7 @@ function MyProfile() {
 				</div>
 
 				{profile ? (
-					<PreferencesForm profile={profile} userId={profile.id} />
+					<PreferencesForm profile={profile} userId={profile.id} userName={userName} />
 				) : (
 					<p>No User Id found!</p> // or null, or a skeleton
 				)}

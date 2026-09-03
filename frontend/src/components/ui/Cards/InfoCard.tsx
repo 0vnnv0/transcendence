@@ -14,7 +14,7 @@ const SimpleProjectCard = ({
 }: SimpleProjectCardProps) => {
 	const IconComponent = icon ? CustomIcons[icon] : null;
   return (
-    <div className="relative flex flex-1 flex-col gap-4 p-6 bg-mild-purple rounded-3xl shadow-sm transition-shadow">
+    <div className="relative flex flex-1 flex-col gap-4 p-6 bg-white rounded-3xl shadow-sm transition-shadow">
       
 		{IconComponent && (
 			<IconComponent size={24} aria-hidden="true" />
@@ -24,7 +24,7 @@ const SimpleProjectCard = ({
 			<p className="text-paragraph-bold flex-1">
 				{title}
 			</p>
-			<h1 className="text-subtitle text-[20px] text-right shrink-0">
+			<h1 className="text-subtitle text-right shrink-0">
 				{description}
 			</h1>
 		</div>

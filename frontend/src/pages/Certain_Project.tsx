@@ -34,11 +34,11 @@ function Certain_Project() {
 		user.activeProjects?.some(p => p?.status === "searching_a_group"))
 		.filter(user => {
 			if (selectedDays.length === 0) return true;
-			if (isFullyAvailable(user.availability.preferredDays)) return true;
-			return user.availability.preferredDays.some(day => selectedDays.includes(day));
+			if (isFullyAvailable(user?.availability?.preferredDays)) return true;
+			return user?.availability?.preferredDays.some(day => selectedDays.includes(day));
 		})
 		.map(user => {
-			const days = formatAvailability(user?.availability.preferredDays);
+			const days = formatAvailability(user?.availability?.preferredDays);
 			const userTags: TagData[] = [
 			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
 			{ icon: 'clock', description: days },

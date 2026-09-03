@@ -16,6 +16,7 @@ type ProfileFormValues = {
 interface PreferencesFormProps {
 	profile: any;
 	userId: number;
+	userName: string;
 }
 
 const DAY_OPTIONS = [
@@ -33,11 +34,12 @@ const LOCATION_OPTIONS = [
 	{ value: 'remote' as const, label: 'Remote' },
 ];
 
-function PreferencesForm({ profile, userId }: PreferencesFormProps) {
+function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 	const { handleSubmit, control, reset, formState: { errors } } = useForm<ProfileFormValues>({
 		defaultValues: { days: [], location: 'campus' },
 	});
-	const updateProfileMutation = useUpdateProfile(userId);
+
+	const { mutate, isPending } = useUpdateProfile(userId, userName);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -61,7 +63,7 @@ function PreferencesForm({ profile, userId }: PreferencesFormProps) {
 	// saved data to show. If nothing's saved, it's always active.
 
 	const updateUserData = (formData: ProfileFormValues) => {
-		updateProfileMutation.mutate(
+		mutate(
 			{
 				days: formData.days,
 				location: formData.location,
@@ -124,7 +126,7 @@ function PreferencesForm({ profile, userId }: PreferencesFormProps) {
 								type="submit"
 								size='sm'
 							>
-								{updateProfileMutation.isPending ? 'Saving...' : 'Save changes'}
+								{isPending ? 'Saving...' : 'Save changes'}
 							</Button>
 						</form>
 						{errors.days && <p className="text-red-500 text-xs mt-1">{String(errors.days.message)}</p>}
@@ -134,7 +136,7 @@ function PreferencesForm({ profile, userId }: PreferencesFormProps) {
 			) : (
 				<div className="relative group">
 					<Button
-						className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+						className="absolute z-10 top-10 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
 						size="sm"
 						variant="secondary"
 						icon="edit"
