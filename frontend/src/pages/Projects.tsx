@@ -3,6 +3,7 @@ import ProjectCard from '../components/ui/Cards/ProjectCard';
 import { useAuthorize } from '../hooks/useAuth';
 import { useProjects } from '../hooks/useProjects';
 import CardSection from '../components/sections/CardSection';
+import { getProjectImage } from '../utils/projectImages';
 
 function Projects() {
 	// const { userName, userRank, newCore } = useAuthorize();
@@ -29,7 +30,7 @@ function Projects() {
 						<ProjectCard 
 							key={project.id}
 							layout="portrait"
-							image="/success.png"
+							image={getProjectImage(project.slug)}
 							title={project.name}
 							subtitle={`Rank ${project.projectRank}`}
 							tags={project.keywords}

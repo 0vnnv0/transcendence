@@ -15,7 +15,7 @@ function Navbar() {
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
 
   return (
-    <nav className="fixed left-0 top-0 h-screen w-70 flex flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-black">
+    <nav className="fixed left-0 top-0 h-screen w-70 flex flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-background-grey">
         <div className="top-6 w-full">
             <SearchBar />
         </div>

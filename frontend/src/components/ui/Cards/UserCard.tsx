@@ -36,8 +36,9 @@ const UserCard = ({
     <Link
 		to={`/users/${username}`}
 		className={`
-			flex flex-1 gap-4 p-2 bg-white rounded-3xl shadow-sm relative
-			hover:shadow-md hover:bg-gray-200 cursor-pointer transition-shadow
+			flex flex-1 gap-3 p-2 bg-white rounded-3xl shadow-sm relative
+			hover:shadow-mdcursor-pointer transition-shadow
+			border border-white hover:border-black hover:scale-101 transition-all transition-colors transition-transform
 			${isLandscape ? 'flex-row justify-between' : 'flex-col'}
 		`}
 	>  
@@ -46,7 +47,7 @@ const UserCard = ({
 		  <Tag description='Friends' icon='smiley' color='orange' />
 		 </div>
 	  )}
-      <div className="w-22 h-22 rounded-2xl overflow-hidden bg-gray-400"> {/* fixed size lives here */}
+      <div className={`${isLandscape ? 'w-22 h-22' : 'w-full h-34'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
 		<img
 			src={image}
 			alt=""
@@ -56,11 +57,11 @@ const UserCard = ({
       <div
         className={`
           flex flex-1 flex-col
-          ${isLandscape ? 'justify-center py-2 pr-2 gap-3' : 'pb-3 px-2 gap-4'}
+          ${isLandscape ? 'justify-center py-2 pr-2 gap-2' : 'pb-3 px-2 gap-2.5'}
         `}
       >
         <h1 className="text-subtitle">{username}</h1>
-        <div className={`flex gap-4 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>     
+        <div className={`flex gap-3 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>     
 			<div className="flex flex-row gap-1">
 				{tags && <TagList tags={tags} />}
 				{ friendship && isLandscape &&

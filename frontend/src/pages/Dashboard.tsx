@@ -3,7 +3,7 @@ import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext';
 import { useNextProject, useRecommendedProjects } from '../hooks/useProjects';
-import projectsData from '../data/projects.json'
+import { getProjectImage } from '../utils/projectImages';
 
 interface ProjectData {
 	id: number;
@@ -19,10 +19,10 @@ interface ProjectData {
 	keywords: string[];
 }
 
-interface BackendResponse {
-	login: string;
-	projects: ProjectData[];
-}
+// interface BackendResponse {
+// 	login: string;
+// 	projects: ProjectData[];
+// }
 
 function Dashboard() {
 	const { userName } = useAuth();
@@ -35,14 +35,12 @@ function Dashboard() {
         isError: isRecError
     } = useRecommendedProjects(userName);
 
-	// CHANGED HERE //
-    // const nextProject: ProjectData | undefined = nextProjectData?.projects?.[0];
-	const nextProject: ProjectData | undefined = projectsData[0];
+    const nextProject: ProjectData | undefined = nextProjectData?.projects?.[0];
+	// const nextProject: ProjectData | undefined = projectsData[0];
 	console.log('Next, ', nextProject)
 
-	// CHANGED HERE //
-    // const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
-	const recommendedProjects: ProjectData[] = projectsData ? projectsData.slice(1) : [];
+    const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
+	// const recommendedProjects: ProjectData[] = projectsData ? projectsData.slice(1) : [];
 	console.log('Recommended, ', recommendedProjects);
 	let nextProjectContent;
 
@@ -55,7 +53,7 @@ function Dashboard() {
 			nextProjectContent = (
 				<ProjectCard
 					layout="landscape"
-					image={nextProject.image}
+					image={getProjectImage(nextProject.slug)}
 					title={nextProject.name}
 					tags={[
 						`${nrOfUsers} People`,
@@ -87,7 +85,7 @@ function Dashboard() {
 				<ProjectCard
 					key={project.id}
 					layout="portrait"
-					image={project.image}
+					image={getProjectImage(project.slug)}
 					title={project.name}
 					subtitle={`Rank ${project.projectRank}`}
 					tags={[
