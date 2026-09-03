@@ -89,7 +89,8 @@ export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoute
 		modProfileInfo(request, response, fastify, prisma));
 	fastify.delete('/profile/:userId', async (request, response) =>
 		deleteProfile(request, response, fastify, prisma));
-	fastify.get("/upload-url", async (req, reply) =>
+	// changed get to post cause we need a body and this cannot be sent with get
+	fastify.post("/upload-url", async (req, reply) =>
 		getS3Url(req, reply, fastify, prisma));
 }
 

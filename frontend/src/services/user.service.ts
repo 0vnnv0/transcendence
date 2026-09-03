@@ -91,6 +91,25 @@ export async function fetchRecommendedProjects(userName: string) {
 	return response.json();
 }
 
+export async function getUploadUrl(contentType: string): Promise<string> {
+	const token = localStorage.getItem('token');
+
+	const response = await fetch("/api/upload-url", {
+		credentials: "include",
+		method: 'POST',
+    	headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ contentType }),
+	});
+	if (!response.ok) {
+		throw new Error("Unable to get upload Url");
+	}
+	const data = await response.json()
+	return data;
+}
+
 export const updateAvatar = async (
   login: string,
   file: File

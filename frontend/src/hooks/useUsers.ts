@@ -1,4 +1,4 @@
-import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services/user.service';
+import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch, getUploadUrl } from '../services/user.service';
 import type { ChatUser } from '../types/chat'
 import type { FullUserProfile } from '../types/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -27,6 +27,12 @@ export const useUsersSearch = (searchQuery: string) => {
     queryFn: () => fetchUsersBySearch(searchQuery),
     enabled: searchQuery.trim().length > 0, 
   });
+};
+
+export function useGetUploadUrl() {
+	return useMutation({
+		mutationFn: getUploadUrl
+	});
 };
 
 

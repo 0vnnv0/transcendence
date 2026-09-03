@@ -1,6 +1,6 @@
 // components/profile/AvatarUpload.tsx
 import { useRef } from 'react'
-import { useUpdateAvatar } from '../../../hooks/useUsers';
+import { useUpdateAvatar, useGetUploadUrl } from '../../../hooks/useUsers';
 import Button from '../Button/Button'
 
 interface AvatarUploadProps {
@@ -11,11 +11,18 @@ interface AvatarUploadProps {
 function AvatarUpload({ avatarUrl, userKey }: AvatarUploadProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const updateAvatar = useUpdateAvatar(userKey);
+	const { mutate } = useGetUploadUrl();
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
 		if (!file) return;
-		updateAvatar.mutate(file);
+
+		mutate(file.type, {
+			onSuccess: (data) => {
+				console.log(data)
+			}
+		})
+		// updateAvatar.mutate(file);
 		e.target.value = '';
 	}
 
