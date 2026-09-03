@@ -10,7 +10,9 @@ import { useActiveUsersByProject } from '../hooks/useUsers';
 import { useAuth } from '../components/context/AuthContext';
 import { useProjectFilters } from '../store/useProjectFilters';
 import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
+import { getProjectImage } from '../utils/projectImages';
 import { mockUsers } from '../types/mockUser';
+import { formatProjectName } from '../utils/formatProjectName';
 
 function Certain_Project() {
 
@@ -19,7 +21,6 @@ function Certain_Project() {
 	const { userName } = useAuth();
 	const project = projectsData.find(p => p.slug === id);
 	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
-	// console.log("Active Users: ", activeUsers);
 	const { viewMode, days: selectedDays } = useProjectFilters();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
@@ -89,22 +90,29 @@ function Certain_Project() {
 			<div className="w-70 flex-none">
 				<Navbar />
 			</div>
-			<div className="flex flex-col flex-1 p-10 gap-6">
-				<div className="flex flex-row justify-between">
-					<Button 
-						size="sm"
-						variant="tertiary"
-						icon="arrowLeft"
-						onClick={() => navigate(-1)}
-					>Back</Button>
-					{project?.keywords && (
-						<TagList tags={projectTags}/>
-					)}
+			<div className="relative flex flex-col flex-1 p-10 gap-6">
+				<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-mild-purple-dark to-background-neutral" />
+				<div className="flex flex-row w-full gap-10 border-b border-background-dark pb-10 z-10 justify-between">
+					<div className="flex flex-col justify-between gap-16 w-full max-w-195">
+						<div className="flex flex-start">
+							{project?.keywords && (
+								<TagList tags={projectTags}/>
+							)}
+						</div>
+						<div>
+							<h1 className="font-[Gasoek_One] lg:text-6xl md:text-5xl text-black mb-3">
+								{formatProjectName(project?.name)}
+							</h1>
+							<p className="text-paragraph-big-bold">{project.description}</p>
+						</div>
+					</div>	
+					<img
+						src={getProjectImage(project?.slug)}
+						alt={`${project?.slug} project image`}
+						className="object-cover rounded-3xl w-70 min-h-70 h-full border border-black"
+					/>
 				</div>
-				<h1 className="font-[Gasoek_One] text-6xl text-black">
-					{project?.name}
-				</h1>
-				<p className="text-paragraph-big-bold">{project.description}</p>
+				
 				{/* <CardSection title="Feed">
 					<CardSection.Body viewMode="list">
 						<UserCard

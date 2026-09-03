@@ -12,11 +12,11 @@ type CardSectionProps = {
 function CardSection({ title, filter = false, children }: CardSectionProps) {
   // We search through children to separate the Filters from the Body content
   const childrenArray = React.Children.toArray(children);
-  
+
   const filtersChild = childrenArray.find(
     (child) => React.isValidElement(child) && child.type === CardSection.Filters
   );
-  
+
   const bodyChild = childrenArray.find(
     (child) => React.isValidElement(child) && child.type === CardSection.Body
   );
@@ -59,14 +59,14 @@ const gridColMap = {
   4: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
 };
 
-CardSection.Body = function CardSectionBody({ 
-	viewMode = 'grid', 
+CardSection.Body = function CardSectionBody({
+	viewMode = 'grid',
 	columns = 3,
 	children
  }: CardSectionBodyProps) {
 
-	const layoutClass = viewMode === 'grid' 
-    ? gridColMap[columns] 
+	const layoutClass = viewMode === 'grid'
+    ? gridColMap[columns]
     : 'flex flex-col gap-4';
 
   return (

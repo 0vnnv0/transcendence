@@ -1,4 +1,5 @@
 // components/profile/ProjectsList.tsx
+import { getProjectImage } from '../../../utils/projectImages';
 import ProjectCard from '../Cards/ProjectCard'
 
 interface ProjectsListProps {
@@ -22,7 +23,7 @@ function ProjectsList({ data, isLoading, isError, label }: ProjectsListProps) {
 				<ProjectCard
 					key={project.id}
 					layout="portrait"
-					image="/success.png"
+					image={getProjectImage(project.slug)}
 					title={project.name}
 					subtitle={`Rank ${project.projectRank}`}
 					tags={project.keywords}

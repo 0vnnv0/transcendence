@@ -6,10 +6,11 @@
 
   /* custom colours */
   --color-mild-purple: #F0DBFF;
+  --color-mild-purple-dark: #FFE1CC;
   --color-purple: #7C39EF;
   --color-purple-dark: #6428CC;
   --color-background-neutral: #F8F6F3;
-  --color-background-grey: #292826;
+  --color-background-grey: #151514;
   --color-background-dark: #EBE9E7;
 }
 

@@ -9,9 +9,13 @@ interface TagProps {
   size?: 'large' | 'small';
 }
 
+const MAX_LENGTH = 18;
+
 const Tag: React.FC<TagProps> = ({ description, icon, color = 'purple', size = 'small' }) => {
   // Read the custom icon from the mapping dictionary
   const IconComponent = icon ? CustomIcons[icon] : null;
+  const truncatedDescription = description.length > MAX_LENGTH
+  	 ? `${description.slice(0, MAX_LENGTH)}…` : description;
 
   const colors = {
 	orange: "bg-orange-100",
@@ -29,7 +33,7 @@ const Tag: React.FC<TagProps> = ({ description, icon, color = 'purple', size = '
       {IconComponent && (
         <IconComponent size={size === 'large' ? 20 : 16} className="w-3 h-3" aria-hidden="true" />
       )}
-      {description}
+      {truncatedDescription}
     </span>
   );
 };

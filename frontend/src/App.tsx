@@ -25,7 +25,7 @@ import { Toaster } from 'react-hot-toast'
 //         <Route path="/chats" element={<Chats />} />
 //         <Route path="/project/:id" element={<Certain_Project />} />
 //         <Route path="/chat/:username" element={<Chats />} />
-// 		 <Route path="/:username" element={<OtherProfile />} />  
+// 		 <Route path="/:username" element={<OtherProfile />} />
 
 // 	  <Route path="/authsuccess" element={<AuthSuccess />} />
 //     </Routes>
@@ -36,7 +36,7 @@ import { Toaster } from 'react-hot-toast'
 function App() {
   return (
     <Routes>
-        <Toaster position="top-center" />
+        {/* <Toaster position="top-center" /> */}
         <Route path="/" element={<Login />} />
         <Route path="/authorize" element={<Authorize />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -59,7 +59,7 @@ function App() {
 // 		<Route element={<PublicRoute />}>
 //         <Route path="/" element={<Login />} />
 //         <Route path="/authorize" element={<Authorize />} />
-//       </Route>      
+//       </Route>
 // 	  <Route element={<ProtectedRoute />}>
 //         <Route path="/dashboard" element={<Dashboard />} />
 //         <Route path="/feed" element={<Feed />} />
@@ -70,7 +70,7 @@ function App() {
 //         <Route path="/chat/:username" element={<Chats />} />
 // 		 <Route path="/:username" element={<OtherProfile />} />
 //       </Route>
-	  
+
 
 // 	  <Route path="/authsuccess" element={<AuthSuccess />} />
 //     </Routes>

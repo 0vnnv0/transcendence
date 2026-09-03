@@ -17,12 +17,12 @@ import type { TagData } from '../components/ui/TagList/TagList';
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
-    const userKey = (username && username !== "Guest") ? username : null;    
-    const { userId: currentUserId } = useAuth(); 
+    const userKey = (username && username !== "Guest") ? username : null;
+    const { userId: currentUserId } = useAuth();
 
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();
-    
+
     const { mutate: addFriend, isPending: isAddingFriend } = useAddFriend();
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
     const { mutate: acceptFriend, isPending: isAcceptingFriend } = useAcceptFriend();
@@ -54,7 +54,7 @@ function OtherProfile() {
             </div>
         );
     } else {
-        
+
         const friendship = profile.friendship;
         let friendActionButton;
 
@@ -63,7 +63,7 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
-                    variant="secondary" 
+                    variant="secondary"
                     onClick={() => removeFriend(profile.id)}
                     disabled={isRemovingFriend}
                 >
@@ -81,7 +81,7 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
-					variant="secondary" 
+					variant="secondary"
                     onClick={() => acceptFriend(profile.id)}
                     disabled={isAcceptingFriend}
                 >
@@ -93,7 +93,7 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
-					variant="secondary" 
+					variant="secondary"
                     onClick={() => addFriend(profile.id)}
                     disabled={isAddingFriend}
                 >
@@ -104,12 +104,12 @@ function OtherProfile() {
         mainContent = (
             <div className="flex flex-col flex-1 gap-16">
                 <div className="flex flex-row gap-8 w-full">
-                    <div 
+                    <div
                         className="group relative border border-black h-54 w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
                         style={{ backgroundImage: `url(${profile.avatarUrl || '/default_avatar.jpg'})` }}
                     >
                     </div>
-                    
+
                     <div className="flex flex-col justify-center gap-1">
 						{ friendship?.status === 'ACCEPTED' &&
 							<Tag description='Friends' icon='smiley' color='orange' />
@@ -118,27 +118,27 @@ function OtherProfile() {
 						<p className="text-subtitle mb-4">
 							{profile.firstName} {profile.lastName}
 						</p>
-                        
+
                         <div className="flex gap-2">
-                            <Button 
-                                size="md" 
+                            <Button
+                                size="md"
                                 icon="message"
                                 onClick={() => currentUserId && startChat({ currentUserId, targetUserId: profile.id })}
                                 disabled={isStartingChat || !currentUserId}
                             >
                                 {isStartingChat ? 'Starting...' : 'Message'}
                             </Button>
-                            
-                            <Button 
+
+                            <Button
                                 size="md"
                                 variant="secondary"
-                                icon="message" 
+                                icon="message"
                                 href={profile.intraUrl}
                                 externalLink
                             >
                                 Intra Profile
                             </Button>
-                            
+
                             {friendActionButton}
                         </div>
                     </div>
@@ -180,7 +180,7 @@ function OtherProfile() {
             <div className="w-70 flex-none">
                 <Navbar />
             </div>
-            
+
             <div className="flex flex-col flex-1 p-10">
                 {mainContent}
             </div>
