@@ -40,7 +40,7 @@ const updateProfileSchema = {
 			  },
 			  isRemote: { type: 'boolean' }
 			},
-			required: ['workDaysPerWeek', 'startDate', 'endDate', 'preferredDays'],
+			required: ['workDaysPerWeek', 'preferredDays', 'isRemote'],
 			additionalProperties: false
 		  }
 	  },

@@ -132,18 +132,26 @@ export const fetchActiveUsersByProject = async (username: string, projectName: s
 };
 
 export const updateUserProfile = async (
-	userId: string,
+	userId: number,
 	data: UpdateProfilePayload
 ): Promise<UpdateProfileResponse> => {
 	const token = localStorage.getItem('token');
 
-	const response = await fetch(`/profile/${userId}`, {
+	const body = {
+		availability: {
+			workDaysPerWeek: data.days.length,
+			preferredDays: data.days,
+			isRemote: data.location === 'remote',
+		}
+	}
+
+	const response = await fetch(`/api/profile/${userId}`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${token || ''}`,
 		},
-		body: JSON.stringify(data),
+		body: JSON.stringify(body),
 	});
 
 	if (!response.ok) {

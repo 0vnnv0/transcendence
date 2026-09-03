@@ -91,7 +91,7 @@ export function useActiveUsersByProject(username: string | null, projectName: st
 	});
 }
 
-export function useUpdateProfile(userId: string) {
+export function useUpdateProfile(userId: number) {
 	const queryClient = useQueryClient();
 
 	return useMutation({

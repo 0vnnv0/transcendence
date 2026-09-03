@@ -5,7 +5,6 @@ import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 import TagList from '../components/ui/TagList/TagList';
 import type { TagData } from '../components/ui/TagList/TagList';
-import Button from '../components/ui/Button/Button';
 import { useActiveUsersByProject } from '../hooks/useUsers';
 import { useAuth } from '../components/context/AuthContext';
 import { useProjectFilters } from '../store/useProjectFilters';
@@ -35,11 +34,11 @@ function Certain_Project() {
 		user.activeProjects?.some(p => p?.status === "searching_a_group"))
 		.filter(user => {
 			if (selectedDays.length === 0) return true;
-			if (isFullyAvailable(user.preferredDays)) return true;
-			return user.preferredDays.some(day => selectedDays.includes(day));
+			if (isFullyAvailable(user.availability.preferredDays)) return true;
+			return user.availability.preferredDays.some(day => selectedDays.includes(day));
 		})
 		.map(user => {
-			const days = formatAvailability(user?.preferredDays);
+			const days = formatAvailability(user?.availability.preferredDays);
 			const userTags: TagData[] = [
 			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
 			{ icon: 'clock', description: days },

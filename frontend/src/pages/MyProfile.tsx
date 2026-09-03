@@ -8,6 +8,7 @@ import InfoCard from '../components/ui/Cards/InfoCard'
 import AvatarUpload from '../components/ui/Profile/AvatarUpload'
 import PreferencesForm from '../components/ui/Profile/PreferencesForm'
 import ProjectsList from '../components/ui/Profile/ProjectsList'
+import { formatAvailability } from '../utils/formatAvailability'
 
 function MyProfile() {
 	const { userName } = useAuth();
@@ -47,14 +48,11 @@ function MyProfile() {
 					</div>
 				</div>
 
-				<PreferencesForm profile={profile} userName={userName} />
-
-				<CardSection title="User Info">
-					<CardSection.Body viewMode="grid" columns={4}>
-						<InfoCard image="rank.jpg" title="Rank" description={`${profile?.currentRank}`} />
-						<InfoCard image="arctos.png" title="Coalition" description={`${profile?.coalitionName}`} />
-					</CardSection.Body>
-				</CardSection>
+				{profile ? (
+					<PreferencesForm profile={profile} userId={profile.id} />
+				) : (
+					<p>No User Id found!</p> // or null, or a skeleton
+				)}
 
 				{currentProject && (
 					<CardSection title="Current projects">
