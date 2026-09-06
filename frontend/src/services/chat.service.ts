@@ -19,7 +19,7 @@ const response = await fetch('/api/chats', {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: Number(currentUserId), targetUserId: Number(targetUserId) }),
+        body: JSON.stringify({ currentUserId: currentUserId, targetUserId: targetUserId }),
     });
 
     if (!response.ok) {
