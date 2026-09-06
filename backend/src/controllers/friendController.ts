@@ -51,10 +51,10 @@ export class FriendController {
 		}
 	}
 
-	// DELETE /api/friends/:id
+	// DELETE /api/friends/
 	async removeFriend(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { targetId } = request.params as { targetId: number | string};
+		const { targetId } = request.body as { targetId: number | string};
 
 		try {
 			await friendService.removeFriendOrRequest(userId, targetId);
