@@ -69,6 +69,7 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<ChatUser[
       intraName: item.title, 
       avatarUrl: item.avatarUrl
     }));
+	
     
   return users;
 };
