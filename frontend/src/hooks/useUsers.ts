@@ -63,6 +63,9 @@ export function useUpdateAvatar(userKey: string | null) {
         old ? { ...old, avatarUrl: data.avatarUrl } : old
       )
     },
+	 onError: (error: Error) => {
+        toast.error(error.message || 'Failed to change profile picture.');
+        },
 
     // // Server call failed — roll back to the snapshot
     // onError: (_err, _file, context) => {
@@ -101,5 +104,8 @@ export function useUpdateProfile(userId: string) {
       toast.success('Information saved successfully!');
 			queryClient.invalidateQueries({ queryKey: ["profile", userId] });
 		},
+        onError: (error: Error) => {
+            toast.error(error.message || 'Failed to save information.');
+        },
 	});
 }

@@ -2,17 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecentChats } from '../../../hooks/useChat'; // Pfad anpassen
 import { NewChatModal } from '../ChatWindow/NewChatModal';
+import { useAuth } from '../../context/AuthContext';
 
 function ChatMenu() {
     const navigate = useNavigate();
     const [isChatsOpen, setIsChatsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // PLATZHALTER: Die eigene ID (kommt später aus Auth)
-    const currentUserId = 1; 
+	const { userId } = useAuth();
 
-    // Echte Daten aus dem Backend laden!
-    const { data: recentChats, isLoading, isError } = useRecentChats(currentUserId);
+    const { data: recentChats, isLoading, isError } = useRecentChats(userId as number);
 
     let chatIcon = "/chat_closed.svg";
     if (isChatsOpen) {
@@ -37,7 +36,7 @@ function ChatMenu() {
         const top5Chats = recentChats.slice(0, 5);
         
         chatListContent = top5Chats.map((chat) => {
-            const otherUser = chat.users.find(u => u.id !== currentUserId) 
+            const otherUser = chat.users.find(u => u.id !== userId) 
                 || { intraName: "Unbekannt", id: 0 };
 
             return (
@@ -88,11 +87,10 @@ return (
                 )}
             </li>
 
-            {/* NEU: Das Modal einbinden */}
             <NewChatModal 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
-                currentUserId={currentUserId}
+                currentUserId={userId as number}
             />
         </>
     );
