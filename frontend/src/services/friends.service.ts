@@ -4,6 +4,7 @@ export const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return {
         'Authorization': `Bearer ${token || ''}`,
+        'Content-Type': 'application/json',
     };
 };
 
@@ -19,12 +20,13 @@ export const fetchAllFriends = async (): Promise<Friends[]> => {
   return response.json();
 };
 
-export const sendFriendRequest = async (targetUserId: number): Promise<void> => {
+
+export const sendFriendRequest = async (senderId: number): Promise<void> => {
 
     const response = await fetch('/api/friends/request', {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ targetUserId }), 
+        body: JSON.stringify({ senderId }), 
     });
 
     if (!response.ok) {
@@ -45,7 +47,7 @@ export const acceptFriendRequest = async (senderId: number): Promise<void> => {
 };
 
 export const removeFriendOrRequest = async (targetId: number): Promise<void> => {
-    const response = await fetch(`/api/friends/remove`, {
+    const response = await fetch(`/api/friends/remove/${targetId}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
 		body: JSON.stringify({ targetId }),
