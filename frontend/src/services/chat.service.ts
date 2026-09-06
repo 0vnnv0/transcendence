@@ -18,7 +18,7 @@ export const createNewChat = async (currentUserId: number, targetUserId: number)
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: currentUserId, targetUserId: targetUserId }),
+        body: JSON.stringify({ currentUserId: currentUserId, targetUserId: targetUserId }),
     });
 
     if (!response.ok) {

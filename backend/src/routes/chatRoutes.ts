@@ -151,6 +151,9 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         
     } catch (error) {
         fastify.log.error(error);
-        return response.code(500).send({ error: "Failed to create chat." });
+        return response.code(500).send({
+    		error: "Failed to create chat.",
+			details: error instanceof Error ? error.message : String(error),
+    });
     }
 }
