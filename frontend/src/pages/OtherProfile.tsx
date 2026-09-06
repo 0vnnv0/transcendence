@@ -6,7 +6,7 @@ import Button from '../components/ui/Button/Button'
 import { useStartChat } from '../hooks/useChat';
 import { useUserProfile } from '../hooks/useUsers';
 import { useAddFriend, useRemoveFriend, useAcceptFriend } from '../hooks/useFriends';
-import { useAuth } from '../components/context/AuthContext'; // WICHTIG: AuthContext importieren
+import { useAuth } from '../components/context/AuthContext';
 import Tag from '../components/ui/TagList/Tag';
 import { useRecommendedProjects, useNextProject } from '../hooks/useProjects';
 import ProjectsList from '../components/ui/Profile/ProjectsList';
@@ -14,6 +14,8 @@ import PreferencesForm from '../components/ui/Profile/PreferencesForm';
 import TagList from '../components/ui/TagList/TagList';
 import { formatAvailability } from '../utils/formatAvailability';
 import type { TagData } from '../components/ui/TagList/TagList';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
@@ -23,21 +25,23 @@ function OtherProfile() {
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();
 
+    const [localStatus, setLocalStatus] = useState<string | null>(null);
+   
     const { mutate: addFriend, isPending: isAddingFriend } = useAddFriend();
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
     const { mutate: acceptFriend, isPending: isAcceptingFriend } = useAcceptFriend();
 
-	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
-	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
+    const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
+    const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
     let mainContent = null;
 
-	const days = formatAvailability(profile?.preferredDays);
-	const userTags: TagData[] = [
-		{ icon: 'trophy', description: `Rank ${profile?.currentRank}` },
-		{ icon: 'flame', description: `Rank ${profile?.coalitionName}` },
-		{ icon: 'clock', description: days },
-	];
+    const days = formatAvailability(profile?.preferredDays);
+    const userTags: TagData[] = [
+        { icon: 'trophy', description: `Rank ${profile?.currentRank}` },
+        { icon: 'flame', description: `Rank ${profile?.coalitionName}` },
+        { icon: 'clock', description: days },
+    ];
 
     if (isLoading) {
         mainContent = (
@@ -54,35 +58,42 @@ function OtherProfile() {
             </div>
         );
     } else {
-
         const friendship = profile.friendship;
+        const friendshipStatus = localStatus ?? friendship?.status;
+        const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
+        const effectiveReceiverId = friendship?.receiverId;
+
         let friendActionButton;
 
-        if (friendship?.status === 'ACCEPTED') {
+        if (friendshipStatus === 'ACCEPTED') {
             friendActionButton = (
                 <Button
                     size="md"
                     icon="message"
                     variant="secondary"
-                    onClick={() => removeFriend(profile.id)}
+                    onClick={() => removeFriend(profile.id, {
+                        onSuccess: () => setLocalStatus(null)
+                    })}
                     disabled={isRemovingFriend}
                 >
                     {isRemovingFriend ? 'Removing...' : 'Remove Friend'}
                 </Button>
             );
-        } else if (friendship?.status === 'PENDING' && friendship.senderId === currentUserId) {
+        } else if (friendshipStatus === 'PENDING' && effectiveSenderId === currentUserId) {
             friendActionButton = (
                 <Button size="md" icon="clock" variant="secondary" disabled>
                     Pending
                 </Button>
             );
-        } else if (friendship?.status === 'PENDING' && friendship.receiverId === currentUserId) {
+        } else if (friendshipStatus === 'PENDING' && effectiveReceiverId === currentUserId) {
             friendActionButton = (
                 <Button
                     size="md"
                     icon="message"
-					variant="secondary"
-                    onClick={() => acceptFriend(profile.id)}
+                    variant="secondary"
+                    onClick={() => acceptFriend(profile.id, {
+                        onSuccess: () => setLocalStatus('ACCEPTED')
+                    })}
                     disabled={isAcceptingFriend}
                 >
                     {isAcceptingFriend ? 'Accepting...' : 'Accept Request'}
@@ -93,14 +104,20 @@ function OtherProfile() {
                 <Button
                     size="md"
                     icon="message"
-					variant="secondary"
-                    onClick={() => addFriend(profile.id)}
+                    variant="secondary"
+                    onClick={() => addFriend(profile.id, {
+                        onSuccess: () => {
+							setLocalStatus('PENDING');
+							toast.success("Friend request sent successfully!");
+						}
+                    })}
                     disabled={isAddingFriend}
                 >
                     {isAddingFriend ? 'Sending...' : 'Add Friend'}
                 </Button>
             );
         }
+
         mainContent = (
             <div className="flex flex-col flex-1 gap-16">
                 <div className="flex flex-row gap-8 w-full">
@@ -111,13 +128,13 @@ function OtherProfile() {
                     </div>
 
                     <div className="flex flex-col justify-center gap-1">
-						{ friendship?.status === 'ACCEPTED' &&
-							<Tag description='Friends' icon='smiley' color='orange' />
-						}
+                        { friendshipStatus === 'ACCEPTED' &&
+                            <Tag description='Friends' icon='smiley' color='orange' />
+                        }
                         <h1 className="text-title mb-1">{username}</h1>
-						<p className="text-subtitle mb-4">
-							{profile.firstName} {profile.lastName}
-						</p>
+                        <p className="text-subtitle mb-4">
+                            {profile.firstName} {profile.lastName}
+                        </p>
 
                         <div className="flex gap-2">
                             <Button
@@ -144,33 +161,33 @@ function OtherProfile() {
                     </div>
                 </div>
 
-				<TagList tags={userTags} size='large' />
+                <TagList tags={userTags} size='large' />
 
                 {currentProject && (
-					<CardSection title="Current projects">
-						<CardSection.Body viewMode="grid" columns={2}>
-							<ProjectsList
-								data={currentProject}
-								isLoading={currentProjectLoading}
-								isError={currentProjectError}
-								label="current project"
-							/>
-						</CardSection.Body>
-					</CardSection>
-				)}
+                    <CardSection title="Current projects">
+                        <CardSection.Body viewMode="grid" columns={2}>
+                            <ProjectsList
+                                data={currentProject}
+                                isLoading={currentProjectLoading}
+                                isError={currentProjectError}
+                                label="current project"
+                            />
+                        </CardSection.Body>
+                    </CardSection>
+                )}
 
-				{recProjects?.projects.length !== 0 && (
-					<CardSection title="Recommended next projects">
-						<CardSection.Body viewMode="grid" columns={2}>
-							<ProjectsList
-								data={recProjects}
-								isLoading={recProjectsLoading}
-								isError={recProjectsError}
-								label="recommended projects"
-							/>
-						</CardSection.Body>
-					</CardSection>
-				)}
+                {recProjects?.projects.length !== 0 && (
+                    <CardSection title="Recommended next projects">
+                        <CardSection.Body viewMode="grid" columns={2}>
+                            <ProjectsList
+                                data={recProjects}
+                                isLoading={recProjectsLoading}
+                                isError={recProjectsError}
+                                label="recommended projects"
+                            />
+                        </CardSection.Body>
+                    </CardSection>
+                )}
             </div>
         );
     }

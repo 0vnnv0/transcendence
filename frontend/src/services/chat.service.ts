@@ -13,12 +13,13 @@ export const fetchChatHistory = async (chatId: number, userId: number): Promise<
 };
 
 export const createNewChat = async (currentUserId: number, targetUserId: number): Promise<CreateChatResponse> => {
-console.log("Sende an Backend - currentUserId:", currentUserId, "targetUserId:", targetUserId);	const response = await fetch('/api/chats', {
+console.log("Sende an Backend - currentUserId:", currentUserId, "targetUserId:", targetUserId);	
+const response = await fetch('/api/chats', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: currentUserId, targetUserId: targetUserId }),
+        body: JSON.stringify({ userId: Number(currentUserId), targetUserId: Number(targetUserId) }),
     });
 
     if (!response.ok) {
