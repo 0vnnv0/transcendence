@@ -30,9 +30,9 @@ export interface FullUserProfile {
   }
 }
 
-export interface UpdateAvatarResponse {
-  avatarUrl: string
-}
+// export interface UpdateAvatarResponse {
+//   avatarUrl: string
+// }
 
 export interface UpdateProfilePayload {
 	days: string[];
@@ -44,4 +44,9 @@ export interface UpdateProfileResponse {
 	id: string;
 	days: string[];
 	location: string;
+}
+
+export interface PresignedPostResponse {
+	url: string;
+	fields: Record<string, string>;
 }
