@@ -180,17 +180,15 @@ export class FriendService {
 	async removeFriendOrRequest(userId: number, targetId: number | string) {
 
 		const parsedSenderId = Number(targetId);
-		console.log("targetId: ", targetId);
-		console.log("parsedSenderId: ", parsedSenderId);
 		const request = await prisma.friendship.findFirst({
 			where: {
 				senderId: parsedSenderId,
 				receiverId: userId,
-				status: 'PENDING'
+				status: 'ACCEPTED'
 			}
 		});
 		if (!request) {
-			throw new Error('Friend request not found or already accepted');
+			throw new Error('Friend request not found');
 		}
 		// const parsedFriendshipId = Number(friendshipId);
 
