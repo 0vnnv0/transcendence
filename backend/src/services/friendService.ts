@@ -111,9 +111,9 @@ export class FriendService {
 			if (!testUser) {
 				throw new Error('User not found');
 			}
-
 			receiver = await prisma.user.create({
 				data: {
+					id: testUser.id,
 					intraName: testUser.login,
 					intraEmail: testUser.intraEmail || `${testUser.login}@student.42berlin.de`,
 					avatarUrl: testUser.avatarUrl,
@@ -127,7 +127,6 @@ export class FriendService {
 				}
 			});
 		}
-
 		if (receiver.id === senderId) {
 			throw new Error('Cannot add yourself as a friend');
 		}

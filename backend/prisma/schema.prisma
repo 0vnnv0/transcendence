@@ -47,7 +47,7 @@ model LoggedUser {
 }
 
 model User { 
-	id				Int			@id @default(autoincrement()) 	//check
+	id				Int			@id 	//check
 	createdAt		DateTime	@default(now()) 				//check
 	intraEmail		String		@unique							//check
 	intraName		String		@unique							//check, aber heisst login
