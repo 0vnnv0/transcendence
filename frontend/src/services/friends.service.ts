@@ -45,7 +45,10 @@ console.log("Sende Freundschaftsanfrage für targetUserId:", targetUserId);
 export const acceptFriendRequest = async (senderId: number): Promise<void> => {
     const response = await fetch('/api/friends/request', {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: {
+			...getAuthHeaders(),
+			'Content-Type': 'application/json',
+		},
         body: JSON.stringify({ senderId }), 
     });
 
