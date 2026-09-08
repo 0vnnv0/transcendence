@@ -60,8 +60,8 @@ function OtherProfile() {
     } else {
         const friendship = profile.friendship;
         const friendshipStatus = localStatus ?? friendship?.status;
-        const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
-        const effectiveReceiverId = friendship?.receiverId;
+        // const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
+        // const effectiveReceiverId = friendship?.receiverId;
 
         let friendActionButton;
 
@@ -79,13 +79,13 @@ function OtherProfile() {
                     {isRemovingFriend ? 'Removing...' : 'Remove Friend'}
                 </Button>
             );
-        } else if (friendshipStatus === 'PENDING' && effectiveSenderId === currentUserId) {
+        } else if (friendshipStatus === 'PENDING_SENT') { //&& effectiveSenderId === currentUserId
             friendActionButton = (
                 <Button size="md" icon="clock" variant="secondary" disabled>
                     Pending
                 </Button>
             );
-        } else if (friendshipStatus === 'PENDING' && effectiveReceiverId === currentUserId) {
+        } else if (friendshipStatus === 'PENDING_RECEIVED') { // && effectiveReceiverId === currentUserId
             friendActionButton = (
                 <Button
                     size="md"
@@ -107,7 +107,7 @@ function OtherProfile() {
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
-							setLocalStatus('PENDING');
+							setLocalStatus('PENDING_SENT');
 							toast.success("Friend request sent successfully!");
 						}
                     })}

@@ -43,7 +43,7 @@ export function useAcceptFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (senderUserId: number) => acceptFriendRequest(senderUserId),
+        mutationFn: (senderId: number) => acceptFriendRequest(senderId),
         onSuccess: () => {
             toast.success('Friendrequest accepted!');
             queryClient.invalidateQueries({ queryKey: ['userProfile'] }); 
