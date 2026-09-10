@@ -16,6 +16,7 @@ export interface FullUserProfile {
   login: string; // gibts schon
   email?: string; // gibts schon
   avatarUrl: string; // wird gebraucht
+  customAvatar: string;
   firstName?: string; // wird gebraucht
   lastName?: string; // wird gebraucht
   intraUrl?: string; // wird gebraucht

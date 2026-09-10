@@ -1,6 +1,5 @@
 import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
-import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useParams } from 'react-router-dom';
 import Button from '../components/ui/Button/Button'
 import { useStartChat } from '../hooks/useChat';
@@ -10,7 +9,6 @@ import { useAuth } from '../components/context/AuthContext';
 import Tag from '../components/ui/TagList/Tag';
 import { useRecommendedProjects, useNextProject } from '../hooks/useProjects';
 import ProjectsList from '../components/ui/Profile/ProjectsList';
-import PreferencesForm from '../components/ui/Profile/PreferencesForm';
 import TagList from '../components/ui/TagList/TagList';
 import { formatAvailability } from '../utils/formatAvailability';
 import type { TagData } from '../components/ui/TagList/TagList';
@@ -35,10 +33,10 @@ function OtherProfile() {
     const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
     let mainContent = null;
-
-    const days = formatAvailability(profile?.preferredDays);
+	
+    const days = formatAvailability(profile?.availability?.preferredDays);
     const userTags: TagData[] = [
-        { icon: 'trophy', description: `Rank ${profile?.currentRank}` },
+		{ icon: 'trophy', description: `Rank ${profile?.currentRank}` },
         { icon: 'flame', description: `Rank ${profile?.coalitionName}` },
         { icon: 'clock', description: days },
     ];
@@ -123,7 +121,7 @@ function OtherProfile() {
                 <div className="flex flex-row gap-8 w-full">
                     <div
                         className="group relative border border-black h-54 w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
-                        style={{ backgroundImage: `url(${profile.avatarUrl || '/default_avatar.jpg'})` }}
+                        style={{ backgroundImage: `url(${profile?.customAvatar || profile?.avatarUrl})` }}
                     >
                     </div>
 

@@ -82,6 +82,29 @@ export async function fetchRecommendedProjects(userName: string) {
 	return response.json();
 }
 
+export async function updateAvatarUrl(
+	userId: number,
+	avatarUrl: string
+): Promise<{ avatarUrl: string }> {
+	const token = localStorage.getItem('token');
+
+	const response = await fetch(`/api/users/${userId}/avatar`, {
+		credentials: 'include',
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ avatarUrl }),
+	});
+
+	if (!response.ok) {
+		throw new Error('Unable to save avatar URL');
+	}
+
+	return response.json();
+}
+
 export async function getUploadUrl(contentType: string): Promise<PresignedPostResponse> {
 	const token = localStorage.getItem('token');
 
@@ -122,46 +145,19 @@ export async function uploadToS3(
 	}
 }
 
-export function getAvatarUrl(userId: string | number): string {
+export function getAvatarUrl(userId: number): string {
 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
 	return `https://${cfDomain}/avatars/${userId}/avatar.webp?t=${Date.now()}`;
 }
 
-export async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
+export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 	const presignedPost = await getUploadUrl(file.type);
 	await uploadToS3(presignedPost, file);
 
-	const avatarUrl = `${presignedPost.url}/${presignedPost.fields.key}`;
-  	return { avatarUrl };
+	const avatarUrl = getAvatarUrl(userId);
+	const result = await updateAvatarUrl(userId, avatarUrl)
+  	return result;
 }
-
-// export const updateAvatar = async (
-//   login: string,
-//   file: File
-// ): Promise<UpdateAvatarResponse> => {
-//   const token = localStorage.getItem('token');
-
-//   const formData = new FormData();
-//   formData.append('avatar', file);
-
-//   const response = await fetch(`/api/users/${login}/upload-url`, {
-//     method: 'PATCH',
-//     headers: {
-//       // No Content-Type here — the browser sets multipart/form-data
-//       // with the correct boundary automatically when body is FormData.
-//       // Setting it manually will break the upload.
-//       'Authorization': `Bearer ${token || ''}`,
-//     },
-//     body: formData,
-//   });
-
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({}));
-//     throw new Error(errorData.message || 'Failed to update avatar');
-//   }
-
-//   return response.json() as Promise<UpdateAvatarResponse>;
-// };
 
 export const fetchActiveUsersByProject = async (username: string, projectName: string): Promise<FullUserProfile[]> => {
   const response = await fetch(`/api/users/${username}/${projectName}/matches`);

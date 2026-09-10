@@ -10,7 +10,6 @@ import { useAuth } from '../components/context/AuthContext';
 import { useProjectFilters } from '../store/useProjectFilters';
 import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
 import { getProjectImage } from '../utils/projectImages';
-import { mockUsers } from '../types/mockUser';
 import { formatProjectName } from '../utils/formatProjectName';
 
 function Certain_Project() {
@@ -18,6 +17,7 @@ function Certain_Project() {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 	const { userName } = useAuth();
+	console.log("username", userName);
 	const project = projectsData.find(p => p.slug === id);
 	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
 	const { viewMode, days: selectedDays } = useProjectFilters();
@@ -48,7 +48,7 @@ function Certain_Project() {
 				key={user.id}
 				username={user.login}
 				layout={layout}
-				image={user.avatarUrl as string}
+				avatarUrl={user.customAvatar as string || user.avatarUrl as string}
 				ctaText="Contact"
 				tags={userTags}
 			/>)
