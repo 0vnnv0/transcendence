@@ -297,6 +297,8 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 //     }
 // }
 
+// ---------------------------------- NEW FUNCTION -------------------------------------------
+
 const extensionMap: Record<string, string> = {
     'image/jpeg': 'jpg',
     'image/png': 'png',
@@ -355,6 +357,8 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
         return response.code(500).send({ error: "failed to generate upload URL." });
     }
 }
+
+// ----------------------------------------------- END OF NEW FUNCTION ---------------
 
 async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
