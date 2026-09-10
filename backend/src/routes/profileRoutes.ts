@@ -104,7 +104,6 @@ export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoute
 		modProfileInfo(request, response, fastify, prisma));
 	fastify.delete('/profile/:userId', async (request, response) =>
 		deleteProfile(request, response, fastify, prisma));
-	// changed get to post cause we need a body and this cannot be sent with get
 	fastify.post("/upload-url", async (req, reply) =>
 		getS3Url(req, reply, fastify, prisma));
 	fastify.post<{ Body: ConfirmAvatarBody }>('/api/users/:userId/avatar', {schema: {body: confirmAvatarSchema}}, async (request, reply) => 
@@ -121,25 +120,17 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
 	console.log("userId" + Number(userId));
 	try {
 
-        const userData = await prisma.user.findUnique({
+        const userData = await prisma.testUser.findUnique({
             where: {
                 id: Number(userId),
             },
             select: {
 				id: true,
-				intraName: true,
+				login: true,
 				campusName: true,
 				currentRank: true,
-				paceDeadline: true,
-				blackholeDate: true,
 				coalitionName:true,
 				bio: true,
-				quests: {
-					include: {}
-				},
-				projects: {
-					include: {}
-				},
 				availability: {
 					include: {}
 				},
@@ -178,7 +169,7 @@ async function modProfileInfo(
     const { availability, ...userFields } = request.body as updateProfileBody;
 
     try {
-        const updatedUser = await prisma.user.update({
+        const updatedUser = await prisma.testUser.update({
             where: { id: Number(userId) },
             data: {
                 ...userFields,
@@ -206,7 +197,7 @@ async function modProfileInfo(
             select: {
                 id: true,
                 bio: true,
-                intraName: true,
+                login: true,
                 availability: true
             }
         });
@@ -324,7 +315,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			Key: s3Key,
 		}));
 
-		await prisma.user.update({
+		await prisma.testUser.update({
 			where: { id: userId },
 			data: { customAvatar: avatarUrl }
 		});
