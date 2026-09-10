@@ -62,6 +62,7 @@ model User {
 
 	bio				String?
 	avatarUrl		String?
+	customAvatar	String?
 	quests			UserQuests?
 	projects		UserProjects[]
 	availability	Availability?
