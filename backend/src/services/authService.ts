@@ -48,6 +48,7 @@ export class AuthService {
 			isOnline: true,	
 		},
 		create: {
+			id: userData.id,
 			intraName: userData.login,
 			intraEmail: userData.email,
 			avatarUrl: userData.url,

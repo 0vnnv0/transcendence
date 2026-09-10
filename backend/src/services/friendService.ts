@@ -111,9 +111,9 @@ export class FriendService {
 			if (!testUser) {
 				throw new Error('User not found');
 			}
-
 			receiver = await prisma.user.create({
 				data: {
+					id: testUser.id,
 					intraName: testUser.login,
 					intraEmail: testUser.intraEmail || `${testUser.login}@student.42berlin.de`,
 					avatarUrl: testUser.avatarUrl,
@@ -127,7 +127,6 @@ export class FriendService {
 				}
 			});
 		}
-
 		if (receiver.id === senderId) {
 			throw new Error('Cannot add yourself as a friend');
 		}
@@ -180,17 +179,15 @@ export class FriendService {
 	async removeFriendOrRequest(userId: number, targetId: number | string) {
 
 		const parsedSenderId = Number(targetId);
-		console.log("targetId: ", targetId);
-		console.log("parsedSenderId: ", parsedSenderId);
 		const request = await prisma.friendship.findFirst({
 			where: {
 				senderId: parsedSenderId,
 				receiverId: userId,
-				status: 'PENDING'
+				status: 'ACCEPTED'
 			}
 		});
 		if (!request) {
-			throw new Error('Friend request not found or already accepted');
+			throw new Error('Friend request not found');
 		}
 		// const parsedFriendshipId = Number(friendshipId);
 
