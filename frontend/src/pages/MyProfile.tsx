@@ -16,6 +16,8 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
+	// console.log("Avatar Url currently is: ", profile?.avatarUrl)
+	// console.log("Custom Url currently is: ", profile?.customAvatar)
 	return (
 		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
 			<div className="w-70 flex-none">
@@ -27,8 +29,8 @@ function MyProfile() {
 
 			<div className="flex flex-col flex-1 p-10 gap-16">
 				<div className="flex flex-row gap-8 w-full">
-					{profile?.id &&
-						<AvatarUpload avatarUrl={profile?.customAvatar || profile?.avatarUrl} userId={profile?.id} />
+					{profile?.id && userKey &&
+						<AvatarUpload avatarUrl={profile?.customAvatar || profile?.avatarUrl} userId={profile?.id} login={userKey} />
 					}
 
 					<div className="flex flex-col justify-center gap-3">

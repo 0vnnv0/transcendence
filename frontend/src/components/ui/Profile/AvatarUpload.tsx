@@ -4,13 +4,14 @@ import { useUploadAvatar } from '../../../hooks/useUsers';
 import Button from '../Button/Button'
 
 interface AvatarUploadProps {
+	login: string;
 	avatarUrl: string;
 	userId: number;
 }
 
-function AvatarUpload({ avatarUrl, userId }: AvatarUploadProps) {
+function AvatarUpload({ avatarUrl, userId, login }: AvatarUploadProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const { mutate: uploadAvatar, isPending } = useUploadAvatar(userId);
+	const { mutate: uploadAvatar, isPending } = useUploadAvatar(userId, login);
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
@@ -20,7 +21,6 @@ function AvatarUpload({ avatarUrl, userId }: AvatarUploadProps) {
 
 		e.target.value = '';
 	}
-
 	return (
 		<div className="group relative border border-black h-50 w-50 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
 			style={{ backgroundImage: `url(${avatarUrl})` }}>

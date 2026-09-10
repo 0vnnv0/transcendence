@@ -32,7 +32,7 @@ function Navbar() {
                     className="w-12 h-12 rounded-md bg-cover bg-center bg-no-repeat transition-all hover:scale-110 cursor-pointer bg-gray-800"
                     onClick={() => navigate('/myprofile')}
                     style={{ 
-                        backgroundImage: profile?.avatarUrl ? `url(${profile.avatarUrl})` : 'none' 
+                        backgroundImage: profile?.avatarUrl ? `url(${profile?.customAvatar || profile?.avatarUrl})` : 'none' 
                     }}
                 >
                 </div> 

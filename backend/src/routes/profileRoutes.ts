@@ -107,7 +107,7 @@ export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoute
 	// changed get to post cause we need a body and this cannot be sent with get
 	fastify.post("/upload-url", async (req, reply) =>
 		getS3Url(req, reply, fastify, prisma));
-	fastify.post<{ Body: ConfirmAvatarBody }>('/api/users/:userId/avatar', {schema: {body: confirmAvatarSchema}}, async (request, reply) => 
+	fastify.patch<{ Body: ConfirmAvatarBody }>('/users/:userId/avatar', {schema: {body: confirmAvatarSchema}}, async (request, reply) => 
 		updateS3Link(request, reply, fastify, prisma));
 }
 
@@ -249,6 +249,60 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 	  }
 }
 
+// async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
+// {
+//     const userId = request.user?.id;
+//     if (!userId) {
+//         return response.code(401).send({ error: "you are not logged in." });
+//     }
+
+//     const body = request.body as { contentType?: string };
+//     const contentType = body?.contentType;
+
+//     if (!contentType || typeof contentType !== 'string') {
+//         return response.code(400).send({ error: "missing or invalid contentType in request body." });
+//     }
+
+//     if (!allowedTypes.includes(contentType)) {
+//         return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
+//     }
+
+//     const key = `uploads/${userId}`;
+// 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
+// 	if (typeof bucketName !== 'string')
+// 		return response.code(500).send({ error: "missing bucket name" });
+
+//     try {
+//         const { url, fields } = await createPresignedPost(s3, {
+//             Bucket: bucketName,
+//             Key: key,
+//             Conditions: [
+//                 ["eq", "$Content-Type", contentType],
+//                 ["content-length-range", 1, MAX_FILE_SIZE],
+//             ],
+//             Fields: {
+//                 "Content-Type": contentType,
+//             },
+//             Expires: 300,
+//         });
+
+//         return response.code(200).send({
+//             url,
+//             fields,
+//             key,
+//         });
+//     } catch (err) {
+//         request.log.error(err);
+//         return response.code(500).send({ error: "failed to generate upload URL." });
+//     }
+// }
+
+const extensionMap: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+};
+
 async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
     const userId = request.user?.id;
@@ -267,7 +321,12 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
         return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
     }
 
-    const key = `uploads/${userId}`;
+    const ext = extensionMap[contentType];
+	// es ist ein caching issue da die url immer die gleiche ist
+	// wir koennen das mit einer timestamp faken so dass es neu gelesen wird
+	// key (avatars) muss mit dem link den wir anfragen uebereinstimmen
+    const key = `avatars/${userId}/avatar-${Date.now()}.${ext}`; 
+
 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
 	if (typeof bucketName !== 'string')
 		return response.code(500).send({ error: "missing bucket name" });
@@ -329,7 +388,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			data: { customAvatar: avatarUrl }
 		});
 
-		return response.code(200).send({avatarKey: avatarUrl });
+		return response.code(200).send({avatarUrl: avatarUrl });
 	} catch (err: any) {
 		if (err.name === 'NotFound') {
 		return response.code(404).send({ error: 'Image was not found in S3.' });

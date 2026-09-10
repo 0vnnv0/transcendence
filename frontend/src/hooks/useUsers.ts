@@ -36,7 +36,7 @@ export function useGetUploadUrl() {
 	});
 };
 
-export function useUploadAvatar(userId: number) {
+export function useUploadAvatar(userId: number, login: string) {
 	const queryClient = useQueryClient();
 
   return useMutation({
@@ -47,10 +47,14 @@ export function useUploadAvatar(userId: number) {
 
     // Real server response arrived and succeeded — replace preview with the real URL
     onSuccess: (data) => {
+		console.log('Neue Avatar URL vom Upload:', data.avatarUrl);
       toast.success('Profile picture changed successfully.');
-      queryClient.setQueryData(['userProfile', userId], (old: any) =>
-        old ? { ...old, avatarUrl: data.avatarUrl } : old
-      )
+      queryClient.setQueryData(['userProfile', login], (old: any) => {
+		console.log('Cache vorher:', old?.customAvatar);
+		const updated = old ? { ...old, customAvatar: data.avatarUrl } : old;
+		console.log('Cache nachher:', updated?.customAvatar);
+		return updated;
+	  })
     },
 	 onError: (error: Error) => {
         toast.error(error.message || 'Failed to change profile picture.');
