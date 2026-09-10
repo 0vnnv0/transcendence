@@ -13,6 +13,7 @@ import { formatAvailability, isFullyAvailable } from '../utils/formatAvailabilit
 import { getProjectImage } from '../utils/projectImages';
 import { mockUsers } from '../types/mockUser';
 import { formatProjectName } from '../utils/formatProjectName';
+import type { FullUserProfile } from '../types/user';
 
 function Certain_Project() {
 
@@ -31,21 +32,22 @@ function Certain_Project() {
 		{ icon: 'flame', description: `${project?.keywords?.[1]}` },
 	];
 
-	const availableUsers = activeUsers?.filter(user => 
+	const availableUsers = activeUsers?.filter((user: FullUserProfile) => 
 		user.activeProjects?.some(p => p?.status === "searching_a_group"))
-		.filter(user => {
+		.filter((user: FullUserProfile) => {
 			if (selectedDays.length === 0) return true;
 			if (isFullyAvailable(user.preferredDays)) return true;
 			return user.preferredDays.some(day => selectedDays.includes(day));
 		})
-		.map(user => {
+		.map((user: FullUserProfile) => {
 			const days = formatAvailability(user?.preferredDays);
 			const userTags: TagData[] = [
 			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
 			{ icon: 'clock', description: days },
 			];
 
-			return (<UserCard
+			return (
+			<UserCard
 				key={user.id}
 				username={user.login}
 				layout={layout}
