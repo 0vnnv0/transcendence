@@ -30,9 +30,7 @@ function Certain_Project() {
 		{ icon: 'flame', description: `${project?.keywords?.[1]}` },
 	];
 
-	const availableUsers = activeUsers?.filter(user => 
-		user.activeProjects?.some(p => p?.status === "searching_a_group"))
-		.filter(user => {
+	const availableUsers = activeUsers?.filter(user => {
 			if (selectedDays.length === 0) return true;
 			if (isFullyAvailable(user?.availability?.preferredDays)) return true;
 			return user?.availability?.preferredDays.some(day => selectedDays.includes(day));
