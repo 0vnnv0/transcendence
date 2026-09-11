@@ -3,6 +3,7 @@
 import { PrismaClient } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PROJECTS } from "../../types/coreProjects.js";
+import { isExcludedByOldCoreRules } from "../../lib/projectRules.js";
 
 function getProjectMeta(slug:string) {
 	return PROJECTS.find(p => p.slug === slug)
@@ -69,6 +70,40 @@ export function getMatches(prisma: PrismaClient) {
 			return reply.code(403).send({
 				error: "Project is not part of your core curriculum"
 			});
+		}
+
+		if (!user.newCore) {
+			const doneSlugs = new Set(
+				user.completedProjects as string[] | null ?? []
+			);
+
+			const userActive = 
+				(user.activeProject as {
+					slug: string;
+					status: string;
+					hasTeam: boolean;
+				}[] | null) ?? [];
+
+			const activeProjectMap = new Map(
+				userActive.map(project => [
+					project.slug,
+					{
+						hasTeam: project.hasTeam,
+						status: project.status
+					}
+				])
+			);
+			if (
+				isExcludedByOldCoreRules(
+					slug,
+					doneSlugs,
+					activeProjectMap
+				)
+			) {
+				return reply.code(409).send({
+					error: "Project is excluded because another project on this rank is already completed or active"
+				});
+			}
 		}
 
 		let users: any[] = await prisma.testUser.findMany();

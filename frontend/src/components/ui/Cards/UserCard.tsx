@@ -4,6 +4,7 @@ import TagList, { type TagData } from '../TagList/TagList';
 import Tag from '../TagList/Tag';
 
 interface UserCardProps {
+  key?: number;
   layout?: 'portrait' | 'landscape';
   avatarUrl: string;
   title?: string;

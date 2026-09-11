@@ -13,6 +13,7 @@ import { getProjectImage } from '../utils/projectImages';
 import { formatProjectName } from '../utils/formatProjectName';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
+import type { FullUserProfile } from '../types/user';
 
 function Certain_Project() {
 
@@ -44,7 +45,8 @@ function Certain_Project() {
 			{ icon: 'clock', description: days },
 			];
 
-			return (<UserCard
+			return (
+			<UserCard
 				key={user.id}
 				username={user.login}
 				layout={layout}

@@ -1,0 +1,14 @@
+5 endpoints:
+
+/api/users
+
+/api/users/:login
+
+/api/users/:login/:slug/matches
+
+/api/users/:login/projects?view=available
+/api/users/:login/projects?view=current
+/api/users/:login/projects?view=recommended
+
+api/projects
+	
