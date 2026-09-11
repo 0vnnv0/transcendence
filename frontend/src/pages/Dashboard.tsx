@@ -4,6 +4,8 @@ import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext';
 import { useNextProject, useRecommendedProjects } from '../hooks/useProjects';
 import { getProjectImage } from '../utils/projectImages';
+import Button from '../components/ui/Button/Button';
+import SearchBar from '../components/ui/Search/Search';
 
 interface ProjectData {
 	id: number;
@@ -104,6 +106,10 @@ return (
                 <Navbar />
             </div>
             <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
+				<div className="top-6 w-full flex md:hidden justify-between gap-4">
+					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+					<SearchBar />
+				</div>
                 <h1 className="text-title">
                     Hello again, {userName}!
                 </h1>

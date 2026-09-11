@@ -3,8 +3,8 @@ import NavItem from './NavItem'
 function MobileNav() {
     return (
         <nav
-            className="fixed bottom-4 left-4 right-4 z-50 flex md:hidden items-center justify-around
-                       bg-background-grey rounded-[24px] px-2 py-2 shadow-lg"
+            className="fixed bottom-4 left-3 right-3 z-50 flex md:hidden items-center justify-around
+                       bg-background-grey rounded-3xl px-2 py-2 shadow-lg"
         >
             <ul className="flex w-full items-center justify-around">
                 <NavItem label="Dashboard" icon="home" route="/dashboard" variant="mobile" />

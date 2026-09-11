@@ -1,6 +1,7 @@
 import React from 'react';
 import { CustomIcons } from '../Icon/CustomIcons';
 import type { CustomIconName } from '../Icon/CustomIcons';
+import { useNavigate } from 'react-router';
 
 // this interface inherits from React.ButtonHTMLAttributes<HTMLButtonElement>
 // so that we can use built-in attributes like onClick, type, form etc...
@@ -12,6 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: CustomIconName;
   href?: string;
   externalLink?: boolean;
+  goBack?: boolean;
 }
 
 // FC == Functional Component -> it expects props defined in ButtonProps interface
@@ -28,8 +30,11 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   href,
   externalLink,
+  goBack,
+  onClick,
   ...props
 }) => {
+  const navigate = useNavigate();
   // Base styles that every button will have
   const baseStyles = "whitespace-nowrap border border-black inline-flex items-center justify-center w-fit h-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
@@ -61,9 +66,16 @@ const Button: React.FC<ButtonProps> = ({
   const IconComponent = icon ? CustomIcons[icon] : null;
   const iconColor = variant === 'tertiary' ? 'black' : 'white';
 
+  const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    if (goBack) {
+      navigate(-1);
+    }
+    onClick?.(e);
+  };
+
 	if (href) {
 		return (
-			<a href={href} className={classes} target={external ? "_blank" : undefined}>
+			<a href={href} className={classes} target={externalLink ? "_blank" : undefined}>
 				{IconComponent && (
 					<IconComponent size={16} color={iconColor} className={`${iconSizeClasses[size]}`} aria-hidden="true" />
 				)}
@@ -76,6 +88,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       className={classes}
       disabled={disabled}
+	  onClick={handleClick}
       {...props}
     >
 		{IconComponent && (

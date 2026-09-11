@@ -15,6 +15,7 @@ import type { TagData } from '../components/ui/TagList/TagList';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import InfoCard from '../components/ui/Cards/InfoCard'
+import SearchBar from '../components/ui/Search/Search';
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
@@ -119,20 +120,23 @@ function OtherProfile() {
 
         mainContent = (
             <div className="flex flex-col flex-1 gap-16">
-                <div className="flex flex-row gap-8 w-full">
+				<div className="top-6 w-full flex md:hidden justify-between gap-4">
+					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+					<SearchBar />
+				</div>
+                <div className="flex flex-col gap-4 sm:gap-8 w-full sm:flex-row md:flex-col lg:flex-row">
                     <div
-                        className="group relative border border-black h-54 w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
+                        className="group relative border border-black h-56 w-full sm:h-48 sm:w-48 md:h-56 md:w-full lg:h-48 lg:w-48 xl:h-54 xl:w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
                         style={{ backgroundImage: `url(${profile?.customAvatar || profile?.avatarUrl})` }}
                     >
                     </div>
-
-                    <div className="flex flex-col justify-center gap-1">
-                        { friendshipStatus === 'ACCEPTED' &&
+                    <div className="flex flex-col justify-center gap-2">
+                        { friendshipStatus === 'ACCEPTED' && 
                             <Tag description='Friends' icon='smiley' color='orange' />
                         }
                         <h1 className="text-title mb-1">{username}</h1>
                         <p className="text-subtitle mb-4">
-                            {profile.firstName} {profile.lastName}
+                            {profile.firstName} {profile.lastName} Missing!!!
                         </p>
 
                         <div className="flex gap-2">
@@ -202,12 +206,13 @@ function OtherProfile() {
     }
 
     return (
-        <section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
+        <section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
+			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
             <div className="md:w-70 flex-none">
                 <Navbar />
             </div>
 
-            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
+            <div className="z-10 flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
                 {mainContent}
             </div>
         </section>

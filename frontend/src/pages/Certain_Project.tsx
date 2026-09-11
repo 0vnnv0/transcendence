@@ -11,6 +11,8 @@ import { useProjectFilters } from '../store/useProjectFilters';
 import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
 import { getProjectImage } from '../utils/projectImages';
 import { formatProjectName } from '../utils/formatProjectName';
+import SearchBar from '../components/ui/Search/Search';
+import Button from '../components/ui/Button/Button';
 
 function Certain_Project() {
 
@@ -57,7 +59,9 @@ function Certain_Project() {
 	// 	.filter(user => {
 	// 		// no days selected -> don't filter by availability, show everyone
 	// 		if (selectedDays.length === 0) return true;
-	// 		// otherwise: user must be free on at least one of the selected days
+	// 		// otherwise: u			<div className="top-6 w-full">
+	//			<SearchBar />
+	//		</div>ser must be free on at least one of the selected days
 	// 		return user.preferredDays.some(day => selectedDays.includes(day));
 	// 	})
 	// 	.map(user => {
@@ -84,16 +88,20 @@ function Certain_Project() {
 	}
 	return (
 		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-            <div className="md:w-70 flex-none">
+			<div className="md:w-70 flex-none">
                 <Navbar />
             </div>
             <div className="relative w-full flex flex-col flex-1 p-5 lg:p-10 gap-6">
-				<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-mild-purple-dark to-background-neutral" />
-				<div className="flex flex-col lg:flex-row w-full gap-6 lg:gap-10 border-b border-background-dark pb-10 z-10 justify-start">
+				<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#ffccb9] to-background-neutral" />
+				<div className="flex flex-col lg:flex-row w-full gap-8 lg:gap-10 border-b border-background-dark pb-10 z-10 justify-start">
+					<div className="top-6 w-full flex md:hidden justify-between gap-4">
+						<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+						<SearchBar />
+					</div>
 					<img
 						src={getProjectImage(project?.slug)}
 						alt={`${project?.slug} project image`}
-						className="object-cover rounded-3xl w-full lg:w-70 max-h-50 lg:max-h-full lg:min-h-70 h-full border border-black"
+						className="object-cover rounded-3xl w-full lg:w-70 max-h-70 lg:max-h-full lg:min-h-70 h-full border border-black"
 					/>
 					<div className="flex flex-col justify-between gap-6 lg:gap-16 w-full max-w-195 lg:py-2 min-w-0">
 						<div className="flex flex-start">
