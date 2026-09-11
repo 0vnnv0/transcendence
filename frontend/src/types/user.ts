@@ -14,14 +14,15 @@ export interface ActiveProject {
 export interface FullUserProfile {
   id: number; // gibts schon
   login: string; // gibts schon
-  email: string; // gibts schon
+  email?: string; // gibts schon
   avatarUrl: string; // wird gebraucht
-  firstName: string; // wird gebraucht
-  lastName: string; // wird gebraucht
-  intraUrl: string; // wird gebraucht
-  currentRank: number; // gibts schon
-  coalitionName: string; // gibts schon
-  activeProjects: ActiveProject[];
+  customAvatar: string;
+  firstName?: string; // wird gebraucht
+  lastName?: string; // wird gebraucht
+  intraUrl?: string; // wird gebraucht
+  currentRank?: number; // gibts schon
+  coalitionName?: string; // gibts schon
+  activeProjects?: ActiveProject[];
   friendship?: Friendship | null;
   availability: {
 	  workDaysPerWeek: number;

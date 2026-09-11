@@ -9,10 +9,10 @@ function Chats() {
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
 			style={{ backgroundColor: "white" }}
 		>
-			<div className="w-70 flex-none">
-				<Navbar />
-			</div>
-			<div className="flex flex-col flex-1 p-10 gap-10">
+            <div className="md:w-70 flex-none">
+                <Navbar />
+            </div>
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
 				<ChatWindow />
 			</div>
 

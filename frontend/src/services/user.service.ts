@@ -3,15 +3,6 @@ import type { FullUserProfile, PresignedPostResponse, UpdateProfilePayload, Upda
 
 const API_URL = '/api'; 
 
-// export interface FullUserProfile {
-//   id: number;
-//   intraName: string;
-//   email: string;
-//   avatarUrl: string;
-//   firstName: string;
-//   lastName: string;
-//   // Add any other backend properties here
-// }
 
 export const fetchUserProfile = async (login: string): Promise<FullUserProfile> => {
   const token = localStorage.getItem('token');
@@ -43,15 +34,13 @@ export const fetchAllUsers = async (): Promise<ChatUser[]> => {
   return response.json();
 };
 
-export const fetchUsersBySearch = async (searchQuery: string): Promise<ChatUser[]> => {
-  // 1. Fetch auf den echten Endpunkt mit dem Query-Parameter "q"
+export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserProfile[]> => {
   const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(searchQuery)}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    // Wichtig, falls ihr mit Cookies/Sessions arbeitet:
-    // credentials: 'include', 
+
   });
   
   if (!response.ok) {
@@ -59,10 +48,11 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<ChatUser[
   }
   
   const data = await response.json();
+  console.log("Gefundene Suchergebnisse:", data);
   console.log("Raw Backend Response für", searchQuery, ":", data);
   const results = Array.isArray(data) ? data : (data.users || []);
   
-  const users: ChatUser[] = results
+  const users: FullUserProfile[] = results
     .filter((item: any) => item.type === 'user')
     .map((item: any) => ({
       id: item.id,
@@ -89,6 +79,30 @@ export async function fetchRecommendedProjects(userName: string) {
 	if (!response.ok) {
 		throw new Error("Unable to load project");
 	}
+	return response.json();
+}
+
+export async function updateAvatarUrl(
+	userId: number,
+	avatarUrl: string
+): Promise<{ avatarUrl: string }> {
+	const token = localStorage.getItem('token');
+
+	const response = await fetch(`/api/users/${userId}/avatar`, {
+		credentials: 'include',
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ avatarUrl }),
+	});
+
+	if (!response.ok) {
+		const errorBody = await response.json().catch(() => null);
+  		throw new Error(errorBody?.error ?? 'Unable to save avatar URL');
+	}
+
 	return response.json();
 }
 
@@ -132,43 +146,32 @@ export async function uploadToS3(
 	}
 }
 
-export function getAvatarUrl(userId: string | number): string {
+export function getAvatarUrl(userId: number): string {
 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
-	return `https://${cfDomain}/avatars/${userId}/avatar.webp?t=${Date.now()}`;
+	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
 }
 
-export async function uploadAvatar(file: File): Promise<void> {
+export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 	const presignedPost = await getUploadUrl(file.type);
+	console.log('presigned key: ', presignedPost.fields.key)
 	await uploadToS3(presignedPost, file);
+
+	const avatarUrl = getAvatarUrl(userId);
+	const result = await updateAvatarUrl(userId, avatarUrl)
+  	return { avatarUrl: `${result.avatarUrl}?t=${Date.now()}` };
 }
 
-// export const updateAvatar = async (
-//   login: string,
-//   file: File
-// ): Promise<UpdateAvatarResponse> => {
-//   const token = localStorage.getItem('token');
+// export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
+// 	const presignedPost = await getUploadUrl(file.type);
+// 	await uploadToS3(presignedPost, file);
 
-//   const formData = new FormData();
-//   formData.append('avatar', file);
+// 	// echten Key nutzen statt zu raten
+// 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+// 	const avatarUrl = `https://${cfDomain}/${presignedPost.fields.key}`;
 
-//   const response = await fetch(`/api/users/${login}/upload-url`, {
-//     method: 'PATCH',
-//     headers: {
-//       // No Content-Type here — the browser sets multipart/form-data
-//       // with the correct boundary automatically when body is FormData.
-//       // Setting it manually will break the upload.
-//       'Authorization': `Bearer ${token || ''}`,
-//     },
-//     body: formData,
-//   });
-
-//   if (!response.ok) {
-//     const errorData = await response.json().catch(() => ({}));
-//     throw new Error(errorData.message || 'Failed to update avatar');
-//   }
-
-//   return response.json() as Promise<UpdateAvatarResponse>;
-// };
+// 	const result = await updateAvatarUrl(userId, avatarUrl);
+//   	return { avatarUrl: result.avatarUrl }; // kein ?t= mehr nötig, der Key selbst ist ja schon einzigartig
+// }
 
 export const fetchActiveUsersByProject = async (username: string, projectName: string): Promise<FullUserProfile[]> => {
   const response = await fetch(`/api/users/${username}/${projectName}/matches`);

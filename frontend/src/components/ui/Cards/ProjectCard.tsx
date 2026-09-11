@@ -48,7 +48,7 @@ const ProjectCard = ({
       />
       <div
         className={`
-          flex flex-1 flex-col gap-4 pb-4
+          flex flex-1 flex-col gap-2 pb-4
           ${isLandscape ? 'justify-end py-2 pr-2' : 'px-2'}
         `}
       >

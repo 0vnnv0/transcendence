@@ -4,6 +4,8 @@ import { useAuthorize } from '../hooks/useAuth';
 import { useProjects } from '../hooks/useProjects';
 import CardSection from '../components/sections/CardSection';
 import { getProjectImage } from '../utils/projectImages';
+import SearchBar from '../components/ui/Search/Search';
+import Button from '../components/ui/Button/Button';
 
 function Projects() {
 	// const { userName, userRank, newCore } = useAuthorize();
@@ -48,10 +50,15 @@ function Projects() {
 		<section
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat bg-background-neutral"
      	>
-		  	<div className="w-70 flex-none">
-			  	<Navbar />
-		  	</div>
-			<div className="flex flex-col flex-1 p-10 gap-10">				 
+            <div className="md:w-70 flex-none">
+                <Navbar />
+            </div>
+
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">	
+				<div className="top-6 w-full flex md:hidden justify-between gap-4">
+					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+					<SearchBar />
+				</div>						 
 				 <h1 className="text-title text-black">
 			 		 Projects
 			 	 </h1>

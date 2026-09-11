@@ -61,7 +61,7 @@
 
 /* Kyiv / Regular / 10px */
 @utility text-tag {
-	@apply font-kyiv text-[10px] uppercase;
+	@apply font-kyiv text-[10.5px] uppercase;
 }
 
 @font-face {

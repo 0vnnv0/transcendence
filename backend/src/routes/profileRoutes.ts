@@ -106,7 +106,7 @@ export async function profileRoutes(fastify: FastifyInstance, opts: ProfileRoute
 		deleteProfile(request, response, fastify, prisma));
 	fastify.post("/upload-url", async (req, reply) =>
 		getS3Url(req, reply, fastify, prisma));
-	fastify.post<{ Body: ConfirmAvatarBody }>('/api/users/:userId/avatar', {schema: {body: confirmAvatarSchema}}, async (request, reply) => 
+	fastify.patch<{ Body: ConfirmAvatarBody }>('/users/:userId/avatar', {schema: {body: confirmAvatarSchema}}, async (request, reply) => 
 		updateS3Link(request, reply, fastify, prisma));
 }
 
@@ -320,7 +320,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			data: { customAvatar: avatarUrl }
 		});
 
-		return response.code(200).send({avatarKey: avatarUrl });
+		return response.code(200).send({avatarUrl: avatarUrl });
 	} catch (err: any) {
 		if (err.name === 'NotFound') {
 		return response.code(404).send({ error: 'Image was not found in S3.' });

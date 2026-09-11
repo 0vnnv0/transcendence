@@ -52,8 +52,10 @@ export function getUser(prisma: PrismaClient) {
             ...baseData,
             intraName: mainUser?.intraName ?? testUser?.login,
             avatarUrl: testUser?.avatarUrl ?? mainUser?.avatarUrl ?? null,
-            friendshipStatus,
-            friendshipId
+            friendship: {
+                status: friendshipStatus,
+                id: friendshipId,
+            }
         });
 	}
 }

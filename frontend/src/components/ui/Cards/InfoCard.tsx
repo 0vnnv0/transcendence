@@ -24,7 +24,7 @@ const SimpleProjectCard = ({
 			<p className="text-paragraph-bold flex-1">
 				{title}
 			</p>
-			<h1 className="text-subtitle text-right shrink-0">
+			<h1 className="text-subtitle shrink-0">
 				{description}
 			</h1>
 		</div>
