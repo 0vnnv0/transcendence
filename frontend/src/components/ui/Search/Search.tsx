@@ -40,6 +40,13 @@ const SearchBar: React.FC = () => {
         navigate(url);      
 	}
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter' && searchQuery.trim().length > 0) {
+			setIsOpen(false);
+			navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+		}
+	};
+
 
  let dropdownContent = null;
 
@@ -86,6 +93,7 @@ const SearchBar: React.FC = () => {
                 value={searchQuery}
                 className="bg-white h-8 px-3 w-full rounded-md text-sm text-black focus:outline-purple-500 border border-gray-300"
                 onChange={handleSearchChange}
+				onKeyDown={handleKeyDown}
                 onFocus={() => {
                     if (searchQuery.length > 0) setIsOpen(true);
                 }}
