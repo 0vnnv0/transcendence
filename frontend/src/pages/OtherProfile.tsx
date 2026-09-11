@@ -136,7 +136,7 @@ function OtherProfile() {
                         }
                         <h1 className="text-title mb-1">{username}</h1>
                         <p className="text-subtitle mb-4">
-                            {profile.firstName} {profile.lastName} Missing!!!
+                            {profile.firstName} {profile.lastName}
                         </p>
 
                         <div className="flex gap-2">
