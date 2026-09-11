@@ -9,7 +9,8 @@ import Authorize from './pages/Authorize'
 import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
 import Friends from './pages/Friends'
-import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
+import SearchResultsPage from './pages/SearchResultsPage'
+// import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
 import { Toaster } from 'react-hot-toast'
 
 // function App() {
@@ -49,6 +50,7 @@ export function App() {
         <Route path="/friends" element={<Friends />} />
         <Route path="/users/:username" element={<OtherProfile />} />
         <Route path="/authsuccess" element={<AuthSuccess />} />
+		<Route path="/search" element={<SearchResultsPage />} />
       </Routes>
     </>
   );
