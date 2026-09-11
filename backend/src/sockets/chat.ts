@@ -57,12 +57,12 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 }
 
 async function getUsernameById(prisma: PrismaClient,userId: number): Promise<string | null> {
-	const user = await prisma.user.findUnique({
+	const user = await prisma.testUser.findUnique({
 	  where: { id: userId },
-	  select: { intraName: true },
+	  select: { login: true },
 	});
   
-	return user ? user.intraName : null;
+	return user ? user.login : null;
   }
 
 //this temporarily registers different users, needs to be changed once we add authentication
@@ -209,7 +209,7 @@ async function sendMessage (
 				sender: {
 					select: {
 						id: true,
-						intraName: true,
+						login: true,
 					},
 				},
 			},
