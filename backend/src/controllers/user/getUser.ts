@@ -19,7 +19,10 @@ export function getUser(prisma: PrismaClient) {
         const currentUserId = (request.user as any)?.id;
 
         const [mainUser, testUser] = await Promise.all([
-            prisma.user.findUnique({ where: { intraName: login } }),
+            prisma.user.findUnique({ 
+				where: { intraName: login },
+				include: { availability: true }
+			}),
             prisma.testUser.findUnique({ where: { login } })
         ]);
 

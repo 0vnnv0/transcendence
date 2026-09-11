@@ -26,7 +26,7 @@ function ProjectFilters() {
   const setDays = useProjectFilters((s) => s.setDays);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col w-full sm:justify-between lg:justify-end lg:w-min sm:flex-row gap-2 sm:gap-4">
       <MultiSelect options={DAY_OPTIONS} value={days} onChange={setDays} />
       <Toggle value={viewMode} onChange={setViewMode} options={VIEW_MODE_OPTIONS} />
     </div>

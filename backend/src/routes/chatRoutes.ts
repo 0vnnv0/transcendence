@@ -54,7 +54,7 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
                 sender: {
                     select: {
                         id: true,
-                        intraName: true,
+                        login: true,
                     },
                 },
             },

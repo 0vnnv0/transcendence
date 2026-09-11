@@ -12,31 +12,39 @@ generator client {
 }
 
 model TestUser {
-  id          Int      @id
-  login       String   @unique
+	id          Int      @id
+	login       String   @unique
 
-  intraEmail  String?
+	intraEmail  	String?
 
-  firstName   String?
-  lastName    String?
+	firstName   	String?
+	lastName    	String?
 
-  avatarUrl   String?
-  intraUrl    String?
-  
-  campusId    Int?
-  campusName  String?
+	avatarUrl   	String?
+	customAvatar	String?
+	intraUrl    	String?
+	
+	campusId    	Int?
+	campusName  	String?
 
-  coalitionName String?
-  coalitionSlug String?
+	coalitionName	 String?
+	coalitionSlug 	String?
 
-  currentRank	Int?
-  newCore		Boolean?
+	currentRank		Int?
+	newCore			Boolean?
+	bio				String?
 
-  completedProjects Json?
-  activeProjects    Json?
+	completedProjects Json?
+	activeProjects    Json?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+	availability	Availability?
+
+	chats			Chat[]		@relation("UserToChat")
+	sentMessages	ChatMessage[]
+	isOnline		Boolean		@default(false)
+
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
 }
 
 model LoggedUser {
@@ -62,14 +70,11 @@ model User {
 
 	bio				String?
 	avatarUrl		String?
+	customAvatar	String?
 	quests			UserQuests?
 	projects		UserProjects[]
-	availability	Availability?
-
-	chats			Chat[]		@relation("UserToChat")
-	sentMessages	ChatMessage[]
-	isOnline		Boolean		@default(false)
 	newCore			Boolean?
+
 
 	sentFriendships     Friendship[] @relation("SentFriendships")
   	receivedFriendships Friendship[] @relation("ReceivedFriendships")
@@ -126,7 +131,7 @@ model UserProjects {
 
 model Availability {
 	id				Int			@id @default(autoincrement()) 
-	user			User		@relation(fields: [userId], references: [id])
+	user			TestUser		@relation(fields: [userId], references: [id])
 	userId			Int			@unique
 	workDaysPerWeek	Int
 	startDate		DateTime
@@ -139,7 +144,7 @@ model Chat {
 	id				Int			@id @default(autoincrement()) 
 	createdAt		DateTime	@default(now())
 	updatedAt		DateTime	@updatedAt
-	users			User[]		@relation("UserToChat")
+	users			TestUser[]		@relation("UserToChat")
 	messages		ChatMessage[]
 }
 
@@ -147,7 +152,7 @@ model ChatMessage {
 	id				Int			@id @default(autoincrement())
 	chat			Chat		@relation(fields: [chatId], references: [id])
 	chatId			Int
-	sender			User		@relation(fields: [senderId], references: [id])
+	sender			TestUser		@relation(fields: [senderId], references: [id])
 	senderId		Int
 	createdAt		DateTime	@default(now())
 	content			String
