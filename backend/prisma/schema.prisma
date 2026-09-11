@@ -74,7 +74,7 @@ model User {
 	quests			UserQuests?
 	projects		UserProjects[]
 	newCore			Boolean?
-
+	isOnline		Boolean		@default(false)
 
 	sentFriendships     Friendship[] @relation("SentFriendships")
   	receivedFriendships Friendship[] @relation("ReceivedFriendships")
