@@ -84,42 +84,31 @@ function Certain_Project() {
 	}
 	return (
 		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-			<div className="w-70 flex-none">
-				<Navbar />
-			</div>
-			<div className="relative flex flex-col flex-1 p-10 gap-6">
+            <div className="md:w-70 flex-none">
+                <Navbar />
+            </div>
+            <div className="relative w-full flex flex-col flex-1 p-5 lg:p-10 gap-6">
 				<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-mild-purple-dark to-background-neutral" />
-				<div className="flex flex-row w-full gap-10 border-b border-background-dark pb-10 z-10 justify-between">
-					<div className="flex flex-col justify-between gap-16 w-full max-w-195">
+				<div className="flex flex-col lg:flex-row w-full gap-6 lg:gap-10 border-b border-background-dark pb-10 z-10 justify-start">
+					<img
+						src={getProjectImage(project?.slug)}
+						alt={`${project?.slug} project image`}
+						className="object-cover rounded-3xl w-full lg:w-70 max-h-50 lg:max-h-full lg:min-h-70 h-full border border-black"
+					/>
+					<div className="flex flex-col justify-between gap-6 lg:gap-16 w-full max-w-195 lg:py-2 min-w-0">
 						<div className="flex flex-start">
 							{project?.keywords && (
 								<TagList tags={projectTags}/>
 							)}
 						</div>
 						<div>
-							<h1 className="font-[Gasoek_One] lg:text-6xl md:text-5xl text-black mb-3">
+							<h1 className="font-[Gasoek_One] break-all w-full text-5xl lg:text-6xl text-black mb-2 md:mb-3">
 								{formatProjectName(project?.name)}
 							</h1>
 							<p className="text-paragraph-big-bold">{project.description}</p>
 						</div>
 					</div>	
-					<img
-						src={getProjectImage(project?.slug)}
-						alt={`${project?.slug} project image`}
-						className="object-cover rounded-3xl w-70 min-h-70 h-full border border-black"
-					/>
 				</div>
-				
-				{/* <CardSection title="Feed">
-					<CardSection.Body viewMode="list">
-						<UserCard
-							username="junruh"
-							layout="landscape"
-							image="/profile.jpg"
-							ctaText='Contact'
-						/>
-					</CardSection.Body>
-				</CardSection> */}
 
 				<CardSection title="Available Students" filter>
 					<CardSection.Body viewMode={viewMode}>

@@ -47,7 +47,7 @@ const UserCard = ({
 		  <Tag description='Friends' icon='smiley' color='orange' />
 		 </div>
 	  )}
-      <div className={`${isLandscape ? 'w-22 h-22' : 'w-full h-34 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
+      <div className={`${isLandscape ? 'w-22 h-22' : 'w-full h-50 sm:h-40 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
 		<img
 			src={avatarUrl}
 			alt=""

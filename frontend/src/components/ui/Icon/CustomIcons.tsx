@@ -102,6 +102,27 @@ const Calendar = ({ size = 16, color = 'black', className = '', ...props }: Icon
 	</svg>
 );
 
+const Projects = ({ size = 16, color = 'black', className = '', ...props }: IconProps) => (
+	<svg width={size} height={size} className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M17.8895 19.125C17.8927 19.125 17.896 19.125 17.8992 19.125M17.8992 19.125C18.5758 19.1196 19.125 18.5589 19.125 17.8703L19.125 9.26104C19.125 8.56916 18.5729 8.00687 17.8918 8.00687L16.5902 8.00687C15.9091 8.00687 15.357 7.44599 15.357 6.75412C15.357 5.71631 14.5288 4.875 13.5072 4.875C12.4856 4.875 11.6575 5.71631 11.6575 6.75412C11.6575 7.44599 11.1053 8.00687 10.4243 8.00687L9.19111 8.00687C8.51005 8.00687 7.95794 8.56784 7.95794 9.25972L7.95794 10.434C7.95794 11.1258 7.40583 11.6868 6.72476 11.6868C5.70317 11.6868 4.875 12.5281 4.875 13.5659C4.875 14.6037 5.70317 15.4451 6.72476 15.4451C7.40582 15.4451 7.95794 16.0059 7.95794 16.6978L7.95793 17.8723C7.95793 18.5641 8.51192 19.125 9.19298 19.125L11.6575 19.125L11.6575 17.8722C11.6575 16.8344 12.4856 15.9931 13.5072 15.9931C14.5288 15.9931 15.357 16.8344 15.357 17.8722L15.357 19.125L17.8992 19.125Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+	</svg>
+);
+
+const Chat = ({ size = 16, color = 'black', className = '', ...props }: IconProps) => (
+	<svg width={size} height={size} className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M15.1279 9.09722L8.79454 9.09722M13.0168 12.2639H8.79454M5.1001 7.875L5.1001 17.6676C5.1001 18.2776 5.78963 18.6325 6.28603 18.2779L8.79454 16.4861L15.8223 16.4861C17.4792 16.4861 18.8223 15.143 18.8223 13.4861V7.87502C18.8223 6.21816 17.4792 4.87502 15.8223 4.87502L8.10011 4.875C6.44325 4.875 5.1001 6.21814 5.1001 7.875Z" stroke="currentColor" stroke-linecap="round"/>
+	</svg>
+);
+
+const Profile = ({ size = 16, color = 'black', className = '', ...props }: IconProps) => (
+	<svg width={size} height={size} className={`${colors[color]} ${className}`} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M10.1919 5.44231C10.1919 6.65309 9.21041 7.63462 7.99964 7.63462C6.78886 7.63462 5.80733 6.65309 5.80733 5.44231C5.80733 4.23153 6.78886 3.25 7.99964 3.25C9.21041 3.25 10.1919 4.23153 10.1919 5.44231Z" stroke="currentColor"/>
+		<path d="M7.99964 12.75C10.1713 12.75 11.4225 12.1898 12.0029 11.8293C12.2745 11.6606 12.4083 11.3499 12.3807 11.0281C12.343 10.5886 12.1894 10.1497 12.0331 9.80153C11.8278 9.34439 11.3526 9.09615 10.8515 9.09615H5.14782C4.6467 9.09615 4.1715 9.34439 3.96621 9.80153C3.80986 10.1497 3.6563 10.5886 3.61858 11.0281C3.59096 11.3499 3.72482 11.6606 3.99641 11.8293C4.57681 12.1898 5.82798 12.75 7.99964 12.75Z" stroke="currentColor"/>
+	</svg>
+);
+
+
+
 // This object acts as your master lookup dictionary
 export const CustomIcons = {
   smiley: Smiley,
@@ -118,6 +139,9 @@ export const CustomIcons = {
   cancel: Cancel,
   home: Home,
   calendar: Calendar,
+  projects: Projects,
+  chat: Chat,
+  profile: Profile,
   // Add your remaining icons here...
 };
 

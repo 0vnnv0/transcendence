@@ -100,10 +100,10 @@ function Dashboard() {
 
 return (
         <section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-            <div className="w-70 flex-none">
+            <div className="md:w-70 flex-none">
                 <Navbar />
             </div>
-            <div className="flex flex-col flex-1 p-10 gap-10">
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
                 <h1 className="text-title">
                     Hello again, {userName}!
                 </h1>

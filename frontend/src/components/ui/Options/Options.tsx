@@ -29,8 +29,8 @@ const Option: React.FC<OptionProps> = ({
   };
 
   const sizes = {
-    sm: "px-2 py-2 text-xs",
-    md: "px-1.5 pt-1 pb-1.5 text-xs",
+    sm: "px-2 py-2",
+    md: "px-1.5 pt-1 pb-1.5 md:text-xs w-full md:w-min",
     lg: "px-8 py-3 text-lg",
   };
 

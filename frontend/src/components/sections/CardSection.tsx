@@ -24,7 +24,7 @@ function CardSection({ title, filter = false, children }: CardSectionProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className={`flex flex-row justify-between w-full items-end ${filter ? 'my-4' : ''} pr-3`}>
+        <div className={`flex flex-col lg:flex-row justify-between w-full items-start lg:items-end gap-3 lg:gap-0 ${filter ? 'my-4' : ''}`}>
 			<h2 className="text-lead">
 				{title}
 			</h2>
@@ -56,7 +56,7 @@ type CardSectionBodyProps = {
 const layoutMap = {
   "none": 'flex gap-4',
   2: 'grid grid-cols-1 sm:grid-cols-2 gap-4',
-  3: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4',
+  3: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4',
   4: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
 };
 

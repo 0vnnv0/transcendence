@@ -31,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   // Base styles that every button will have
-  const baseStyles = "border border-black inline-flex items-center justify-center w-fit h-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = "whitespace-nowrap border border-black inline-flex items-center justify-center w-fit h-fit transition-all duration-200 rounded-lg gap-1 active:scale-98 disabled:opacity-50 disabled:pointer-events-none";
 
   // Variant-specific styles
   const variants = {

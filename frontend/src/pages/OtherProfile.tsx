@@ -14,6 +14,7 @@ import { formatAvailability } from '../utils/formatAvailability';
 import type { TagData } from '../components/ui/TagList/TagList';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import InfoCard from '../components/ui/Cards/InfoCard'
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
@@ -159,7 +160,17 @@ function OtherProfile() {
                     </div>
                 </div>
 
-                <TagList tags={userTags} size='large' />
+				<CardSection title="User Info">
+					<CardSection.Body viewMode="grid" columns="none">
+						{profile?.availability?.preferredDays &&
+							<InfoCard icon="flame" title="Weekdays" description={formatAvailability(profile?.availability?.preferredDays)} />
+						}
+						{profile?.availability?.workDaysPerWeek &&
+							<InfoCard icon="calendar" title="Days per week" description={profile?.availability?.workDaysPerWeek as unknown as string} />
+						}
+						<InfoCard icon="home" title="Location" description={profile?.availability?.isRemote ? 'Remote' : 'On Campus'} />
+					</CardSection.Body>
+				</CardSection>
 
                 {currentProject && (
                     <CardSection title="Current projects">
@@ -192,11 +203,11 @@ function OtherProfile() {
 
     return (
         <section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-            <div className="w-70 flex-none">
+            <div className="md:w-70 flex-none">
                 <Navbar />
             </div>
 
-            <div className="flex flex-col flex-1 p-10">
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
                 {mainContent}
             </div>
         </section>

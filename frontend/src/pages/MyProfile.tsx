@@ -20,14 +20,14 @@ function MyProfile() {
 	// console.log("Custom Url currently is: ", profile?.customAvatar)
 	return (
 		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-			<div className="w-70 flex-none">
-				<Navbar />
-			</div>
+            <div className="md:w-70 flex-none">
+                <Navbar />
+            </div>
 
 			{isLoading && <p className="text-subtitle text-purple">Loading ...</p>}
 			{isError && <p className="text-subtitle text-red-500">[404] Error trying to load current project</p>}
 
-			<div className="flex flex-col flex-1 p-10 gap-16">
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
 				<div className="flex flex-row gap-8 w-full">
 					{profile?.id && userKey &&
 						<AvatarUpload avatarUrl={profile?.customAvatar || profile?.avatarUrl} userId={profile?.id} login={userKey} />

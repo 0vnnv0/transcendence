@@ -48,10 +48,11 @@ function Projects() {
 		<section
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat bg-background-neutral"
      	>
-		  	<div className="w-70 flex-none">
-			  	<Navbar />
-		  	</div>
-			<div className="flex flex-col flex-1 p-10 gap-10">				 
+            <div className="md:w-70 flex-none">
+                <Navbar />
+            </div>
+
+            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">			 
 				 <h1 className="text-title text-black">
 			 		 Projects
 			 	 </h1>
