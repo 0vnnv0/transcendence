@@ -27,7 +27,7 @@ function Toggle<T extends string>({
   className = '',
 }: ToggleProps<T>) {
   return (
-    <div className={`inline-flex gap-0.5 bg-background-dark rounded-lg p-0.75 ${className}`}>
+    <div className={`inline-flex gap-0.5 w-full sm:w-min bg-background-dark rounded-lg p-0.75 ${className}`}>
       {options.map((option) => (
         <Option
           key={option.value}
