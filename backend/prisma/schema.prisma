@@ -68,6 +68,7 @@ model User {
 	coalitionName 	String?										//check
 	coalitionSlug 	String?										//check
 
+	availability	Availability?
 	bio				String?
 	avatarUrl		String?
 	customAvatar	String?
@@ -132,7 +133,9 @@ model UserProjects {
 model Availability {
 	id				Int			@id @default(autoincrement()) 
 	user			TestUser		@relation(fields: [userId], references: [id])
+	usr				User		@relation(fields: [usrId], references: [id])
 	userId			Int			@unique
+	usrId			Int			@unique
 	workDaysPerWeek	Int
 	startDate		DateTime
 	endDate			DateTime
