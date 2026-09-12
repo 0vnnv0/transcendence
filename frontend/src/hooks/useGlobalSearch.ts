@@ -12,7 +12,7 @@ export const useGlobalSearch = (searchQuery: string) => {
 
 export const useFullSearch = (searchQuery: string) => {
   return useQuery<SearchResult[], Error>({
-    queryKey: ['globalSearch', searchQuery],
+    queryKey: ['fullSearch', searchQuery],
     queryFn: () => fetchFullSearch(searchQuery),
     enabled: searchQuery.trim().length >= 2,
   });
