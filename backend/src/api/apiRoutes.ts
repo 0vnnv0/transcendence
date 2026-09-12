@@ -36,19 +36,19 @@ export async function apiRoutes(
 			publicFriendController.getFriendships
 		);
 
-		api.post(
-			"/friendships",
-			publicFriendController.createFriendship
-		);
+		// api.post(
+		// 	"/friendships",
+		// 	publicFriendController.createFriendship
+		// );
 
-		api.put(
-			"/friendships/:id",
-			publicFriendController.updateFriendship
-		);
+		// api.put(
+		// 	"/friendships/:id",
+		// 	publicFriendController.updateFriendship
+		// );
 
-		api.delete(
-			"/friendships/:id",
-			publicFriendController.deleteFriendship
-		);	
+		// api.delete(
+		// 	"/friendships/:id",
+		// 	publicFriendController.deleteFriendship
+		// );	
 	}, {prefix: "/api"});
 }

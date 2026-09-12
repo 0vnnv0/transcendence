@@ -207,4 +207,11 @@ export class FriendService {
 			where: { id: request.id },
 		});
 	}
+
+	//pbohme
+	async getUserByLogin(login: string) {
+		return prisma.testUser.findUnique({
+			where: { login }
+		});
+	}	
 }
