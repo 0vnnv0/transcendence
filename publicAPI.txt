@@ -1,14 +1,13 @@
-5 endpoints:
+GET /api/users
+GET /api/users/:login
+GET /api/users/:login/:slug/matches
 
-/api/users
+GET /api/users/:login/projects?view=available
+GET /api/users/:login/projects?view=current
+GET /api/users/:login/projects?view=recommended
 
-/api/users/:login
-
-/api/users/:login/:slug/matches
-
-/api/users/:login/projects?view=available
-/api/users/:login/projects?view=current
-/api/users/:login/projects?view=recommended
-
-api/projects
+POST   /api/friendships
+GET    /api/friendships/:login
+PUT    /api/friendships/:id
+DELETE /api/friendships/:id
 	
