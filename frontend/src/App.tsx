@@ -12,6 +12,9 @@ import Friends from './pages/Friends'
 import SearchResultsPage from './pages/SearchResultsPage'
 // import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
 import { Toaster } from 'react-hot-toast'
+import NotFound from './pages/NotFound'
+import TermsOfService from './pages/TermsOfService'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 
 // function App() {
 //   return (
@@ -51,6 +54,9 @@ export function App() {
         <Route path="/users/:username" element={<OtherProfile />} />
         <Route path="/authsuccess" element={<AuthSuccess />} />
 		<Route path="/search" element={<SearchResultsPage />} />
+		<Route path="/terms-and-conditions" element={<TermsOfService />} />
+		<Route path="/privacy-policy" element={<PrivacyPolicy />} />
+		<Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
