@@ -214,6 +214,7 @@ export const updateUserProfile = async (
 		const errorData = await response.json().catch(() => ({}));
 		throw new Error(errorData.message || 'Failed to update profile');
 	}
-
-	return response.json() as Promise<UpdateProfileResponse>;
+	const res = await response.json() as Promise<UpdateProfileResponse>;
+	console.log("Profile Data from backend: ", res)
+	return res;
 };
