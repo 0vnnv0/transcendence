@@ -23,7 +23,10 @@ export function getUser(prisma: PrismaClient) {
 				where: { intraName: login },
 				include: { availability: true }
 			}),
-            prisma.testUser.findUnique({ where: { login } })
+            prisma.testUser.findUnique({ 
+				where: { login },
+				include: { availability: true } 
+			})
         ]);
 
         if (!mainUser && !testUser) {
