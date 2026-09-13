@@ -15,10 +15,10 @@ export class FriendService {
         },
         include: {
             sender: {
-                select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true }
+                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true }
             },
             receiver: {
-                select: { id: true, intraName: true, intraEmail: true, isOnline: true, avatarUrl: true }
+                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true }
             }
         }
     });
@@ -30,7 +30,7 @@ export class FriendService {
         return {
             friendshipId: f.id,
             id: friendProfile.id,
-            intraName: friendProfile.intraName,
+            intraName: friendProfile.login,
             intraEmail: friendProfile.intraEmail,
             isOnline: friendProfile.isOnline,
             avatarUrl: friendProfile.avatarUrl
@@ -46,7 +46,7 @@ export class FriendService {
 			},
 			include: {
 				sender: {
-					select: {id: true, intraName: true, intraEmail: true, avatarUrl: true }
+					select: {id: true, login: true, intraEmail: true, avatarUrl: true }
 				}
 			}
 		});
@@ -54,7 +54,7 @@ export class FriendService {
 		return requests.map((r: any) => ({
 			friendshipId: r.id,
 			id: r.sender.id,
-			intraName: r.sender.intraName,
+			intraName: r.sender.login,
 			intraEmail: r.sender.intraEmail,
 			avatarUrl: r.sender.avatarUrl
 		}));
@@ -94,49 +94,25 @@ export class FriendService {
 	}
 
 	async sendFriendRequest(senderId: number, receiverId: number) {
-		// in User Tabelle suchen, ob existiert
-		let receiver = await prisma.user.findUnique({
+		
+		if (receiverId === senderId) {
+			throw new Error('Cannot add yourself as a friend');
+		}
+
+		const receiver = await prisma.testUser.findUnique({
 			where: { id: receiverId }
 		});
 
 		if (!receiver) {
-			const recId = await prisma.testUser.findUnique({
-				where: { id: receiverId }
-			});
-			const intraName = recId.login;
-			const testUser = await prisma.testUser.findUnique({
-				where: { login: intraName }
-			});
-
-			if (!testUser) {
-				throw new Error('User not found');
-			}
-			receiver = await prisma.user.create({
-				data: {
-					id: testUser.id,
-					intraName: testUser.login,
-					intraEmail: testUser.intraEmail || `${testUser.login}@student.42berlin.de`,
-					avatarUrl: testUser.avatarUrl,
-					campusID: testUser.campusId || 51,
-					campusName: testUser.campusName || 'Berlin',
-					currentRank: testUser.currentRank || 0,
-					paceDeadline: new Date(),
-					newCore: testUser.newCore,
-					coalitionName: testUser.coalitionName,
-					coalitionSlug: testUser.coalitionSlug
-				}
-			});
-		}
-		if (receiver.id === senderId) {
-			throw new Error('Cannot add yourself as a friend');
+			throw new Error('User not found');
 		}
 
 		// existiert Freundschaft schon?
 		const existing = await prisma.friendship.findFirst({
 			where: {
 				OR: [
-					{ senderId, receiverId: receiver.id },
-					{ senderId: receiver.id, receiverId: senderId }
+					{ senderId, receiverId },
+					{ senderId: receiverId, receiverId: senderId }
 				]
 			}
 		});
@@ -149,7 +125,7 @@ export class FriendService {
 		return prisma.friendship.create({
 			data: {
 				senderId,
-				receiverId: receiver.id,
+				receiverId,
 				status: 'PENDING'
 			}
 		});
@@ -189,20 +165,7 @@ export class FriendService {
 		if (!request) {
 			throw new Error('Friend request not found');
 		}
-		// const parsedFriendshipId = Number(friendshipId);
 
-		// if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
-		// 	throw new Error(`Invalid friendshipId: ${friendshipId}`);
-		// }
-
-		// const friendship = await prisma.friendship.findUnique({
-		// 	where: { id: parsedFriendshipId }
-		// });
-
-		// if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
-		// 	throw new Error('Friendship not found or unauthorized');
-		// }
-		
 		return prisma.friendship.delete({
 			where: { id: request.id },
 		});

@@ -25,7 +25,7 @@ async function start() {
 	// 2. Die Route aus dem Guide für Fastify adaptieren
     app.get("/", async (request, reply) => {
         try {
-            const userCount = await prisma.user.count();
+            const userCount = await prisma.testUser.count();
             
             const message = userCount === 0
                 ? "No users have been added yet."

@@ -16,49 +16,42 @@ export class AuthService {
 
   static async upsertUser(userData: any, accessToken: string) {
 	if (!userData.login || !userData.email) {
-		throw new Error("Invalid user data from 42 API");
-	}
-	
-	const mainCursus = userData.cursus_users?.find(
-	(c: any) => c.cursus.slug === '42cursus' || c.cursus_id === 21
-	);	
-	// 2. Sicherstellen, dass Campus-Daten existieren (verhindert den "undefined reading '0'" Fehler)
-	const campus = userData.campus && userData.campus.length > 0 ? userData.campus[0] : { id: 0, name: "Unknown" };
-	
-	// 3. Fetch newCore status from API (quest 128)
-	let isNewCore = false;
-	try {
-		const client = new FortyTwoClient(accessToken);
-		const service = new FortyTwoService(client);
-		const newCoreUsers = await service.fetchQuestUsers(128);
-		isNewCore = newCoreUsers.some((entry: any) => entry.user.id === userData.id);
-	} catch (error) {
-		console.error("Error fetching newCore status:", error);
-		isNewCore = false;
-	}
+      throw new Error("Invalid user data from 42 API");
+    }
+    
+    const mainCursus = userData.cursus_users?.find(
+      (c: any) => c.cursus.slug === '42cursus' || c.cursus_id === 21
+    );
 
-	return prisma.user.upsert({
-		where: {
-			intraName: userData.login
-		},
-		update: {
-			currentRank: Math.floor(userData.level || 0),
-			blackholeDate: mainCursus?.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
-			newCore: isNewCore,
-			isOnline: true,	
-		},
-		create: {
-			id: userData.id,
-			intraName: userData.login,
-			intraEmail: userData.email,
-			avatarUrl: userData.url,
-			campusID: campus.id,
-			campusName: campus.name,
-			currentRank: Math.floor(userData.level || 0),
-			paceDeadline: new Date(), // Hier muss aus Quest Datum genommen werden
-			blackholeDate:  mainCursus?.blackholed_at ? new Date(mainCursus.blackholed_at) : null,
-			newCore: isNewCore,
-			isOnline: true,
+    let isNewCore = false;
+    try {
+      const client = new FortyTwoClient(accessToken);
+      const service = new FortyTwoService(client);
+      const newCoreUsers = await service.fetchQuestUsers(128);
+      isNewCore = newCoreUsers.some((entry: any) => entry.user.id === userData.id);
+    } catch (error) {
+      console.error("Error fetching newCore status:", error);
+    }
+
+    return prisma.testUser.upsert({
+      where: { login: userData.login },
+      update: {
+        isOnline: true,
+        // avatarUrl: userData.image?.versions?.large ?? userData.image?.link ?? null,
+      },
+      // Fallback: Falls der User wider Erwarten noch NICHT in der DB war (z.B. neu an der Schule)
+      create: {
+        id: userData.id,
+        login: userData.login,
+        intraEmail: userData.email,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        avatarUrl: userData.image?.versions?.large ?? userData.image?.link ?? null,
+        campusId: 51,
+        campusName: "Berlin",
+        currentRank: Math.floor(mainCursus?.level || userData.level || 0),
+        newCore: isNewCore,
+        isOnline: true,
 		}
 	});
   }
