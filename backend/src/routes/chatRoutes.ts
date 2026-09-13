@@ -6,11 +6,11 @@ import { isInChat } from "../sockets/chat.js";
 
 export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 {
-	fastify.get('/chats', async (request, response) => 
+	fastify.get('api/chats', async (request, response) => 
 		loadChats(fastify, prisma, request, response));
-	fastify.get('/chat/:chatId', async (request, response) =>
+	fastify.get('api/chat/:chatId', async (request, response) =>
 		loadMessages(fastify, prisma, request, response));
-	fastify.post('/chats', async (request, response) =>
+	fastify.post('api/chats', async (request, response) =>
         createChat(fastify, prisma, request, response));
 }
 
