@@ -54,10 +54,10 @@ export class FriendController {
 	// DELETE /api/friends/:id
 	async removeFriend(request: FastifyRequest, reply: FastifyReply) {
 		const userId = (request.user as any).id;
-		const { targetId } = request.params as { targetId: number | string};
-
+		const { targetId } = request.params as { targetId: string};
+		const parsedTargetId = parseInt(targetId, 10);
 		try {
-			await friendService.removeFriendOrRequest(userId, targetId);
+			await friendService.removeFriendOrRequest(userId, parsedTargetId);
 			return reply.send({ message: 'Friend or request removed' });
 		} catch (err: any) {
 			return reply.status(400).send({ error: err.message });
