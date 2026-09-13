@@ -56,7 +56,8 @@ export class FriendService {
 			id: r.sender.id,
 			intraName: r.sender.intraName,
 			intraEmail: r.sender.intraEmail,
-			avatarUrl: r.sender.avatarUrl
+			avatarUrl: r.sender.avatarUrl,
+			isOnline: r.sender.isOnline,
 		}));
 	}
 
@@ -181,28 +182,17 @@ export class FriendService {
 		const parsedSenderId = Number(targetId);
 		const request = await prisma.friendship.findFirst({
 			where: {
-				senderId: parsedSenderId,
-				receiverId: userId,
-				status: 'ACCEPTED'
+				OR: [
+					{ senderId: userId, receiverId: parsedSenderId },
+					{ senderId: parsedSenderId, receiverId: userId }
+				]
 			}
 		});
+
 		if (!request) {
 			throw new Error('Friend request not found');
 		}
-		// const parsedFriendshipId = Number(friendshipId);
 
-		// if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
-		// 	throw new Error(`Invalid friendshipId: ${friendshipId}`);
-		// }
-
-		// const friendship = await prisma.friendship.findUnique({
-		// 	where: { id: parsedFriendshipId }
-		// });
-
-		// if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
-		// 	throw new Error('Friendship not found or unauthorized');
-		// }
-		
 		return prisma.friendship.delete({
 			where: { id: request.id },
 		});
