@@ -19,6 +19,8 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
+	console.log("Profile: ", profile)
+
 	return (
 		<section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
 			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
