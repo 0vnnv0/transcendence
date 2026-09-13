@@ -25,7 +25,20 @@ function OtherProfile() {
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();
 
-    const [localStatus, setLocalStatus] = useState<string | null>(null);
+    // Lokaler Status pro User-Key gemappt, damit das Umschalten bei Profilwechsel isoliert bleibt
+    const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
+    const localStatus = username ? localStatuses[username] : undefined;
+    const setLocalStatus = (status: string | null) => {
+        if (!username) return;
+        setLocalStatuses(prev => {
+            if (status === null) {
+                const next = { ...prev };
+                delete next[username];
+                return next;
+            }
+            return { ...prev, [username]: status };
+        });
+    };
    
     const { mutate: addFriend, isPending: isAddingFriend } = useAddFriend();
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
@@ -35,10 +48,10 @@ function OtherProfile() {
     const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
     let mainContent = null;
-	
+    
     const days = formatAvailability(profile?.availability?.preferredDays);
     const userTags: TagData[] = [
-		{ icon: 'trophy', description: `Rank ${profile?.currentRank}` },
+        { icon: 'trophy', description: `Rank ${profile?.currentRank}` },
         { icon: 'flame', description: `Rank ${profile?.coalitionName}` },
         { icon: 'clock', description: days },
     ];
@@ -79,13 +92,13 @@ function OtherProfile() {
                     {isRemovingFriend ? 'Removing...' : 'Remove Friend'}
                 </Button>
             );
-        } else if (friendshipStatus === 'PENDING' && effectiveSenderId === currentUserId) {
+        } else if (friendshipStatus?.startsWith('PENDING_SENT')) {
             friendActionButton = (
                 <Button size="md" icon="clock" variant="secondary" disabled>
                     Pending
                 </Button>
             );
-        } else if (friendshipStatus === 'PENDING' && effectiveReceiverId === currentUserId) {
+        } else if (friendshipStatus?.startsWith('PENDING_RECEIVED')) {
             friendActionButton = (
                 <Button
                     size="md"
@@ -107,9 +120,9 @@ function OtherProfile() {
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
-							setLocalStatus('PENDING');
-							toast.success("Friend request sent successfully!");
-						}
+                            setLocalStatus('PENDING_SENT');
+                            toast.success("Friend request sent successfully!");
+                        }
                     })}
                     disabled={isAddingFriend}
                 >
@@ -120,10 +133,10 @@ function OtherProfile() {
 
         mainContent = (
             <div className="flex flex-col flex-1 gap-16">
-				<div className="top-6 w-full flex md:hidden justify-between gap-4">
-					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
-					<SearchBar />
-				</div>
+                <div className="top-6 w-full flex md:hidden justify-between gap-4">
+                    <Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+                    <SearchBar />
+                </div>
                 <div className="flex flex-col gap-4 sm:gap-8 w-full sm:flex-row md:flex-col lg:flex-row">
                     <div
                         className="group relative border border-black h-56 w-full sm:h-48 sm:w-48 md:h-56 md:w-full lg:h-48 lg:w-48 xl:h-54 xl:w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
@@ -164,17 +177,17 @@ function OtherProfile() {
                     </div>
                 </div>
 
-				<CardSection title="User Info">
-					<CardSection.Body viewMode="grid" columns="none">
-						{profile?.availability?.preferredDays &&
-							<InfoCard icon="flame" title="Weekdays" description={formatAvailability(profile?.availability?.preferredDays)} />
-						}
-						{profile?.availability?.workDaysPerWeek &&
-							<InfoCard icon="calendar" title="Days per week" description={profile?.availability?.workDaysPerWeek as unknown as string} />
-						}
-						<InfoCard icon="home" title="Location" description={profile?.availability?.isRemote ? 'Remote' : 'On Campus'} />
-					</CardSection.Body>
-				</CardSection>
+                <CardSection title="User Info">
+                    <CardSection.Body viewMode="grid" columns="none">
+                        {profile?.availability?.preferredDays &&
+                            <InfoCard icon="flame" title="Weekdays" description={formatAvailability(profile?.availability?.preferredDays)} />
+                        }
+                        {profile?.availability?.workDaysPerWeek &&
+                            <InfoCard icon="calendar" title="Days per week" description={profile?.availability?.workDaysPerWeek as unknown as string} />
+                        }
+                        <InfoCard icon="home" title="Location" description={profile?.availability?.isRemote ? 'Remote' : 'On Campus'} />
+                    </CardSection.Body>
+                </CardSection>
 
                 {currentProject && (
                     <CardSection title="Current projects">
@@ -207,7 +220,7 @@ function OtherProfile() {
 
     return (
         <section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
+            <div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
             <div className="md:w-70 flex-none">
                 <Navbar />
             </div>
