@@ -21,7 +21,9 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
     throw new Error(errorData.message || 'Failed to fetch user profile');
   }
 
-  return response.json() as Promise<FullUserProfile>;
+  const res = await response.json() as Promise<FullUserProfile>;
+  console.log("Get user profile vom Server: ", res)
+  return res;
 };
 
 export const fetchAllUsers = async (): Promise<ChatUser[]> => {
