@@ -36,10 +36,10 @@ export async function apiRoutes(
 			publicFriendController.getFriendships
 		);
 
-		// api.post(
-		// 	"/friendships",
-		// 	publicFriendController.createFriendship
-		// );
+		api.post(
+			"/friendships",
+			publicFriendController.createFriendship.bind(publicFriendController)
+		);
 
 		// api.put(
 		// 	"/friendships/:id",

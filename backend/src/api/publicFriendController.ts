@@ -46,29 +46,31 @@ export class PublicFriendController {
 			});
 		}
 
+		const sender = await friendService.getUserByLogin(senderLogin);
+		const receiver = await friendService.getUserByLogin(receiverLogin);
+
+		if (!sender) {
+			return reply.status(404).send({
+				error: "Sender not found"
+			});
+		}
+
+		if (!receiver) {
+			return reply.status(404).send({
+				error: "Receiver not found"
+			});
+		}
+
 		try {
-			const sender = await friendService.getUserByLogin(senderLogin);
-			const receiver = await friendService.getUserByLogin(receiverLogin);
-
-			if (!sender) {
-				return reply.status(404).send({
-					error: `Sender '${senderLogin}' not found`
-				});
-			}
-
-			if (!receiver) {
-				return reply.status(404).send({
-					error: `Receiver '${receiverLogin}' not found`
-				});
-			}
-
 			const friendship = await friendService.sendFriendRequest(
 				sender.id,
 				receiver.id
 			);
 
-			return reply.status(201).send(friendship);
-
+			return reply.status(201).send({
+				message: "Friend request sent",
+				friendship
+			});
 		} catch (err: any) {
 			return reply.status(400).send({
 				error: err.message

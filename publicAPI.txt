@@ -20,3 +20,11 @@ curl http://localhost:3000/api/users/pbohme \
   -H "X-API-Client: " \
   -H "X-API-Key: "  
 	
+curl -X POST http://localhost:3000/api/friendships \
+  -H "Content-Type: application/json" \
+  -H "X-API-Client: my-public-client" \
+  -H "X-API-Key: my-super-secret-key" \
+  -d '{
+    "senderLogin": "pbohme",
+    "receiverLogin": "alice"
+  }'
