@@ -50,5 +50,5 @@ export async function apiRoutes(
 			"/friendships",
 			publicFriendController.deleteFriendship.bind(publicFriendController)
 		);
-	}, {prefix: "/api"});
+	}, {prefix: "/public"});
 }
