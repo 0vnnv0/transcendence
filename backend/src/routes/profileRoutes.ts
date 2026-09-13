@@ -6,7 +6,7 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
-import { S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
@@ -314,7 +314,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: s3Key,
 		}));
-
+		deleteOldPfp(request, prisma, userId, avatarUrl);
 		await prisma.testUser.update({
 			where: { id: userId },
 			data: { customAvatar: avatarUrl }
@@ -329,3 +329,24 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 	}
 };
 
+async function deleteOldPfp(request: FastifyRequest, prisma: PrismaClient, userId: number, avatarUrl: string)
+{
+	const user = await prisma.testUser.findUnique({
+		where: { id: userId },
+		select: { customAvatar: true }
+	});
+
+	if (user?.customAvatar && user.customAvatar !== avatarUrl) {
+		try {
+			const oldParsedUrl = new URL(user.customAvatar);
+			const oldS3Key = oldParsedUrl.pathname.replace(/^\//, '');
+
+			await s3.send(new DeleteObjectCommand({
+				Bucket: process.env.AWS_S3_BUCKET_NAME,
+				Key: oldS3Key,
+			}));
+		} catch (deleteError) {
+			request.log.error(deleteError, "Failed to delete old avatar from S3");
+		}
+	}
+}
