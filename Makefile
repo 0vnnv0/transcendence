@@ -29,7 +29,7 @@ clean:
 
 # removes unused volumes
 fclean: down clean
-# 	-docker volume rm srcs_postgres_data
+ 	#docker volume rm srcs_postgres_data
 	docker run --rm -v $(DATA_DIR):/cleanup alpine rm -rf /cleanup/db
 	rm -rf $(DATA_DIR)
 	docker system prune -af --volumes
