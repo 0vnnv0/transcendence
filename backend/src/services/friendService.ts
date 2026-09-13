@@ -213,5 +213,35 @@ export class FriendService {
 		return prisma.testUser.findUnique({
 			where: { login }
 		});
+	}
+
+	async updateFriendshipStatus(
+		senderId: number,
+		receiverId: number,
+		status: 'PENDING' | 'ACCEPTED' | 'BLOCKED'
+	) {
+		const friendship = await prisma.friendship.findFirst({
+			where: {
+				senderId,
+				receiverId
+			}
+		});
+
+		if (!friendship) {
+			throw new Error('Friend request not found');
+		}
+
+		if (friendship.status === status) {
+			throw new Error(`Friendship is already ${status}`);
+		}
+
+		return prisma.friendship.update({
+			where: {
+				id: friendship.id
+			},
+			data: {
+				status
+			}
+		});
 	}	
 }

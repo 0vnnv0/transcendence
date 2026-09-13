@@ -78,62 +78,103 @@ export class PublicFriendController {
 		}
 	}
 
+	async updateFriendshipStatus(
+		request: FastifyRequest,
+		reply: FastifyReply
+	) {
+		const { senderLogin, receiverLogin, status } = request.body as {
+			senderLogin: string;
+			receiverLogin: string;
+			status: 'PENDING' | 'ACCEPTED' | 'BLOCKED';
+		};
 
-	// async updateFriendship(
-	// 	request: FastifyRequest,
-	// 	reply: FastifyReply
-	// ) {
-	// 	const { id } = request.params as { id: string };
-	// 	const { status } = request.body as {
-	// 		status: "PENDING" | "ACCEPTED" | "REJECTED";
-	// 	};
+		if (!senderLogin || !receiverLogin || !status) {
+			return reply.status(400).send({
+				error: "senderLogin, receiverLogin and status are required"
+			});
+		}
 
-	// 	if (!status) {
-	// 		return reply.status(400).send({
-	// 			error: "status is required"
-	// 		});
-	// 	}
+		if (status !== 'PENDING' && status !== 'ACCEPTED' && status !== 'BLOCKED') {
+			return reply.status(400).send({
+				error: "Invalid status. Use PENDING, ACCEPTED or BLOCKED"
+			});
+		}
 
-	// 	try {
-	// 		const friendship = await this.prisma.friendship.update({
-	// 			where: {
-	// 				id: Number(id)
-	// 			},
-	// 			data: {
-	// 				status
-	// 			}
-	// 		});
+		const sender = await friendService.getUserByLogin(senderLogin);
+		const receiver = await friendService.getUserByLogin(receiverLogin);
 
-	// 		return reply.send(friendship);
+		if (!sender) {
+			return reply.status(404).send({
+				error: "Sender not found"
+			});
+		}
 
-	// 	} catch (err: any) {
-	// 		return reply.status(404).send({
-	// 			error: "Friendship not found"
-	// 		});
-	// 	}
-	// }	
+		if (!receiver) {
+			return reply.status(404).send({
+				error: "Receiver not found"
+			});
+		}
 
-	// async deleteFriendship(
-	// 	request: FastifyRequest,
-	// 	reply: FastifyReply
-	// ) {
-	// 	const { id } = request.params as { id: string };
+		try {
+			await friendService.updateFriendshipStatus(
+				sender.id,
+				receiver.id,
+				status
+			);
 
-	// 	try {
-	// 		await this.prisma.friendship.delete({
-	// 			where: {
-	// 				id: Number(id)
-	// 			}
-	// 		});
+			return reply.send({
+				message: "Status updated"
+			});
+		} catch (err: any) {
+			return reply.status(400).send({
+				error: err.message
+			});
+		}
+	}
 
-	// 		return reply.send({
-	// 			message: "Friendship deleted"
-	// 		});
+	async deleteFriendship(
+		request: FastifyRequest,
+		reply: FastifyReply
+	) {
+		const { senderLogin, receiverLogin } = request.body as {
+			senderLogin: string;
+			receiverLogin: string;
+		};
 
-	// 	} catch (err: any) {
-	// 		return reply.status(404).send({
-	// 			error: "Friendship not found"
-	// 		});
-	// 	}
-	// }	
+		if (!senderLogin || !receiverLogin) {
+			return reply.status(400).send({
+				error: "senderLogin and receiverLogin are required"
+			});
+		}
+
+		const sender = await friendService.getUserByLogin(senderLogin);
+		const receiver = await friendService.getUserByLogin(receiverLogin);
+
+		if (!sender) {
+			return reply.status(404).send({
+				error: "Sender not found"
+			});
+		}
+
+		if (!receiver) {
+			return reply.status(404).send({
+				error: "Receiver not found"
+			});
+		}
+
+		try {
+			await friendService.removeFriendOrRequest(
+				receiver.id,
+				sender.id
+			);
+
+			return reply.send({
+				message: "Friendship deleted"
+			});
+		} catch (err: any) {
+			return reply.status(400).send({
+				error: err.message
+			});
+		}
+	}
 }

@@ -41,14 +41,14 @@ export async function apiRoutes(
 			publicFriendController.createFriendship.bind(publicFriendController)
 		);
 
-		// api.put(
-		// 	"/friendships/:id",
-		// 	publicFriendController.updateFriendship
-		// );
+		api.put(
+			"/friendships",
+			publicFriendController.updateFriendshipStatus.bind(publicFriendController)
+		);
 
-		// api.delete(
-		// 	"/friendships/:id",
-		// 	publicFriendController.deleteFriendship
-		// );	
+		api.delete(
+			"/friendships",
+			publicFriendController.deleteFriendship.bind(publicFriendController)
+		);
 	}, {prefix: "/api"});
 }
