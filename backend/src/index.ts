@@ -10,6 +10,7 @@ import { profileRoutes } from "./routes/profileRoutes.js";
 import { userRoutes } from "./routes/userRoutes.js";
 import { PrismaClient } from "@prisma/client";
 import { projectRoutes } from "./routes/projectRoutes.js";
+import { apiRoutes } from "./api/apiRoutes.js";
 
 
 // 1. Prisma Adapter Setup (wie im Guide)
@@ -58,6 +59,7 @@ async function start() {
 	app.register(profileRoutes, {prisma});
 	await userRoutes(app, prisma);
 	await projectRoutes(app);
+	await apiRoutes(app, prisma);
 	try {
 		await app.listen({
 			port: 3000,

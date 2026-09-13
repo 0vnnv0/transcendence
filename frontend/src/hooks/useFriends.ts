@@ -43,7 +43,7 @@ export function useAcceptFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (senderUserId: number) => acceptFriendRequest(senderUserId),
+        mutationFn: (senderId: number) => acceptFriendRequest(senderId),
         onSuccess: () => {
             toast.success('Friendrequest accepted!');
             queryClient.invalidateQueries({ queryKey: ['userProfile'] }); 
@@ -69,7 +69,7 @@ export function useRemoveFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (friendshipId: number) => removeFriendOrRequest(friendshipId),
+        mutationFn: (targetUserId: number) => removeFriendOrRequest(targetUserId),
         onSuccess: () => {
             toast.success('You are no longer friends.');
             queryClient.invalidateQueries({ queryKey: ['friendRequests'] });

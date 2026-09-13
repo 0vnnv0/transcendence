@@ -253,19 +253,13 @@ function userDisconnect(onlineUsers: Map<number, string>, socket: Socket, io: Se
 }
 
 //helper: tests if user making request is actually part of the chat before sending messages or adding users
-export async function isInChat (userId: number, chatId: number, prisma: PrismaClient) {
+export async function isInChat(userId: number, chatId: number, prisma: PrismaClient) {
 	const isMember = await prisma.chat.findFirst({
 		where: {
-			id: chatId,
-			users: {
-				some: {
-					id: userId
-				},
-			},
+			id: Number(chatId),
+			users: { some: { id: Number(userId) } }
 		},
-		select: {
-			id: true,
-		},
+		select: { id: true }
 	});
 	return !!isMember;
 }

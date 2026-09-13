@@ -6,7 +6,7 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
-import { S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
@@ -240,6 +240,60 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 	  }
 }
 
+// async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
+// {
+//     const userId = request.user?.id;
+//     if (!userId) {
+//         return response.code(401).send({ error: "you are not logged in." });
+//     }
+
+//     const body = request.body as { contentType?: string };
+//     const contentType = body?.contentType;
+
+//     if (!contentType || typeof contentType !== 'string') {
+//         return response.code(400).send({ error: "missing or invalid contentType in request body." });
+//     }
+
+//     if (!allowedTypes.includes(contentType)) {
+//         return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
+//     }
+
+//     const key = `uploads/${userId}`;
+// 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
+// 	if (typeof bucketName !== 'string')
+// 		return response.code(500).send({ error: "missing bucket name" });
+
+//     try {
+//         const { url, fields } = await createPresignedPost(s3, {
+//             Bucket: bucketName,
+//             Key: key,
+//             Conditions: [
+//                 ["eq", "$Content-Type", contentType],
+//                 ["content-length-range", 1, MAX_FILE_SIZE],
+//             ],
+//             Fields: {
+//                 "Content-Type": contentType,
+//             },
+//             Expires: 300,
+//         });
+
+//         return response.code(200).send({
+//             url,
+//             fields,
+//             key,
+//         });
+//     } catch (err) {
+//         request.log.error(err);
+//         return response.code(500).send({ error: "failed to generate upload URL." });
+//     }
+// }
+
+const extensionMap: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+};
+
 async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
     const userId = request.user?.id;
@@ -258,7 +312,12 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
         return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
     }
 
-    const key = `uploads/${userId}`;
+    const ext = extensionMap[contentType];
+	// es ist ein caching issue da die url immer die gleiche ist
+	// wir koennen das mit einer timestamp faken so dass es neu gelesen wird
+	// key (avatars) muss mit dem link den wir anfragen uebereinstimmen
+    const key = `avatars/${userId}/avatar-${Date.now()}.${ext}`;
+
 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
 	if (typeof bucketName !== 'string')
 		return response.code(500).send({ error: "missing bucket name" });
@@ -314,7 +373,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: s3Key,
 		}));
-
+		await deleteOldPfp(request, prisma, userId, avatarUrl);
 		await prisma.testUser.update({
 			where: { id: userId },
 			data: { customAvatar: avatarUrl }
@@ -329,3 +388,24 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 	}
 };
 
+async function deleteOldPfp(request: FastifyRequest, prisma: PrismaClient, userId: number, avatarUrl: string)
+{
+	const user = await prisma.testUser.findUnique({
+		where: { id: userId },
+		select: { customAvatar: true }
+	});
+
+	if (user?.customAvatar && user.customAvatar !== avatarUrl) {
+		try {
+			const oldParsedUrl = new URL(user.customAvatar);
+			const oldS3Key = oldParsedUrl.pathname.replace(/^\//, '');
+
+			await s3.send(new DeleteObjectCommand({
+				Bucket: process.env.AWS_S3_BUCKET_NAME,
+				Key: oldS3Key,
+			}));
+		} catch (deleteError) {
+			request.log.error(deleteError, "Failed to delete old avatar from S3");
+		}
+	}
+}

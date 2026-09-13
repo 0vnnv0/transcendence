@@ -138,7 +138,7 @@ model Availability {
 	user			TestUser		@relation(fields: [userId], references: [id])
 	// usr				User		@relation(fields: [usrId], references: [id])
 	userId			Int			@unique
-	usrId			Int			@unique
+	usrId			Int?			@unique
 	workDaysPerWeek	Int
 	startDate		DateTime
 	endDate			DateTime

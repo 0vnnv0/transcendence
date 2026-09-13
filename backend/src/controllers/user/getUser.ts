@@ -20,7 +20,8 @@ export function getUser(prisma: PrismaClient) {
 
         // const testUser = await Promise.all([
             const testUser = await prisma.testUser.findUnique(
-				{ where: { login: login } }
+				{ where: { login: login },
+				include: { availability: true } }
 			)
         // ]);
 

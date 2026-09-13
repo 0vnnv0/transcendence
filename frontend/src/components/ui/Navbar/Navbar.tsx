@@ -7,6 +7,7 @@ import Button from '../../../components/ui/Button/Button'
 import { useLogoutLogic } from '../../../hooks/useAuth'
 import { useAuth } from '../../../components/context/AuthContext'
 import { useUserProfile } from '../../../hooks/useUsers';
+import Footer from '../Footer/Footer'
 
 function Navbar() {
     const navigate = useNavigate()
@@ -25,7 +26,7 @@ function Navbar() {
 			<ul className="flex flex-col mt-50 gap-2 w-full">
 				<NavItem label="Dashboard" icon="home" route="/dashboard" />
 				<NavItem label="Projects" icon="projects" route="/projects" /> 
-				<NavItem label="Friends" icon="home" route="/friends" />    
+				<NavItem label="Friends" icon="smiley" route="/friends" />    
 			</ul>
 			<ChatMenu />
 			
@@ -46,6 +47,7 @@ function Navbar() {
 					<Button type="button" onClick={performLogout} className="mt-4">Logout</Button>
 				</div>
 			</div>
+			<Footer />
 		</nav>
 
 		{/* Mobile bottom nav */}

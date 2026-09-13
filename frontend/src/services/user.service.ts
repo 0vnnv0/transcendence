@@ -21,7 +21,9 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
     throw new Error(errorData.message || 'Failed to fetch user profile');
   }
 
-  return response.json() as Promise<FullUserProfile>;
+  const res = await response.json() as Promise<FullUserProfile>;
+  console.log("Get user profile vom Server: ", res)
+  return res;
 };
 
 export const fetchAllUsers = async (): Promise<ChatUser[]> => {
@@ -151,27 +153,27 @@ export function getAvatarUrl(userId: number): string {
 	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
 }
 
-export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
-	const presignedPost = await getUploadUrl(file.type);
-	console.log('presigned key: ', presignedPost.fields.key)
-	await uploadToS3(presignedPost, file);
-
-	const avatarUrl = getAvatarUrl(userId);
-	const result = await updateAvatarUrl(userId, avatarUrl)
-  	return { avatarUrl: `${result.avatarUrl}?t=${Date.now()}` };
-}
-
 // export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 // 	const presignedPost = await getUploadUrl(file.type);
+// 	console.log('presigned key: ', presignedPost.fields.key)
 // 	await uploadToS3(presignedPost, file);
 
-// 	// echten Key nutzen statt zu raten
-// 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
-// 	const avatarUrl = `https://${cfDomain}/${presignedPost.fields.key}`;
-
-// 	const result = await updateAvatarUrl(userId, avatarUrl);
-//   	return { avatarUrl: result.avatarUrl }; // kein ?t= mehr nötig, der Key selbst ist ja schon einzigartig
+// 	const avatarUrl = getAvatarUrl(userId);
+// 	const result = await updateAvatarUrl(userId, avatarUrl)
+//   	return { avatarUrl: `${result.avatarUrl}?t=${Date.now()}` };
 // }
+
+export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
+	const presignedPost = await getUploadUrl(file.type);
+	await uploadToS3(presignedPost, file);
+
+	// echten Key nutzen statt zu raten
+	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+	const avatarUrl = `https://${cfDomain}/${presignedPost.fields.key}`;
+
+	const result = await updateAvatarUrl(userId, avatarUrl);
+  	return { avatarUrl: result.avatarUrl }; // kein ?t= mehr nötig, der Key selbst ist ja schon einzigartig
+}
 
 export const fetchActiveUsersByProject = async (username: string, projectName: string): Promise<FullUserProfile[]> => {
   const response = await fetch(`/api/users/${username}/${projectName}/matches`);
@@ -212,6 +214,7 @@ export const updateUserProfile = async (
 		const errorData = await response.json().catch(() => ({}));
 		throw new Error(errorData.message || 'Failed to update profile');
 	}
-
-	return response.json() as Promise<UpdateProfileResponse>;
+	const res = await response.json() as Promise<UpdateProfileResponse>;
+	console.log("Profile Data from backend: ", res)
+	return res;
 };
