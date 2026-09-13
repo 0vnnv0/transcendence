@@ -10,4 +10,13 @@ POST   /api/friendships
 GET    /api/friendships/:login
 PUT    /api/friendships/:id
 DELETE /api/friendships/:id
+
+
+curl http://localhost:3000/api/friendships/pbohme \
+  -H "X-API-Client: " \
+  -H "X-API-Key: "
+
+curl http://localhost:3000/api/users/pbohme \
+  -H "X-API-Client: " \
+  -H "X-API-Key: "  
 	

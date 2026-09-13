@@ -30,51 +30,51 @@ export class PublicFriendController {
     }
 
 
-	// async createFriendship(
-	// 	request: FastifyRequest,
-	// 	reply: FastifyReply
-	// ) {
-	// 	const { senderLogin, receiverLogin } = request.body as {
-	// 		senderLogin: string;
-	// 		receiverLogin: string;
-	// 	};
+	// POST /api/friendships
+	async createFriendship(
+		request: FastifyRequest,
+		reply: FastifyReply
+	) {
+		const { senderLogin, receiverLogin } = request.body as {
+			senderLogin: string;
+			receiverLogin: string;
+		};
 
-	// 	if (!senderLogin || !receiverLogin) {
-	// 		return reply.status(400).send({
-	// 			error: "senderLogin and receiverLogin are required"
-	// 		});
-	// 	}
+		if (!senderLogin || !receiverLogin) {
+			return reply.status(400).send({
+				error: "senderLogin and receiverLogin are required"
+			});
+		}
 
-	// 	const sender = await this.prisma.user.findUnique({
-	// 		where: { login: senderLogin }
-	// 	});
+		try {
+			const sender = await friendService.getUserByLogin(senderLogin);
+			const receiver = await friendService.getUserByLogin(receiverLogin);
 
-	// 	const receiver = await this.prisma.user.findUnique({
-	// 		where: { login: receiverLogin }
-	// 	});
+			if (!sender) {
+				return reply.status(404).send({
+					error: `Sender '${senderLogin}' not found`
+				});
+			}
 
-	// 	if (!sender || !receiver) {
-	// 		return reply.status(404).send({
-	// 			error: "Sender or receiver not found"
-	// 		});
-	// 	}
+			if (!receiver) {
+				return reply.status(404).send({
+					error: `Receiver '${receiverLogin}' not found`
+				});
+			}
 
-	// 	try {
-	// 		const friendship = await this.prisma.friendship.create({
-	// 			data: {
-	// 				senderId: sender.id,
-	// 				receiverId: receiver.id
-	// 			}
-	// 		});
+			const friendship = await friendService.sendFriendRequest(
+				sender.id,
+				receiver.id
+			);
 
-	// 		return reply.status(201).send(friendship);
+			return reply.status(201).send(friendship);
 
-	// 	} catch (err: any) {
-	// 		return reply.status(400).send({
-	// 			error: err.message
-	// 		});
-	// 	}
-	// }	
+		} catch (err: any) {
+			return reply.status(400).send({
+				error: err.message
+			});
+		}
+	}
 
 
 	// async updateFriendship(
