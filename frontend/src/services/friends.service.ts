@@ -1,7 +1,6 @@
 import type { Friends } from "../types/friends";
 
 export const getAuthHeaders = () => {
-	console.log("Mein Token:", localStorage.getItem('token'));
     const token = localStorage.getItem('token');
     return {
         'Authorization': `Bearer ${token || ''}`,
@@ -57,16 +56,17 @@ export const acceptFriendRequest = async (senderId: number): Promise<void> => {
     }
 };
 
-export const removeFriendOrRequest = async (targetId: number): Promise<void> => {
-    const response = await fetch(`/api/friends/remove/${targetId}`, {
+export const removeFriendOrRequest = async (targetUserId: number): Promise<void> => {
+    const response = await fetch(`/api/friends/remove/${targetUserId}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
-		body: JSON.stringify({ targetId }),
+		body: JSON.stringify({ targetUserId }),
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to remove friend or decline request');
-    }
+	if (!response.ok) {
+  	  const body = await response.json().catch(() => null);
+  	  throw new Error(body?.error || 'Failed to remove friend or decline request');
+	}
 };
 
 export const fetchRequestedFriends = async (): Promise<Friends[]> => {
