@@ -96,30 +96,30 @@ model LoggedUser {
 // 	rank6			Boolean		@default(false)
 // }
 
-model Project {
-  id              Int      @id @default(autoincrement())
+// model Project {
+//   id              Int      @id @default(autoincrement())
 
-  name            String
-  slug            String   @unique
+//   name            String
+//   slug            String   @unique
 
-  projectRank     Int
+//   projectRank     Int
 
-  teamSizeMin     Int
-  teamSizeMax     Int
+//   teamSizeMin     Int
+//   teamSizeMax     Int
 
-  estimatedHours  Int?
-  xpPoints        Int?
+//   estimatedHours  Int?
+//   xpPoints        Int?
 
-  description     String?
+//   description     String?
 
-  keywords    String[]
-  skills      String[]
+//   keywords    String[]
+//   skills      String[]
 
-  oldCore         Boolean  @default(false)
-  newCore         Boolean  @default(false)
+//   oldCore         Boolean  @default(false)
+//   newCore         Boolean  @default(false)
 
 //   users           UserProjects[]
-}
+// }
 
 // model UserProjects {
 //   id         Int      @id @default(autoincrement())
