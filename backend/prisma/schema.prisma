@@ -45,6 +45,9 @@ model TestUser {
 
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
+
+	sentFriendships     Friendship[] @relation("SentFriendships")
+  	receivedFriendships Friendship[] @relation("ReceivedFriendships")
 }
 
 model LoggedUser {
@@ -54,86 +57,86 @@ model LoggedUser {
 	createdAt		DateTime	@default(now())
 }
 
-model User { 
-	id				Int			@id 	//check
-	createdAt		DateTime	@default(now()) 				//check
-	intraEmail		String		@unique							//check
-	intraName		String		@unique							//check, aber heisst login
-	campusID		Int										//check			
-	campusName		String										//check
-	currentRank		Int
-	paceDeadline	DateTime
-	blackholeDate	DateTime?
+// model User { 
+// 	id				Int			@id 	//check
+// 	createdAt		DateTime	@default(now()) 				//check
+// 	intraEmail		String		@unique							//check
+// 	intraName		String		@unique							//check, aber heisst login
+// 	campusID		Int										//check			
+// 	campusName		String										//check
+// 	currentRank		Int
+// 	paceDeadline	DateTime
+// 	blackholeDate	DateTime?
 
-	coalitionName 	String?										//check
-	coalitionSlug 	String?										//check
+// 	coalitionName 	String?										//check
+// 	coalitionSlug 	String?										//check
 
-	availability	Availability?
-	bio				String?
-	avatarUrl		String?
-	customAvatar	String?
-	quests			UserQuests?
-	projects		UserProjects[]
-	newCore			Boolean?
-	isOnline		Boolean		@default(false)
+// 	availability	Availability?
+// 	bio				String?
+// 	avatarUrl		String?
+// 	customAvatar	String?
+// 	quests			UserQuests?
+// 	projects		UserProjects[]
+// 	newCore			Boolean?
+// 	isOnline		Boolean		@default(false)
 
-	sentFriendships     Friendship[] @relation("SentFriendships")
-  	receivedFriendships Friendship[] @relation("ReceivedFriendships")
-} 
+// 	sentFriendships     Friendship[] @relation("SentFriendships")
+//   	receivedFriendships Friendship[] @relation("ReceivedFriendships")
+// } 
 
-model UserQuests {
-	id				Int			@id @default(autoincrement()) 
-	user			User		@relation(fields: [userId], references: [id])
-	userId			Int			@unique
-	rank1			Boolean		@default(false)
-	rank2			Boolean		@default(false)
-	rank3			Boolean		@default(false)
-	rank4			Boolean		@default(false)
-	rank5			Boolean		@default(false)
-	rank6			Boolean		@default(false)
-}
+// model UserQuests {
+// 	id				Int			@id @default(autoincrement()) 
+// 	user			TestUser		@relation(fields: [userId], references: [id])
+// 	userId			Int			@unique
+// 	rank1			Boolean		@default(false)
+// 	rank2			Boolean		@default(false)
+// 	rank3			Boolean		@default(false)
+// 	rank4			Boolean		@default(false)
+// 	rank5			Boolean		@default(false)
+// 	rank6			Boolean		@default(false)
+// }
 
-model Project {
-  id              Int      @id @default(autoincrement())
+// model Project {
+//   id              Int      @id @default(autoincrement())
 
-  name            String
-  slug            String   @unique
+//   name            String
+//   slug            String   @unique
 
-  projectRank     Int
+//   projectRank     Int
 
-  teamSizeMin     Int
-  teamSizeMax     Int
+//   teamSizeMin     Int
+//   teamSizeMax     Int
 
-  estimatedHours  Int?
-  xpPoints        Int?
+//   estimatedHours  Int?
+//   xpPoints        Int?
 
-  description     String?
+//   description     String?
 
-  keywords    String[]
-  skills      String[]
+//   keywords    String[]
+//   skills      String[]
 
-  oldCore         Boolean  @default(false)
-  newCore         Boolean  @default(false)
+//   oldCore         Boolean  @default(false)
+//   newCore         Boolean  @default(false)
 
-  users           UserProjects[]
-}
+//   users           UserProjects[]
+// }
 
-model UserProjects {
-  id         Int      @id @default(autoincrement())
+// model UserProjects {
+//   id         Int      @id @default(autoincrement())
 
-  userId     Int
-  projectId  Int
+//   userId     Int
+//   projectId  Int
 
-  user       User     @relation(fields: [userId], references: [id])
-  project    Project  @relation(fields: [projectId], references: [id])
+//   user       User     @relation(fields: [userId], references: [id])
+//   project    Project  @relation(fields: [projectId], references: [id])
 
-  createdAt  DateTime @default(now())
-}
+//   createdAt  DateTime @default(now())
+// }
 
 model Availability {
 	id				Int			@id @default(autoincrement()) 
-	user			TestUser	@relation(fields: [userId], references: [id])
-	usr				User?		@relation(fields: [usrId], references: [id])
+	user			TestUser		@relation(fields: [userId], references: [id])
+	// usr				User		@relation(fields: [usrId], references: [id])
 	userId			Int			@unique
 	usrId			Int?			@unique
 	workDaysPerWeek	Int
@@ -165,10 +168,10 @@ model Friendship {
   id          Int              @id @default(autoincrement())
   
   senderId    Int
-  sender      User             @relation("SentFriendships", fields: [senderId], references: [id], onDelete: Cascade)
+  sender      TestUser             @relation("SentFriendships", fields: [senderId], references: [id], onDelete: Cascade)
 
   receiverId  Int
-  receiver    User             @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiver    TestUser             @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
 
   status      FriendshipStatus @default(PENDING)
 
