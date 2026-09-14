@@ -46,7 +46,7 @@ export class FriendService {
 			},
 			include: {
 				sender: {
-					select: {id: true, login: true, intraEmail: true, avatarUrl: true }
+					select: {id: true, login: true, intraEmail: true, avatarUrl: true, isOnline: true }
 				}
 			}
 		});
