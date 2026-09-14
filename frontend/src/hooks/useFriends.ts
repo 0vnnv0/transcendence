@@ -14,14 +14,27 @@ export function useAddFriend() {
 
     return useMutation({
         mutationFn: (targetUserId: number) => sendFriendRequest(targetUserId),
-        onSuccess: () => {
-            toast.success('Friendrequest sent!');
+        
+        onSuccess: (response, targetUserId) => {
+            const backendResponse = response as any;
+            const newFriendship = backendResponse?.friendship;
+            
+            if (newFriendship) {
+                queryClient.setQueriesData({ queryKey: ['userProfile'] }, (oldData: any) => {
+                    if (!oldData) return oldData;
+                    
+                    if (oldData.id === targetUserId) {
+                        return {
+                            ...oldData,
+                            friendship: newFriendship
+                        };
+                    }
+                    return oldData;
+                });
+            }
+
             queryClient.invalidateQueries({ queryKey: ['userProfile'] });
             queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
-        },
-        onError: (error: any) => {
-            console.error("Fehler beim Senden der Anfrage:", error);
-            toast.error(error?.response?.data?.message || 'Error trying to sent friendrequest.');
         }
     });
 }
@@ -30,7 +43,7 @@ export function useAcceptFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (senderUserId: number) => acceptFriendRequest(senderUserId),
+        mutationFn: (senderId: number) => acceptFriendRequest(senderId),
         onSuccess: () => {
             toast.success('Friendrequest accepted!');
             queryClient.invalidateQueries({ queryKey: ['userProfile'] }); 
@@ -56,7 +69,7 @@ export function useRemoveFriend() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (friendshipId: number) => removeFriendOrRequest(friendshipId),
+        mutationFn: (targetUserId: number) => removeFriendOrRequest(targetUserId),
         onSuccess: () => {
             toast.success('You are no longer friends.');
             queryClient.invalidateQueries({ queryKey: ['friendRequests'] });

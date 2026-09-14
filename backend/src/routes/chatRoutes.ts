@@ -19,14 +19,12 @@ export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 //returns null for this property when we get to the end
 async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
 {
-	//only need this next bit until JWT is implemented: const userId = request.user.id;
 	const { userId } = request.query as { userId?: number };
 	if (!userId) {
 		return response.code(400).send({ error: "Missing userId query parameter" });
 	}
 
-	const { chatId } = request.params as { chatId: number};
-
+	const { chatId } = request.params as { chatId: number };
 	const { cursorId: rawCursorId } = request.query as { cursorId?: string };
 	const cursorId = rawCursorId ? Number(rawCursorId) : undefined;
 
@@ -36,34 +34,49 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 	}
 
 	try {
-        const limit = 50;
+		const limit = 50;
 
-        const messages = await prisma.chatMessage.findMany({
-            where: {
-                chatId: Number(chatId),
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-            take: limit,
-            ...(cursorId && {
-                skip: 1, 
-                cursor: { id: cursorId },
-            }),
-            include: {
-                sender: {
-                    select: {
-                        id: true,
-                        intraName: true,
-                    },
-                },
-            },
-        });
+		// NEU: Chat + Teilnehmer separat laden
+		const chat = await prisma.chat.findUnique({
+			where: { id: Number(chatId) },
+			include: { users: true }
+		});
+
+		if (!chat) {
+			return response.code(404).send({ error: "Chat not found." });
+		}
+
+		const messages = await prisma.chatMessage.findMany({
+			where: { chatId: Number(chatId) },
+			orderBy: { createdAt: "desc" },
+			take: limit,
+			...(cursorId && { skip: 1, cursor: { id: cursorId } }),
+			include: {
+				sender: { select: { id: true, login: true, avatarUrl: true } },
+			},
+		});
+
 		const nextCursor = messages.length === limit ? messages[messages.length - 1]?.id : null;
-        const chronologicalMessages = messages.reverse();
-        return {
-            messages: chronologicalMessages,
-            nextCursor: nextCursor
+		const chronologicalMessages = messages.reverse();
+
+		// NEU: Mapping login -> intraName, konsistent zu ChatUser type
+		const participants = chat.users.map(u => ({
+			id: u.id,
+			intraName: u.login,
+			avatarUrl: u.avatarUrl ?? undefined
+		}));
+
+		return {
+			messages: chronologicalMessages.map(m => ({
+				...m,
+				sender: {
+					id: m.sender.id,
+					intraName: m.sender.login,
+					avatarUrl: m.sender.avatarUrl ?? undefined
+				}
+			})),
+			nextCursor,
+			participants
 		};
 	} catch (error) {
 		fastify.log.error(error);
@@ -151,6 +164,9 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         
     } catch (error) {
         fastify.log.error(error);
-        return response.code(500).send({ error: "Failed to create chat." });
+        return response.code(500).send({
+    		error: "Failed to create chat.",
+			details: error instanceof Error ? error.message : String(error),
+    });
     }
 }

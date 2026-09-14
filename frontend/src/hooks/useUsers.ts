@@ -1,9 +1,10 @@
-import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch } from '../services/user.service';
+import { fetchAllUsers, fetchUserProfile, fetchUsersBySearch, getUploadUrl } from '../services/user.service';
 import type { ChatUser } from '../types/chat'
 import type { FullUserProfile } from '../types/user';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateAvatar, fetchActiveUsersByProject, updateUserProfile } from '../services/user.service';
+import { fetchActiveUsersByProject, updateUserProfile } from '../services/user.service';
 import { toast } from 'react-hot-toast';
+import { uploadAvatarRequest } from '../services/user.service';
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -22,63 +23,42 @@ export const useUsers = () => {
 };
 
 export const useUsersSearch = (searchQuery: string) => {
-  return useQuery<ChatUser[], Error>({
+  return useQuery<FullUserProfile[], Error>({
     queryKey: ['users', searchQuery], 
     queryFn: () => fetchUsersBySearch(searchQuery),
     enabled: searchQuery.trim().length > 0, 
   });
 };
 
+export function useGetUploadUrl() {
+	return useMutation({
+		mutationFn: getUploadUrl
+	});
+};
 
-export function useUpdateAvatar(userKey: string | null) {
-  const queryClient = useQueryClient()
+export function useUploadAvatar(userId: number, login: string) {
+	const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (file: File) => {
-      if (!userKey) throw new Error('No user')
-      return updateAvatar(userKey, file)
+      if (!userId) throw new Error('No user')
+      return uploadAvatarRequest(file, userId)
     },
-
-    // // For Live Updates (on my own browser)
-	// // Fires immediately when .mutate() is called — before the network request resolves
-    // onMutate: async (file: File) => {
-    //   // Stop any in-flight refetches so they don't overwrite our optimistic data
-    //   await queryClient.cancelQueries({ queryKey: ['userProfile', userKey] })
-    //   // Snapshot the current cache so we can roll back on error
-    //   const previousProfile = queryClient.getQueryData(['userProfile', userKey])
-    //   // Create a local, temporary URL for the picked file
-    //   const previewUrl = URL.createObjectURL(file)
-    //   // Optimistically write it into the cache — UI updates instantly
-    //   queryClient.setQueryData(['userProfile', userKey], (old: any) =>
-    //     old ? { ...old, avatarUrl: previewUrl } : old
-    //   )
-    //   // Passed to onError / onSettled as `context`
-    //   return { previousProfile, previewUrl }
-    // },
 
     // Real server response arrived and succeeded — replace preview with the real URL
     onSuccess: (data) => {
+		console.log('Neue Avatar URL vom Upload:', data.avatarUrl);
       toast.success('Profile picture changed successfully.');
-      queryClient.setQueryData(['userProfile', userKey], (old: any) =>
-        old ? { ...old, avatarUrl: data.avatarUrl } : old
-      )
+      queryClient.setQueryData(['userProfile', login], (old: any) => {
+		console.log('Cache vorher:', old?.customAvatar);
+		const updated = old ? { ...old, customAvatar: data.avatarUrl } : old;
+		console.log('Cache nachher:', updated?.customAvatar);
+		return updated;
+	  })
     },
-
-    // // Server call failed — roll back to the snapshot
-    // onError: (_err, _file, context) => {
-    //   if (context?.previousProfile) {
-    //     queryClient.setQueryData(['userProfile', userKey], context.previousProfile)
-    //   }
-    // },
-
-    // // Runs after either success or error — cleanup + safety net
-    // onSettled: (_data, _err, _file, context) => {
-    //   if (context?.previewUrl) {
-    //     URL.revokeObjectURL(context.previewUrl) // free the blob URL from memory
-    //   }
-    //   // Optional: refetch to guarantee we're in sync with the DB, even on success
-    //   queryClient.invalidateQueries({ queryKey: ['userProfile', userKey] })
-    // },
+	 onError: (error: Error) => {
+        toast.error(error.message || 'Failed to change profile picture.');
+        },
   })
 }
 
@@ -91,7 +71,7 @@ export function useActiveUsersByProject(username: string | null, projectName: st
 	});
 }
 
-export function useUpdateProfile(userId: string) {
+export function useUpdateProfile(userId: number, login: string) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -99,7 +79,10 @@ export function useUpdateProfile(userId: string) {
 			updateUserProfile(userId, data),
 		onSuccess: () => {
       toast.success('Information saved successfully!');
-			queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+			queryClient.invalidateQueries({ queryKey: ["userProfile", login] });
 		},
+        onError: (error: Error) => {
+            toast.error(error.message || 'Failed to save information.');
+        },
 	});
 }

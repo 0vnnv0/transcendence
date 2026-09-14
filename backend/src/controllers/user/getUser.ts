@@ -19,8 +19,14 @@ export function getUser(prisma: PrismaClient) {
         const currentUserId = (request.user as any)?.id;
 
         const [mainUser, testUser] = await Promise.all([
-            prisma.user.findUnique({ where: { intraName: login } }),
-            prisma.testUser.findUnique({ where: { login } })
+            prisma.user.findUnique({ 
+				where: { intraName: login },
+				include: { availability: true }
+			}),
+            prisma.testUser.findUnique({ 
+				where: { login },
+				include: { availability: true } 
+			})
         ]);
 
         if (!mainUser && !testUser) {
@@ -49,8 +55,11 @@ export function getUser(prisma: PrismaClient) {
             ...baseData,
             intraName: mainUser?.intraName ?? testUser?.login,
             avatarUrl: testUser?.avatarUrl ?? mainUser?.avatarUrl ?? null,
-            friendshipStatus,
-            friendshipId
+			customAvatar: testUser?.customAvatar ?? mainUser?.customAvatar ?? null,
+            friendship: {
+                status: friendshipStatus,
+                id: friendshipId,
+            }
         });
 	}
 }

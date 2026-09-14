@@ -4,10 +4,12 @@ import TagList, { type TagData } from '../TagList/TagList';
 import Tag from '../TagList/Tag';
 
 interface UserCardProps {
+  key?: number;
   layout?: 'portrait' | 'landscape';
-  image: string;
+  avatarUrl: string;
   title?: string;
   isOnline?: boolean;
+  showStatus?: boolean;
   route?: string;
   username: string; // used to build the profile link
   tags?: TagData[];
@@ -20,11 +22,13 @@ interface UserCardProps {
 
 const UserCard = ({
   layout = 'landscape',
-  image,
+  avatarUrl,
+  isOnline,
+  showStatus = false,
   username,
   tags,
   ctaText,
-  friendship = true,
+  friendship = false,
   onCtaClick,
   onAccept,
   onDecline,
@@ -47,12 +51,21 @@ const UserCard = ({
 		  <Tag description='Friends' icon='smiley' color='orange' />
 		 </div>
 	  )}
-      <div className={`${isLandscape ? 'w-22 h-22' : 'w-full h-34'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
+      <div className={`relative ${isLandscape ? 'w-22 h-22' : 'w-full h-50 sm:h-40 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
 		<img
-			src={image}
+			src={avatarUrl}
 			alt=""
 			className="w-full h-full object-cover"
 		/>
+		 {showStatus && (
+          <span
+            className={`
+              absolute bottom-1 right-1 w-6 h-6 rounded-full border-1 border-white
+              ${isOnline ? 'bg-green-500' : 'bg-gray-400'}
+            `}
+            aria-label={isOnline ? 'online' : 'offline'}
+          />
+        )}
 	  </div>
       <div
         className={`

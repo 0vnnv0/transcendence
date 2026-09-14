@@ -57,12 +57,12 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 }
 
 async function getUsernameById(prisma: PrismaClient,userId: number): Promise<string | null> {
-	const user = await prisma.user.findUnique({
+	const user = await prisma.testUser.findUnique({
 	  where: { id: userId },
-	  select: { intraName: true },
+	  select: { login: true },
 	});
   
-	return user ? user.intraName : null;
+	return user ? user.login : null;
   }
 
 //this temporarily registers different users, needs to be changed once we add authentication
@@ -209,7 +209,7 @@ async function sendMessage (
 				sender: {
 					select: {
 						id: true,
-						intraName: true,
+						login: true,
 					},
 				},
 			},
@@ -253,19 +253,13 @@ function userDisconnect(onlineUsers: Map<number, string>, socket: Socket, io: Se
 }
 
 //helper: tests if user making request is actually part of the chat before sending messages or adding users
-export async function isInChat (userId: number, chatId: number, prisma: PrismaClient) {
+export async function isInChat(userId: number, chatId: number, prisma: PrismaClient) {
 	const isMember = await prisma.chat.findFirst({
 		where: {
-			id: chatId,
-			users: {
-				some: {
-					id: userId
-				},
-			},
+			id: Number(chatId),
+			users: { some: { id: Number(userId) } }
 		},
-		select: {
-			id: true,
-		},
+		select: { id: true }
 	});
 	return !!isMember;
 }

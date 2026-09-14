@@ -14,22 +14,26 @@ export interface ActiveProject {
 export interface FullUserProfile {
   id: number; // gibts schon
   login: string; // gibts schon
-  email: string; // gibts schon
+  email?: string; // gibts schon
   avatarUrl: string; // wird gebraucht
-  firstName: string; // wird gebraucht
-  lastName: string; // wird gebraucht
-  intraUrl: string; // wird gebraucht
-  currentRank: number; // gibts schon
-  coalitionName: string; // gibts schon
-  activeProjects: ActiveProject[];
+  customAvatar: string;
+  firstName?: string; // wird gebraucht
+  lastName?: string; // wird gebraucht
+  intraUrl?: string; // wird gebraucht
+  currentRank?: number; // gibts schon
+  coalitionName?: string; // gibts schon
+  activeProjects?: ActiveProject[];
   friendship?: Friendship | null;
-  preferredDays: ("Mon" | "Tue" | "Wed" | "Thurs" | "Fri" | "Sat" | "Sun")[];
-  isRemote: boolean;
+  availability: {
+	  workDaysPerWeek: number;
+	  preferredDays: ("Mon" | "Tue" | "Wed" | "Thurs" | "Fri" | "Sat" | "Sun")[];
+	  isRemote: boolean;
+  }
 }
 
-export interface UpdateAvatarResponse {
-  avatarUrl: string
-}
+// export interface UpdateAvatarResponse {
+//   avatarUrl: string
+// }
 
 export interface UpdateProfilePayload {
 	days: string[];
@@ -41,4 +45,9 @@ export interface UpdateProfileResponse {
 	id: string;
 	days: string[];
 	location: string;
+}
+
+export interface PresignedPostResponse {
+	url: string;
+	fields: Record<string, string>;
 }

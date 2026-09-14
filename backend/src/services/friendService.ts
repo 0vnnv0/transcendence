@@ -56,7 +56,8 @@ export class FriendService {
 			id: r.sender.id,
 			intraName: r.sender.intraName,
 			intraEmail: r.sender.intraEmail,
-			avatarUrl: r.sender.avatarUrl
+			avatarUrl: r.sender.avatarUrl,
+			isOnline: r.sender.isOnline,
 		}));
 	}
 
@@ -111,9 +112,9 @@ export class FriendService {
 			if (!testUser) {
 				throw new Error('User not found');
 			}
-
 			receiver = await prisma.user.create({
 				data: {
+					id: testUser.id,
 					intraName: testUser.login,
 					intraEmail: testUser.intraEmail || `${testUser.login}@student.42berlin.de`,
 					avatarUrl: testUser.avatarUrl,
@@ -127,7 +128,6 @@ export class FriendService {
 				}
 			});
 		}
-
 		if (receiver.id === senderId) {
 			throw new Error('Cannot add yourself as a friend');
 		}
@@ -180,34 +180,58 @@ export class FriendService {
 	async removeFriendOrRequest(userId: number, targetId: number | string) {
 
 		const parsedSenderId = Number(targetId);
-		console.log("targetId: ", targetId);
-		console.log("parsedSenderId: ", parsedSenderId);
 		const request = await prisma.friendship.findFirst({
 			where: {
-				senderId: parsedSenderId,
-				receiverId: userId,
-				status: 'PENDING'
+				OR: [
+					{ senderId: userId, receiverId: parsedSenderId },
+					{ senderId: parsedSenderId, receiverId: userId }
+				]
 			}
 		});
+
 		if (!request) {
-			throw new Error('Friend request not found or already accepted');
+			throw new Error('Friend request not found');
 		}
-		// const parsedFriendshipId = Number(friendshipId);
 
-		// if (!parsedFriendshipId || isNaN(parsedFriendshipId)) {
-		// 	throw new Error(`Invalid friendshipId: ${friendshipId}`);
-		// }
-
-		// const friendship = await prisma.friendship.findUnique({
-		// 	where: { id: parsedFriendshipId }
-		// });
-
-		// if (!friendship || (friendship.senderId !== userId && friendship.receiverId !== userId)) {
-		// 	throw new Error('Friendship not found or unauthorized');
-		// }
-		
 		return prisma.friendship.delete({
 			where: { id: request.id },
 		});
 	}
+
+	//pbohme
+	async getUserByLogin(login: string) {
+		return prisma.testUser.findUnique({
+			where: { login }
+		});
+	}
+
+	async updateFriendshipStatus(
+		senderId: number,
+		receiverId: number,
+		status: 'PENDING' | 'ACCEPTED' | 'BLOCKED'
+	) {
+		const friendship = await prisma.friendship.findFirst({
+			where: {
+				senderId,
+				receiverId
+			}
+		});
+
+		if (!friendship) {
+			throw new Error('Friend request not found');
+		}
+
+		if (friendship.status === status) {
+			throw new Error(`Friendship is already ${status}`);
+		}
+
+		return prisma.friendship.update({
+			where: {
+				id: friendship.id
+			},
+			data: {
+				status
+			}
+		});
+	}	
 }

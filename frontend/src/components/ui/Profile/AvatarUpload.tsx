@@ -1,26 +1,30 @@
 // components/profile/AvatarUpload.tsx
-import { useRef } from 'react'
-import { useUpdateAvatar } from '../../../hooks/useUsers';
+import { useRef, useState } from 'react'
+import { useUploadAvatar } from '../../../hooks/useUsers';
 import Button from '../Button/Button'
 
 interface AvatarUploadProps {
-	avatarUrl?: string;
-	userKey: string | null;
+	login: string;
+	avatarUrl: string;
+	userId: number;
 }
 
-function AvatarUpload({ avatarUrl, userKey }: AvatarUploadProps) {
+function AvatarUpload({ avatarUrl, userId, login }: AvatarUploadProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const updateAvatar = useUpdateAvatar(userKey);
+	const { mutate: uploadAvatar, isPending } = useUploadAvatar(userId, login);
+
+	console.log("AvatarUrl? ", avatarUrl)
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
 		if (!file) return;
-		updateAvatar.mutate(file);
+
+		uploadAvatar(file);
+
 		e.target.value = '';
 	}
-
 	return (
-		<div className="group relative h-50 w-50 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
+		<div className="group relative border border-black h-56 w-full sm:h-48 sm:w-48 md:h-56 md:w-full lg:h-48 lg:w-48 xl:h-54 xl:w-54 rounded-3xl bg-cover bg-center bg-no-repeat overflow-hidden"
 			style={{ backgroundImage: `url(${avatarUrl})` }}>
 			<Button
 				className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
