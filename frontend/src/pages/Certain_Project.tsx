@@ -14,6 +14,7 @@ import { formatProjectName } from '../utils/formatProjectName';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
 import type { FullUserProfile } from '../types/user';
+import Footer from '../components/ui/Footer/Footer';
 
 function Certain_Project() {
 

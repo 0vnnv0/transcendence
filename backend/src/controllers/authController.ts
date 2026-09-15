@@ -127,7 +127,7 @@ export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) =
 			});
 		}
 		const userId = (request.user as any).id;
-		await prisma.user.update({
+		await prisma.testUser.update({
           where: { id: userId },
           data: { isOnline: false },
         });
@@ -156,8 +156,8 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     // JWT erstellen: Wir speichern die ID, den Namen, newCore Status und isOnline im Token
     const token = request.server.jwt.sign({ 
       id: user.id, 
-      intraName: user.intraName,
-      newCore: user.newCore,
+      intraName: user.login,
+      newCore: user.isNewCore,
       isOnline: user.isOnline
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 

@@ -32,7 +32,8 @@ function Friends() {
                             isOnline={request.isOnline}
                             onAccept={() => acceptFriend(request.id)}
                             onDecline={() => removeFriend(request.friendshipId)}
-                        />
+							showStatus
+						/>
                     ))}
                 </>
             );
@@ -61,6 +62,7 @@ function Friends() {
                             username={friend.intraName}
 							ctaText="message"
 							isOnline={friend.isOnline}
+							showStatus
 						/>
 					))}
                 </>

@@ -64,6 +64,11 @@
 	@apply font-kyiv text-[10.5px] uppercase;
 }
 
+/* Kyiv / Regular / 10px */
+@utility text-footer {
+	@apply font-kyiv text-[10px];
+}
+
 @font-face {
   font-family: 'KyivTypeSans';
   src: url('./assets/fonts/KyivTypeSans-Medium.eot'); /* IE9 Compat Modes */

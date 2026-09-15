@@ -16,6 +16,7 @@ export interface ChatMessage {
 export interface LoadMessagesResponse {
 	messages: ChatMessage[];
 	nextCursor: number | null;
+	participants: ChatUser[];
 }
 
 export interface CreateChatResponse {

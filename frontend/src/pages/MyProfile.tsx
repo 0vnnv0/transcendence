@@ -19,8 +19,6 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
-	console.log("Profile: ", profile)
-
 	return (
 		<section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
 			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
@@ -46,14 +44,14 @@ function MyProfile() {
 
 					<div className="flex flex-col justify-center gap-2 md:gap-3">
 						<h1 className="text-title">{userName}</h1>
-						<p className="text-subtitle mb-2 lg:mb-4">{profile?.firstName ? `{profile?.firstName} {profile?.lastName}` : 'Name not in Database!'}</p>
+						<p className="text-subtitle mb-2 lg:mb-4">{profile?.firstName && profile?.firstName} {profile?.lastName && profile.lastName}</p>
 						<div className="flex gap-2">
 							{userName === profile?.login && (
 								<Button size="md" icon="message">Message</Button>
 							)}
 							<Button
 								size="md"
-								variant="primary"
+								variant="secondary"
 								href={profile?.intraUrl}
 								externalLink
 							>Intra Profile</Button>

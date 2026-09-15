@@ -41,7 +41,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 		const formattedUsers = users.map( (u: any) => ({
 			id: u.id,
 			title: u.login,
-			avatarUrl: u.avatarUrl,
+			avatarUrl: u.customUrl || u.avatarUrl,
 			type: 'user',
 			url: `/users/${u.login}`
 		}));
@@ -104,7 +104,7 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 		const formattedUsers = users.map( (u: any) => ({
 			id: u.id,
 			title: u.login,
-			avatarUrl: u.avatarUrl,
+			avatarUrl: u.customUrl || u.avatarUrl,
 			type: 'user',
 			url: `/users/${u.login}`
 		}));
