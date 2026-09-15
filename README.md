@@ -40,15 +40,15 @@ get step by step suggestions for complex features
 
 ## Team Information
 
-anschmit: Product Owner, Frontend (---)
+anschmit: Product Owner, Frontend (navbar, search, friends system)
 
 hreusing: Project Manager, Setup with Docker/Postgresql/multiple users & Backend (Login & Authorization, Search, Friends System)
 
 junruh: Tech Lead Backend, Backend (Chat, Availability, Profile settings)
 
-nrauh: Tech Lead Frontend, Frontend (---)
+nrauh: Tech Lead Frontend, Frontend (profile page, design system)
 
-pbohme: Developer, Backend (Server Setup, Project Matching, nginx)
+pbohme: Developer, Backend (Server Setup, Project Matching, nginx, public API)
 
 ## Project Management
 
@@ -59,6 +59,7 @@ Weekly Meeting with updates where everyone shared there progress and explained w
 Miro was used as a PM-tool.
 Github was used as a version control and branch system.
 Online communication used slack.
+Notion was used for Documentation.
 
 ## Technical Stack
 
@@ -71,173 +72,250 @@ Libraries:
 Justification
 
 ## Database Schema
+This is your Prisma schema file
 
-VISUAL REPRESENTAION
+#### The TestUser represents each User and all their information and relations to e.g friendships, chats, and availability
 
+```
+model TestUser {
+	id          Int      @id
+	login       String   @unique
+
+	intraEmail  	String?
+
+	firstName   	String?
+	lastName    	String?
+
+	avatarUrl   	String?
+	customAvatar	String?
+	intraUrl    	String?
+	
+	campusId    	Int?
+	campusName  	String?
+
+	coalitionName	 String?
+	coalitionSlug 	String?
+
+	currentRank		Int?
+	newCore			Boolean?
+	bio				String?
+
+	completedProjects Json?
+	activeProjects    Json?
+
+	availability	Availability?
+
+	chats			Chat[]		@relation("UserToChat")
+	sentMessages	ChatMessage[]
+	isOnline		Boolean		@default(false)
+
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	sentFriendships     Friendship[] @relation("SentFriendships")
+  	receivedFriendships Friendship[] @relation("ReceivedFriendships")
+}
+```
+#### The LoggesUser model is seperated from TestUser for transcendence purposes. In a real use case, the User will only login via 42 Authentication. No other Login is neccessary.
+```
+model LoggedUser {
+	id				Int			@id @default(autoincrement())
+	email			String		@unique
+	password		String?
+	createdAt		DateTime	@default(now())
+}
+```
+#### Availability holds all information of the set availability of each profile
+```
+model Availability {
+	id				Int			@id @default(autoincrement()) 
+	user			TestUser		@relation(fields: [userId], references: [id])
+	userId			Int			@unique
+	usrId			Int?			@unique
+	workDaysPerWeek	Int
+	startDate		DateTime
+	endDate			DateTime
+	preferredDays	String[]
+	isRemote		Boolean  	@default(false)
+}
+```
+#### Chat and ChatMessages belong to the chat system. Chat relates to its users and ChatMessage holds each Message send to the chat and by which user.
+```
+model Chat {
+	id				Int			@id @default(autoincrement()) 
+	createdAt		DateTime	@default(now())
+	updatedAt		DateTime	@updatedAt
+	users			TestUser[]		@relation("UserToChat")
+	messages		ChatMessage[]
+}
+
+model ChatMessage {
+	id				Int			@id @default(autoincrement())
+	chat			Chat		@relation(fields: [chatId], references: [id])
+	chatId			Int
+	sender			TestUser		@relation(fields: [senderId], references: [id])
+	senderId		Int
+	createdAt		DateTime	@default(now())
+	content			String
+}
+```
+#### Friendship carries the user ids of the sending and receiving user as well as the status, if the request is pending or accepted
+```
+model Friendship {
+  id          Int              @id @default(autoincrement())
+  
+  senderId    Int
+  sender      TestUser             @relation("SentFriendships", fields: [senderId], references: [id], onDelete: Cascade)
+
+  receiverId  Int
+  receiver    TestUser             @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  status      FriendshipStatus @default(PENDING)
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([senderId, receiverId])
+}
+```
+#### Blacklisted tokens are needed for web security.
+```
+model BlacklistedTokens {
+	id				Int			@id @default(autoincrement())
+	token			String		@unique
+	expiresAt		DateTime
+	createdAt		DateTime	@default(now())
+}
+```
+#### Status categories
+```
+enum Status {
+	NOT_STARTED
+	IN_PROGRESS
+	FINISHED
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}
+```
 ## Features List
+
+- See upcoming group projects and possible students (pbohme, nrauh)
+- Chat with other students and see if they want to do a project together (junruh, anschmit, nrauh)
+- See and edit your profile information, such as your availability and profile picture (nrauh, junruh)
+- Add students as friends and see if they're online to chat. (hreusing, anschmit)
+- Get project information (pbohme, nrauh)
+- Authentication with 42 (hreusing)
 
 ## Modules
 
+ 2 pts - **Major: Use a framework for both the frontend and backend.**
+ - React for frontend and Fastify for backend were chosen, because they are state of the art, commonly used and well documented. We chose Fastify over Express because it is more modern and will continue to grow
+
+ 2 pts - **Major: Implement real-time features using WebSockets or similar technology.**
+ - for Chats we need Websockets and real-time updates
+
+ 2 pts - **Major: Allow users to interact with other users.**
+ - that is the base for chats
+
+ 2 pts - **Major: A public API to interact with the database with a secured API key, rate limiting, documentation, and at least 5 endpoints:**
+ - by having a public API other applications can use our data to display
+
+ 2 pts - **Major: Standard user management and authentication.**
+ - our app hold user specific data that only the user themself should be able to edit, so a login is neccessary
+
+ 1 pt - **Minor: Use an ORM for the database.**
+ - our data is intertwined so an ORM made the most sense
+
+ 1 pt - **Minor: A complete notification system for all creation, update, and deletion actions**
+ - for changing a profile page or adding a friend, a notification elevates the user experience
+
+ 1 pt - **Minor: Custom-made design system**
+ - we wanted a cohesive design and the frontend team developed wireframes and components early on to work with lateron
+
+ 1 pt - **Minor: Support for additional browsers.**
+ - we want our app to be used by a wide variety of students with different needs
+
+ 1 pt - **Minor: Implement remote authentication with OAuth 2.0 (Google, Github, 42, etc.)**
+ - our app is used only inside 42, so an authentication for 42 students is neccessary
+
+ 1 pt - **Minor: Implement advanced search functionality with filters, sorting, and pagination.**
+ - with many search results filtering and sorting enhances the user experience
+
+= 16 pts
+
 ## Individual Contributions
 
-- [x]  2 Punkte - **Major: Use a framework for both the frontend and backend.**
-    - [x]  Use a frontend framework (React, Vue, Angular, Svelte, etc.).
-    - [x]  Use a backend framework (Express, NestJS, Django, Flask, Ruby on Rails,
+- **Major: Use a framework for both the frontend and backend.**
+    - **anschmit & nrauh**: Use a frontend framework (React, Vue, Angular, Svelte, etc.). 
+    - **pbohme & junruh**: Use a backend framework (Express, NestJS, Django, Flask, Ruby on Rails,
     etc.).
 
-!image.png
 
-- [ ]  2 Punkte (Jake) - **Implement real-time features using WebSockets or similar technology.**
-    - [ ]  Real-time updates across clients. → Frontend
-    - [x]  Handle connection/disconnection gracefully.
-    - [ ]  Efficient message broadcasting → Frontend
 
-!image.png
+- **Major: Implement real-time features using WebSockets or similar technology.**
+    - **junruh & nrauh**: Real-time updates across clients. → Frontend
+    - **junruh**: Handle connection/disconnection gracefully.
+    - **junruh & nrauh**: Efficient message broadcasting → Frontend
 
-- [ ]  2 Punkte - **Major: Allow users to interact with other users. The minimum requirements are:**
-    - [ ]  A basic chat system (send/receive messages between users). (Jake)
-        - [ ]  Anzeige im Frontend fehlt (man kann nur user anklicken → kein chat oeffnet sich) (Natatlie, Jake)
-    - [ ]  A profile system (view user information).
-        - [ ]  Bugfixing: Rank 0 und coalition null (Natalie)
-        - [ ]  und “Rank: Fulgens” (Natalie)
-    - [ ]  A friends system (add/remove friends, see friends list) (Hannah & Anna)
-        - [ ]  add friend button (Anna & Hannah)
 
-!image.png
 
-- [x]  2 Punkte (Pia) - **Major: A public API to interact with the database with a secured API key, rate
-limiting, documentation, and at least 5 endpoints:**
-    - [x]  GET /api/{something}
-    - [x]  POST /api/{something}
-    - [x]  PUT /api/{something}
-    - [x]  DELETE /api/{something}
-        - [x]  umbauen!! (PIA)
+- **Major: Allow users to interact with other users. The minimum requirements are:**
+    - **junruh**: A basic chat system (send/receive messages between users).
+    - **nrauh & junruh**: A profile system (view user information).
+    - **anschmit & hreusing**: A friends system (add/remove friends, see friends list)
 
-!image.png
 
-- [x]  1 Punkt - **Minor**: **Use an ORM for the database.**
-    - [x]  Prisma ist ein ORM (Hannah
+- **Major: A public API to interact with the database with a secured API key, rate limiting, documentation, and at least 5 endpoints:**
+    - **pbohme**:
+	- GET /api/{something}
+    - POST /api/{something}
+    - PUT /api/{something}
+    - DELETE /api/{something}
 
-!image.png
 
-- [x]  1 Punkt - **Minor: A complete notification system for all creation, update, and deletion ac-
-tions**
-    - [x]  Anna
+- **Minor: Use an ORM for the database.**
+    - hreusing
 
-!image.png
 
-- [x]  1 Punkt (Natalie & Anna) - **Minor: Custom-made design system**
-    - [x]  with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components).
 
-!image.png
+- **Minor: A complete notification system for all creation, update, and deletion actions**
+    - anschmit
 
-- [ ]  1 Punkt - **Minor: Support for additional browsers.**
-    - [ ]  muss getestet werden: (PIA)
-    - [ ]  Full compatibility with at least 2 additional browsers (Firefox, Safari, Edge,
-    etc.).
-    - [ ]  Test and fix all features in each browser.
-    - [ ]  Document any browser-specific limitations.
-    - [ ]  Consistent UI/UX across all supported browsers
+
+
+- **Minor: Custom-made design system**
+    - **nrauh & anschmit**: with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components).
+
+
+
+- **Minor: Support for additional browsers.**
+	- **pbohme**:
+    - Full compatibility with at least 2 additional browsers (Firefox, Safari, Edge, etc.).
+    - Test and fix all features in each browser.
+    - Document any browser-specific limitations.
+    - Consistent UI/UX across all supported browsers
     
-    !image.png
     
-- [ ]  2 Punkte - **Major: Standard user management and authentication.**
-    - [ ]  Users can update their profile information.
-    - [x]  Users can upload an avatar (with a default avatar if none provided).
-    - [ ]  Users can add other users as friends and see their online status.
-    - [x]  Users have a profile page displaying their information
-        - [ ]  an sich alles angelegt, aber volle funktionsfaehigkeit noch nciht gegeben
-
-!image.png
-
-- [x]  1 Punkt - Minor: Implement remote authentication with OAuth 2.0 (Google, Github, 42, etc.)
-    - [x]  42 (Hannah)
-
-!image.png
-
-## Unsure if we have it:
-
-- [ ]  1 Punkt
-    - [ ]  welche file types gehen ? verscheidene image files, aber keine txt files ?
-    - [ ]  progress indicator? einfach zu implementieren?
     
-    !image.png
-    
-- [x]  1 Punkt: Implement advanced search functionality (Hannah)
-    - [ ]  bietet sich fuer projectmatching an (filtern nach rank etc → endpoints sind alle da, fehlt eigentlich nur filter button)
+- **Major: Standard user management and authentication.**
+    - **nrauh & junruh**: Users can update their profile information.
+    - **nrauh & junruh**: Users can upload an avatar (with a default avatar if none provided).
+    - **hreusing & anschmit**: Users can add other users as friends and see their online status.
+    - **nrauh**: Users have a profile page displaying their information
 
-!image.png
 
-## Possible for more points:
+- **Minor: Implement remote authentication with OAuth 2.0 (Google, Github, 42, etc.)**
+    - hreusing
 
-- [ ]  (1 Punkt)
+- **Minor: Implement advanced search functionality with filters, sorting, and pagination.**
+    - hreusing & pbohme
 
-!image.png
 
-- [ ]  
-
-# Andere Requirements
-
-- [x]  The project must be a web application, and requires a frontend, backend, and a
-database.
-- [x]  Git must be used with clear and meaningful commit messages. The repository must
-show:
-◦ Commits from all team members.
-◦ Clear commit messages describing the changes.
-◦ Proper work distribution across the team
-- [x]  Deployment must use a containerization solution (Docker, Podman, or equiva-
-lent)
-    - [x]  and run with a single command.
-- [x]  Your website must be compatible with the latest stable version of Google Chrome.
-- [ ]  No warnings or errors should appear in the browser console.
-    - [ ]  offen lassen → erst am ende alles testen!
-- [ ]  The project must include accessible Privacy Policy and Terms of Service pages
-with relevant content (JAKE)
-    - [ ]  Privacy Policy and Terms of Service: These pages will be verified
-    during evaluation. They must:
-    • Be easily accessible from the application (e.g., footer links).
-    • Contain relevant and appropriate content for your project.
-    • Not be placeholder or empty pages.
-    Missing or inadequate Privacy Policy/Terms of Service pages will
-    result in project rejection
-- [ ]  Multi-user Support (Mandatory): Your website must support multiple
-users simultaneously. This is a core requirement of the project.
-Users should be able to interact with the application at the same
-time without conflicts or performance issues. This includes:
-• Multiple users can be logged in and active at the same time.
-• Concurrent actions by different users are handled properly.
-• Real-time updates are reflected across all connected users when
-applicable.
-• No data corruption or race conditions occur with simultaneous
-user actions
-    - [ ]  muessen wir an dem eval tag einrichten (HANNAH)
-    - [ ]  im API project aendern (PIA)
-- [x]  A frontend that is clear, responsive, and accessible across all devices.
-- [x]  Use a CSS framework or styling solution of your choice (e.g., Tailwind CSS,
-Bootstrap, Material-UI, Styled Components, etc.).
-- [x]  Store credentials (API keys, environment variables, etc.) in a local .env file that is
-ignored by Git, and provide an .env.example file.
-- [x]  The database must have a clear schema and well-defined relations.
-- [x]  Your application must have a basic user management system. Users must be
-able to sign up and log in securely: (Hannah)
-◦ At minimum: email and password authentication with proper security (hashed
-passwords, salted, etc.).
-◦ Additional authentication methods (OAuth, 2FA, etc.) can be implemented
-via modules.
-- [x]  All forms and user inputs must be properly validated in both the frontend and
-backend.
-- [ ]  For the backend, HTTPS must be used everywhere. NUR mit dieser .env!
-    
-    ```jsx
-    FT_ID="u-s4t2ud-64c36487b0814f57872132c861cfa15ad40974008abc06885d36fbe03d67f84e"
-    FT_SECRET="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"
-    FT_REDIRECT_URI=https://localhost:8443/api/auth/42/callback
-    DATABASE_URL=postgresql://pguser:1234@postgres:5432/postgres
-    ```
-    
-- [ ]  README (Hannah)
-
-- [x]  frontend must be responsive
-- [ ]  .env.example file muessen wir providen
-- [ ]  
-
+#### Challenges
+- time pressure at the end
+- frontend vs. backend distribution makes sense, but not in every case. Sometimes a feature based distribution may have made working more efficiently
+- keep regular meetings and vacations
+- room capacities at 42berlin
