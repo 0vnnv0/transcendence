@@ -1,4 +1,3 @@
-import Navbar from '../components/ui/Navbar/Navbar';
 import ProjectCard from '../components/ui/Cards/ProjectCard';
 import { useAuthorize } from '../hooks/useAuth';
 import { useProjects } from '../hooks/useProjects';
@@ -6,6 +5,7 @@ import CardSection from '../components/sections/CardSection';
 import { getProjectImage } from '../utils/projectImages';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
+import PageLayout from './PageLayout';
 
 function Projects() {
 	// const { userName, userRank, newCore } = useAuthorize();
@@ -47,14 +47,7 @@ function Projects() {
 
 
 	return (
-		<section
-			className="flex min-h-screen bg-cover bg-center bg-no-repeat bg-background-neutral"
-     	>
-            <div className="md:w-70 flex-none">
-                <Navbar />
-            </div>
-
-            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">	
+		<PageLayout>
 				<div className="top-6 w-full flex md:hidden justify-between gap-4">
 					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
 					<SearchBar />
@@ -67,8 +60,7 @@ function Projects() {
 						{content}
 					</CardSection.Body>
 				</CardSection>
-			</div>
-	</section>
+		</PageLayout>
   );
 }
 

@@ -1,4 +1,3 @@
-import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
 import { useParams } from 'react-router-dom';
 import Button from '../components/ui/Button/Button'
@@ -16,6 +15,7 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import InfoCard from '../components/ui/Cards/InfoCard'
 import SearchBar from '../components/ui/Search/Search';
+import PageLayout from './PageLayout';
 
 function OtherProfile() {
     const { username } = useParams<{ username: string }>();
@@ -219,16 +219,9 @@ function OtherProfile() {
     }
 
     return (
-        <section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-            <div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
-            <div className="md:w-70 flex-none">
-                <Navbar />
-            </div>
-
-            <div className="z-10 flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
+        <PageLayout>
                 {mainContent}
-            </div>
-        </section>
+        </PageLayout>
     );
 }
 

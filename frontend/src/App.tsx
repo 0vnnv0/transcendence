@@ -13,8 +13,8 @@ import SearchResultsPage from './pages/SearchResultsPage'
 // import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
 import { Toaster } from 'react-hot-toast'
 import NotFound from './pages/NotFound'
-import TermsOfService from './pages/TermsOfService'
-import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfService from './pages/LegalPages/TermsOfService'
+import PrivacyPolicy from './pages/LegalPages/PrivacyPolicy'
 
 // function App() {
 //   return (
