@@ -23,7 +23,7 @@ export const useChatMessages = (chatId: number, userId: number | null, socket: S
     if (!socket) return;
 
     const handleNewMessage = (newMessage: ChatMessage) => {
-      if (newMessage.chatId !== chatId) return;
+		if (Number(newMessage.chatId) !== Number(chatId)) return; //junruh: added typecasting so this doesnt silently fail
 
       queryClient.setQueryData<LoadMessagesResponse>(queryKey, (oldData) => {
         if (!oldData) return oldData;
@@ -74,7 +74,7 @@ export const useStartChat = () => {
 export const useRecentChats = (userId: number) => {
     return useQuery({
         queryKey: ['recentChats', userId],
-        queryFn: () => fetchRecentChats(userId),
+        queryFn: () => fetchRecentChats(),
         enabled: !!userId, 
     });
 };
