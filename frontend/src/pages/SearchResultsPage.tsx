@@ -76,8 +76,6 @@ function SearchResultsPage() {
 							tags={[result.type]}
                             image={result.avatarUrl}
                             route={result.url}
-                            username={result.title}
-                            isOnline={result.isOnline}
                         />
                     );
                 }
@@ -104,7 +102,7 @@ function SearchResultsPage() {
 	return (
 		<PageLayout>
 				
-				<div className="flex flex-col flex-1 p-10 gap-10">
+				<div className="flex flex-col flex-1 gap-10">
 					<h1 className="text-title text-black">
 						Search Results
 					</h1>

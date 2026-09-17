@@ -16,7 +16,7 @@ function PageLayout({ children }: PageLayoutProps) {
 			<div className="md:w-56 xl:w-70 flex-none z-10">
 				<Navbar />
 			</div>
-			<div className="flex flex-col items-between">
+			<div className="flex flex-col items-between w-full">
 				<div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
 					{children}
 				</div>

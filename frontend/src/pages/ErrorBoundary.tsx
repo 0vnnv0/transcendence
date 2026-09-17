@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import PageLayout from './PageLayout';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -22,10 +23,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
-          <h1 className="text-4xl font-bold text-slate-800">Something went wrong</h1>
-          <p className="mt-4 text-slate-600">Please try refreshing the page.</p>
-        </div>
+		<PageLayout>
+			<div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
+				<h1 className="text-title">Something went wrong</h1>
+				<p className="text-subtitle my-4">Please try refreshing the page.</p>
+			</div>
+		</PageLayout>
       );
     }
     return this.props.children;
