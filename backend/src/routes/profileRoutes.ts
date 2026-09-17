@@ -225,7 +225,7 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 		return response.code(403).send({error: "you can't delete another Users account."})
 
 	try {
-		const updatedUser = await prisma.user.delete({
+		const updatedUser = await prisma.testUser.delete({
 		  where: { id: Number(userId) },
 		});
 
@@ -373,7 +373,7 @@ async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>
 			Bucket: process.env.AWS_S3_BUCKET_NAME,
 			Key: s3Key,
 		}));
-		deleteOldPfp(request, prisma, userId, avatarUrl);
+		await deleteOldPfp(request, prisma, userId, avatarUrl);
 		await prisma.testUser.update({
 			where: { id: userId },
 			data: { customAvatar: avatarUrl }

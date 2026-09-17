@@ -19,8 +19,6 @@ function MyProfile() {
 	const { data: currentProject, isLoading: currentProjectLoading, isError: currentProjectError } = useNextProject(userKey);
 	const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
-	console.log("Profile: ", profile)
-
 	return (
 		<PageLayout>
 			{isLoading && <p className="text-subtitle text-purple">Loading ...</p>}

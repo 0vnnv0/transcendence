@@ -13,11 +13,11 @@ export const useChatMessages = (chatId: number, userId: number | null, socket: S
   const queryClient = useQueryClient();
   const queryKey = ['chat', chatId, 'messages'];
 
-  const queryInfo = useQuery({
-    queryKey,
-    queryFn: () => fetchChatHistory(chatId, userId!),
-    enabled: !!chatId && !!userId, 
-  });
+	const queryInfo = useQuery<LoadMessagesResponse, Error>({
+		queryKey,
+		queryFn: () => fetchChatHistory(chatId, userId!),
+		enabled: !!chatId && !!userId, 
+	});
 
   useEffect(() => {
     if (!socket) return;

@@ -10,6 +10,7 @@ import { profileRoutes } from "./routes/profileRoutes.js";
 import { userRoutes } from "./routes/userRoutes.js";
 import { PrismaClient } from "@prisma/client";
 import { projectRoutes } from "./routes/projectRoutes.js";
+import { apiRoutes } from "./api/apiRoutes.js";
 
 
 // 1. Prisma Adapter Setup (wie im Guide)
@@ -25,7 +26,7 @@ async function start() {
 	// 2. Die Route aus dem Guide für Fastify adaptieren
     app.get("/", async (request, reply) => {
         try {
-            const userCount = await prisma.user.count();
+            const userCount = await prisma.testUser.count();
             
             const message = userCount === 0
                 ? "No users have been added yet."
@@ -58,6 +59,7 @@ async function start() {
 	app.register(profileRoutes, {prisma});
 	await userRoutes(app, prisma);
 	await projectRoutes(app);
+	await apiRoutes(app, prisma);
 	try {
 		await app.listen({
 			port: 3000,

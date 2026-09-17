@@ -16,6 +16,7 @@ const ChatWindow: React.FC = () => {
         return <div className="text-purple">Loading user...</div>;
     }
     const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
+	const otherUser = data?.participants.find(u => u.id !== currentUserId);
 
     const handleSendMessage = (content: string) => {
         if (!socket) return;
@@ -57,8 +58,8 @@ const ChatWindow: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-gray-900 w-full">
-            <ChatHeader chatId={parsedChatId} />
+        <div className="flex flex-col h-screen bg-purple/50 w-full">
+            <ChatHeader otherUser={otherUser} isLoading={isLoading} />
 
             {mainContent}
 

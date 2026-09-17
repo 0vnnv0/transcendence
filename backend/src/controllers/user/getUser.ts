@@ -18,27 +18,23 @@ export function getUser(prisma: PrismaClient) {
 
         const currentUserId = (request.user as any)?.id;
 
-        const [mainUser, testUser] = await Promise.all([
-            prisma.user.findUnique({ 
-				where: { intraName: login },
-				include: { availability: true }
-			}),
-            prisma.testUser.findUnique({ 
-				where: { login },
-				include: { availability: true } 
-			})
-        ]);
+        // const testUser = await Promise.all([
+            const testUser = await prisma.testUser.findUnique(
+				{ where: { login: login },
+				include: { availability: true } }
+			)
+        // ]);
 
-        if (!mainUser && !testUser) {
+        if (!testUser) {
             return reply.status(404).send({
-                error: "User not found"
+                error: `User with login '${login}' not found`
             });
         }
 
         let friendshipStatus = 'NONE';
         let friendshipId: number | null = null;
 
-		const targetUserId = mainUser?.id ?? testUser?.id;
+		const targetUserId = testUser?.id;
 
         if (currentUserId && targetUserId) {
             const result = await friendService.getFriendshipStatusWith(
@@ -49,13 +45,23 @@ export function getUser(prisma: PrismaClient) {
             friendshipId = result.friendshipId;
         }
 
-        const baseData = mainUser ?? testUser;
-
+		console.log("AVATAR URL: ", testUser.avatarUrl);
         return reply.send({
-            ...baseData,
-            intraName: mainUser?.intraName ?? testUser?.login,
-            avatarUrl: testUser?.avatarUrl ?? mainUser?.avatarUrl ?? null,
-			customAvatar: testUser?.customAvatar ?? mainUser?.customAvatar ?? null,
+			...testUser,
+            id: testUser.id,
+            login: testUser.login,
+            intraName: testUser.login,
+            intraEmail: testUser.intraEmail,
+            firstName: testUser.firstName,
+            lastName: testUser.lastName,
+            avatarUrl: testUser.avatarUrl,
+            campusId: testUser.campusId,
+            campusName: testUser.campusName,
+            currentRank: testUser.currentRank,
+            isOnline: testUser.isOnline,
+            coalitionName: testUser.coalitionName,
+            completedProjects: testUser.completedProjects,
+            activeProjects: testUser.activeProjects,
             friendship: {
                 status: friendshipStatus,
                 id: friendshipId,
