@@ -106,7 +106,9 @@ export function getMatches(prisma: PrismaClient) {
 			}
 		}
 
-		let users: any[] = await prisma.testUser.findMany();
+		let users: any[] = await prisma.testUser.findMany({
+			include: { availability: true },
+		});
 
 		//MATCHING LOGIK
 
