@@ -1,8 +1,7 @@
-import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { getProjectImage } from '../utils/projectImages';
-
+import PageLayout from './PageLayout.tsx';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFullSearch } from '../hooks/useGlobalSearch.ts';
@@ -77,8 +76,6 @@ function SearchResultsPage() {
 							tags={[result.type]}
                             image={result.avatarUrl}
                             route={result.url}
-                            username={result.title}
-                            isOnline={result.isOnline}
                         />
                     );
                 }
@@ -103,12 +100,9 @@ function SearchResultsPage() {
     const activeTagStyle = "bg-purple text-white border-purple";
 	const disabledTagStyle = "opacity-30 cursor-not-allowed bg-gray-100 border-gray-300 text-gray-400";
 	return (
-		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-				<div className="w-70 flex-none">
-					<Navbar />
-				</div>
+		<PageLayout>
 				
-				<div className="flex flex-col flex-1 p-10 gap-10">
+				<div className="flex flex-col flex-1 gap-10">
 					<h1 className="text-title text-black">
 						Search Results
 					</h1>
@@ -194,7 +188,7 @@ function SearchResultsPage() {
                     </div>
                 )}
 				</div>
-			</section>
+		</PageLayout>
     );
 }
 

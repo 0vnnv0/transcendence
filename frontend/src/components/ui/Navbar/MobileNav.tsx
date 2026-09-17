@@ -16,7 +16,6 @@ function MobileNav() {
 					<NavItem label="Profile" icon="profile" route="/myprofile" variant="mobile" />    
 				</ul>
 			</nav>
-			<Footer />
 		</div>
     )
 }

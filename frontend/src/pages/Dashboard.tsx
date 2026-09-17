@@ -1,9 +1,9 @@
-import Navbar from '../components/ui/Navbar/Navbar'
 import CardSection from '../components/sections/CardSection'
 import ProjectCard from '../components/ui/Cards/ProjectCard'
 import { useAuth } from '../components/context/AuthContext';
 import { useNextProject, useRecommendedProjects } from '../hooks/useProjects';
 import { getProjectImage } from '../utils/projectImages';
+import PageLayout from './PageLayout';
 import Button from '../components/ui/Button/Button';
 import SearchBar from '../components/ui/Search/Search';
 
@@ -101,32 +101,26 @@ function Dashboard() {
     }
 
 return (
-        <section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-            <div className="md:w-70 flex-none">
-                <Navbar />
-            </div>
-            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
-				<div className="top-6 w-full flex md:hidden justify-between gap-4">
-					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
-					<SearchBar />
-				</div>
-                <h1 className="text-title">
-                    Hello again, {userName}!
-                </h1>
+	<PageLayout>
+		<div className="top-6 w-full flex md:hidden justify-between gap-4">
+			<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
+			<SearchBar />
+		</div>
+		<h1 className="text-title">
+			Hello again, {userName}!
+		</h1>
 
-                <CardSection title="Your next project available">
-                    <CardSection.Body viewMode="list">
-                        {nextProjectContent}
-                    </CardSection.Body>
-                </CardSection>
-                <CardSection title="Recommended next projects">
-                    <CardSection.Body viewMode="grid">
-                        {recommendedContent}
-                    </CardSection.Body>
-                </CardSection>
-            </div>
-        </section>
-    )
-}
+		<CardSection title="Your next project available">
+			<CardSection.Body viewMode="list">
+				{nextProjectContent}
+			</CardSection.Body>
+		</CardSection>
+		<CardSection title="Recommended next projects">
+			<CardSection.Body viewMode="grid">
+				{recommendedContent}
+			</CardSection.Body>
+		</CardSection>
+	</PageLayout>
+)}
 
 export default Dashboard
