@@ -1,4 +1,4 @@
-import Navbar from '../components/ui/Navbar/Navbar'
+import PageLayout from './PageLayout';
 import { useFriends, useFriendRequests, useAcceptFriend, useRemoveFriend } from '../hooks/useFriends';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
@@ -70,33 +70,25 @@ function Friends() {
     }
 
     return (
-		<section
-			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
-			style={{ backgroundColor: "white" }} 
-     	>
-            <div className="md:w-70 flex-none">
-                <Navbar />
-            </div>
-            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
-				 <h1 className="text-title text-black">
-			 		 Your friend requests
-			 	 </h1>
-                <CardSection>
-                    <CardSection.Body viewMode="grid">
-                            {requestsContent}
-                    </CardSection.Body>
-                </CardSection>
-                <h1 className="text-title text-black">
-                    Your friends
-                </h1>
-                <CardSection>
-                    <CardSection.Body viewMode="grid">
-                            {content}
-                    </CardSection.Body>
-                </CardSection>
-			</div>
-	</section>
-  );
+		<PageLayout>
+				<h1 className="text-title text-black">
+					Your friend requests
+				</h1>
+			<CardSection>
+				<CardSection.Body viewMode="grid">
+						{requestsContent}
+				</CardSection.Body>
+			</CardSection>
+			<h1 className="text-title text-black">
+				Your friends
+			</h1>
+			<CardSection>
+				<CardSection.Body viewMode="grid">
+						{content}
+				</CardSection.Body>
+			</CardSection>
+		</PageLayout>
+  )
 }
 
 export default Friends

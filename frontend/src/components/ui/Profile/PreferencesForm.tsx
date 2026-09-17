@@ -88,9 +88,9 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 					<div className="p-6 bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow">
 						<form
 							onSubmit={handleSubmit(updateUserData)}
-							className="flex flex-row justify-between"
+							className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-between"
 						>
-							<div className="flex flex-row gap-6">
+							<div className="flex flex-col md:flex-row gap-2 justify-between">
 								<div>
 									<label className="text-black block text-xs font-medium mb-2">Days per week</label>
 									<Controller

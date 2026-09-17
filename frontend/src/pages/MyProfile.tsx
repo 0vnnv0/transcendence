@@ -1,7 +1,7 @@
 import { useAuth } from '../components/context/AuthContext'
 import { useUserProfile } from '../hooks/useUsers'
 import { useRecommendedProjects, useNextProject } from '../hooks/useProjects'
-import Navbar from '../components/ui/Navbar/Navbar'
+import PageLayout from './PageLayout' 
 import Button from '../components/ui/Button/Button'
 import CardSection from '../components/sections/CardSection'
 import AvatarUpload from '../components/ui/Profile/AvatarUpload'
@@ -22,16 +22,11 @@ function MyProfile() {
 	console.log("Profile: ", profile)
 
 	return (
-		<section className="relative bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#edc5ff] to-background-neutral" />
-            <div className="md:w-70 flex-none">
-                <Navbar />
-            </div>
-
+		<PageLayout>
 			{isLoading && <p className="text-subtitle text-purple">Loading ...</p>}
 			{isError && <p className="text-subtitle text-red-500">[404] Error trying to load current project</p>}
 
-            <div className="z-10 flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
+            {/* <div className="z-10 flex flex-col flex-1 w-full p-5 md:p-10 gap-10"> */}
 				<div className="top-6 w-full flex md:hidden justify-between gap-4">
 					<div className="flex gap-4">
 						<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
@@ -92,8 +87,8 @@ function MyProfile() {
 						</CardSection.Body>
 					</CardSection>
 				)}
-			</div>
-		</section>
+			{/* </div> */}
+		</PageLayout>
 	)
 }
 

@@ -3,7 +3,7 @@ import type { FC } from 'react';
 
 const Footer: FC = () => {
   return (
-    <footer className="flex items-center gap-4 bg-transparent justify-center">
+    <footer className="flex items-center gap-4 bg-transparent justify-center pb-6 pt-2">
       <Link
         to="/terms-and-conditions"
         className="text-footer text-gray-500"

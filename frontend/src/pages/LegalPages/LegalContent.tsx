@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import Navbar from '../components/ui/Navbar/Navbar';
+import PageLayout from '../PageLayout';
 
 interface Section {
   heading: string;
@@ -15,12 +15,9 @@ interface LegalContentProps {
 
 const LegalContent: FC<LegalContentProps> = ({ title, lastUpdated, sections }) => {
   return (
-	<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-		<div className="md:w-70 flex-none">
-			<Navbar />
-		</div>
-		<div className="mx-auto px-8 py-8">
-			<h1 className="text-title">{title}</h1>
+	<PageLayout>
+		<div className="mx-auto">
+			<h1 className="text-title mb-2">{title}</h1>
 			<p className="text-paragraph-bold italic text-neutral-500">
 				Last Updated: {lastUpdated}
 			</p>
@@ -45,7 +42,7 @@ const LegalContent: FC<LegalContentProps> = ({ title, lastUpdated, sections }) =
 				</section>
 			))}
 		</div>
-	</section>
+	</PageLayout>
   );
 };
 
