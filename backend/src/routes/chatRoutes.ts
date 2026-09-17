@@ -6,11 +6,11 @@ import { isInChat } from "../sockets/chat.js";
 
 export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 {
-	fastify.get('/chats', async (request, response) => 
+	fastify.get('/chats', { onRequest: [fastify.authenticate] }, async (request, response) => 
 		loadChats(fastify, prisma, request, response));
-	fastify.get('/chat/:chatId', async (request, response) =>
+	fastify.get('/chat/:chatId', { onRequest: [fastify.authenticate] }, async (request, response) =>
 		loadMessages(fastify, prisma, request, response));
-	fastify.post('/chats', async (request, response) =>
+	fastify.post('/chats', { onRequest: [fastify.authenticate] }, async (request, response) =>
         createChat(fastify, prisma, request, response));
 }
 
@@ -19,10 +19,9 @@ export async function chatRoutes(fastify: FastifyInstance, prisma: PrismaClient)
 //returns null for this property when we get to the end
 async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
 {
-	const { userId } = request.query as { userId?: number };
-	if (!userId) {
-		return response.code(400).send({ error: "Missing userId query parameter" });
-	}
+	const userId = (request.user as { id: number }).id;
+	if (!userId)
+		return response.code(401).send({ error: "Unauthorized access." });
 
 	const { chatId } = request.params as { chatId: number };
 	const { cursorId: rawCursorId } = request.query as { cursorId?: string };
@@ -88,17 +87,15 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 //return values include the db colums that the chat owns plus user data plus the last message in that chat for preview
 async function loadChats(fastify: FastifyInstance, prisma: PrismaClient, request: FastifyRequest, response: FastifyReply)
 {
-	//only need this next bit until JWT is implemented: const userId = request.user.id;
-	const { userId } = request.query as { userId?: string };
-	if (!userId) {
-		return response.code(400).send({ error: "Missing userId query parameter" });
-	}
+	const userId = (request.user as { id: number }).id;
+	if (!userId)
+		return response.code(401).send({ error: "Unauthorized access." });
 
 	try {
 		const userChats = await prisma.chat.findMany({
 			where: {
 				users: {
-					some: { id: Number(userId) }
+					some: { id: userId }
 				}
 			},
 			orderBy: {
@@ -113,7 +110,7 @@ async function loadChats(fastify: FastifyInstance, prisma: PrismaClient, request
 			}
 		});
 
-		return userChats;
+		return response.send(userChats);
 	} catch (error) {
 		fastify.log.error(error);
 		return response.code(500).send({ error: "Failed to load chats." });
@@ -164,9 +161,6 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         
     } catch (error) {
         fastify.log.error(error);
-        return response.code(500).send({
-    		error: "Failed to create chat.",
-			details: error instanceof Error ? error.message : String(error),
-    });
+        return response.code(500).send({ error: "Failed to create chat." });
     }
 }

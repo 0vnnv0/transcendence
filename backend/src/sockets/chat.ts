@@ -6,13 +6,13 @@ import { Server } from "socket.io";
 import { Socket } from "socket.io";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../serverSetup.js";
 
 interface JwtPayload {
     id: number;
     username?: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET!;
 
 //this sets up all socket events needed for chatting
 export function setupChatSockets(io: Server, prisma: PrismaClient) {
@@ -20,12 +20,15 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 
 	io.use(async (socket: Socket, next) => {
         try {
-            const token =
+            let token =
                 socket.handshake.auth?.token ||
                 socket.handshake.headers?.authorization?.split(" ")[1];
             if (!token) {
                 return next(new Error("Authentication error: Token missing"));
             }
+			if (token.startsWith("Bearer ")) {
+				token = token.substring(7);
+			}
             const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
             if (!decoded?.id) {
@@ -34,6 +37,7 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
             socket.data.userId = Number(decoded.id);
             next();
         } catch (err) {
+			console.error("❌ Socket JWT Verification Error:", err);
             return next(new Error("Authentication error: Unauthorized"));
         }
     });
@@ -53,6 +57,10 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
 			typingSignal(chatId, socket, prisma));
 		socket.on("disconnect", () => 
 			userDisconnect(onlineUsers, socket, io));
+		socket.on("join_chat_room", ({ chatId }) => {
+			socket.join(`chat_${Number(chatId)}`);
+			console.log(`Socket ${socket.id} joined room chat_${chatId}`);
+		});
 	});
 }
 
@@ -182,51 +190,129 @@ async function userLeaveChat(
 }
 
 //this registers a message to be sent, saves it to the db and emits it to the designated chat id
+// async function sendMessage (
+// 	chatId: number, 
+// 	content: String,
+// 	socket: Socket,
+//     prisma: PrismaClient,
+// 	io: Server
+// ) {
+// 	try {
+// 		const senderId = socket.data.userId;
+
+// 		if (!senderId) {
+// 			console.log("NO SENDER ID");
+// 			return;
+// 		}
+// 		if (!(await isInChat(senderId, chatId, prisma))) return;
+// 		if (!content || !String(content).trim()) return;
+
+// 		const message = await prisma.chatMessage.create({
+// 			data: {
+// 				chatId: Number(chatId),
+// 				senderId: Number(senderId),
+// 				content: String(content)
+// 			},
+// 			include: {
+// 				sender: {
+// 					select: {
+// 						id: true,
+// 						login: true,
+// 					},
+// 				},
+// 			},
+// 		});
+// 		await prisma.chat.update({
+// 			where: { id: Number(chatId) },
+// 			data: { updatedAt: new Date() }
+// 		});
+// 		console.log(`Sending message to chat_${chatId}`);
+// 		//io.to(`chat_${chatId}`).emit("new_message", message);
+// 		io.to(`chat_${chatId}`).emit("new_message", {
+// 			...message,
+// 			sender: {
+// 				id: message.sender.id,
+// 				intraName: message.sender.login,
+// 				avatarUrl: (message.sender as any).avatarUrl ?? undefined
+// 			}
+// 		});
+// 	}
+// 	catch (err) {
+// 		console.error(err);
+// 		socket.emit("error_occurred", {
+// 			message: "Could not send Message."
+// 		});
+// 	}
+// }
+
 async function sendMessage (
-	chatId: number, 
-	content: String,
-	socket: Socket,
+    chatId: number, 
+    content: String,
+    socket: Socket,
     prisma: PrismaClient,
-	io: Server
+    io: Server
 ) {
-	try {
-		const senderId = socket.data.userId;
+    try {
+        console.log("➡️ [SOCKET] send_message received:", { chatId, content });
 
-		if (!senderId) {
-			console.log("NO SENDER ID");
-			return;
-		}
-		if (!(await isInChat(senderId, chatId, prisma))) return;
-		if (!content || !String(content).trim()) return;
+        const senderId = socket.data.userId;
+        console.log("➡️ [SOCKET] senderId from socket.data:", senderId);
 
-		const message = await prisma.chatMessage.create({
-			data: {
-				chatId: Number(chatId),
-				senderId: Number(senderId),
-				content: String(content)
-			},
-			include: {
-				sender: {
-					select: {
-						id: true,
-						login: true,
-					},
-				},
-			},
-		});
-		await prisma.chat.update({
-			where: { id: Number(chatId) },
-			data: { updatedAt: new Date() }
-		});
-		console.log(`Sending message to chat_${chatId}`);
-		io.to(`chat_${chatId}`).emit("new_message", message);
-	}
-	catch (err) {
-		console.error(err);
-		socket.emit("error_occurred", {
-			message: "Could not send Message."
-		});
-	}
+        if (!senderId) {
+            socket.emit("error_occurred", { message: "Unauthorized socket session" });
+            return;
+        }
+
+        const userInChat = await isInChat(senderId, chatId, prisma);
+        console.log(`➡️ [SOCKET] Is user ${senderId} in chat ${chatId}?`, userInChat);
+
+        if (!userInChat) {
+            socket.emit("error_occurred", { message: "You are not in this chat" });
+            return;
+        }
+
+        if (!content || !String(content).trim()) {
+            return;
+        }
+
+        const message = await prisma.chatMessage.create({
+            data: {
+                chatId: Number(chatId),
+                senderId: Number(senderId),
+                content: String(content)
+            },
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        login: true,
+                    },
+                },
+            },
+        });
+
+        await prisma.chat.update({
+            where: { id: Number(chatId) },
+            data: { updatedAt: new Date() }
+        });
+
+        // Broadcast with intraName formatting
+        const formattedMessage = {
+            ...message,
+            sender: {
+                id: message.sender.id,
+                intraName: message.sender.login,
+                avatarUrl: undefined
+            }
+        };
+
+        io.to(`chat_${chatId}`).emit("new_message", formattedMessage);
+    }
+    catch (err) {
+        socket.emit("error_occurred", {
+            message: "Could not send Message."
+        });
+    }
 }
 
 //emits a typing event to the other participants so that can be displayed but it really doesnt have to be there

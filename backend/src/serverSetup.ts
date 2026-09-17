@@ -10,10 +10,17 @@ import { authRoutes } from "./routes/authRoutes.js";
 import { searchRoutes } from "./routes/searchRoutes.js"
 import { friendRoutes } from "./routes/friendRoutes.js";
 
+
+
 // Plugin Json Web Token, damit User eingeloggt bleibt
 import fastifyJwt from "@fastify/jwt";
 
-//all statements logged in the consule
+//universal declaration of JWT_SECRET so we dont end up using different secrets in different parts of the project
+import dotenv from 'dotenv';
+dotenv.config();
+export const JWT_SECRET = process.env.JWT_SECRET || 'super-geheimes-passwort-fuer-den-cluster'
+
+//all statements logged in the console
 const fastify = Fastify({
 	logger: true,
 });
@@ -31,7 +38,7 @@ async function buildServer() {
 	});
 
 	await fastify.register(fastifyJwt, {
-		secret: process.env.JWT_SECRET || 'super-geheimes-passwort-fuer-den-cluster'
+		secret: JWT_SECRET
 		});
 
 	fastify.decorate('authenticate', async (request, reply) => {
