@@ -15,7 +15,7 @@ export const useChatMessages = (chatId: number, userId: number | null, socket: S
 
 	const queryInfo = useQuery<LoadMessagesResponse, Error>({
 		queryKey,
-		queryFn: () => fetchChatHistory(chatId, userId!),
+		queryFn: () => fetchChatHistory(chatId),
 		enabled: !!chatId && !!userId, 
 	});
 

@@ -13,6 +13,7 @@ import type { ChatPreview } from '../types/chat';
 //   return response.json();
 // };
 
+//junruh: changed fetch call to send jwt token with request, otherwise we cant authenticate
 export const fetchChatHistory = async (chatId: number): Promise<LoadMessagesResponse> => {
 	const token = localStorage.getItem('token');
   
@@ -31,12 +32,16 @@ export const fetchChatHistory = async (chatId: number): Promise<LoadMessagesResp
 	return response.json();
   };
 
+//junruh: also added authentication here
 export const createNewChat = async (currentUserId: number, targetUserId: number): Promise<CreateChatResponse> => {
-console.log("Sende an Backend - currentUserId:", currentUserId, "targetUserId:", targetUserId);	
-const response = await fetch('/api/chats', {
+	console.log("Sende an Backend - currentUserId:", currentUserId, "targetUserId:", targetUserId);	
+	const token = localStorage.getItem('token');
+
+	const response = await fetch('/api/chats', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+			'Authorization': token ? `Bearer ${token}` : '', 
         },
         body: JSON.stringify({ currentUserId: currentUserId, targetUserId: targetUserId }),
     });

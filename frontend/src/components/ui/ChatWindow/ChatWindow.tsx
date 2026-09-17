@@ -15,28 +15,24 @@ const ChatWindow: React.FC = () => {
     
     const { userId: currentUserId } = useAuth(); 
 
-	//junruh: manually joining sockets in case of new chats
+	//junruh: manually joining sockets in case of new chats & attaching token dynamically to socket auth payload
 	useEffect(() => {
 		if (!socket) return;
 	  
 		const token = localStorage.getItem('token');
-
-		// Attach token dynamically to socket auth payload
 		socket.auth = {
 			token: token ? `Bearer ${token}` : ''
 		};
-		// 1. Force connection if disconnected
 		if (!socket.connected) {
 		  console.log("🔌 Attempting socket connection...");
 		  socket.connect();
 		}
 	  
-		// 2. Join the chat room for live updates
 		if (parsedChatId) {
 		  socket.emit('join_chat_room', { chatId: parsedChatId });
 		}
 	  
-		// Debug listeners
+		// debug listeners
 		const onConnect = () => console.log("✅ Socket connected successfully! ID:", socket.id);
 		const onConnectError = (err: Error) => console.error("❌ Socket connection error:", err.message);
 	  
@@ -65,7 +61,6 @@ const ChatWindow: React.FC = () => {
 			return;
 		}
 
-		// If socket disconnected, try connecting and then emit
 		if (!socket.connected) {
 			console.warn("Socket was disconnected. Reconnecting...");
 			socket.connect();

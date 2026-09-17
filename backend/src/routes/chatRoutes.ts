@@ -124,13 +124,17 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         currentUserId: number; 
         targetUserId: number; 
     };
+	const userId = (request.user as { id: number }).id;
+	console.log("userid: " + userId + "current: " + currentUserId);
+	
+	if (!userId  || userId !== currentUserId)
+		return response.code(401).send({ error: "Unauthorized access." });
 
     if (!currentUserId || !targetUserId) {
         return response.code(400).send({ error: "Missing currentUserId or targetUserId in body" });
     }
 
     try {
-        // 1. Check if a chat between these exact two users already exists
         const existingChat = await prisma.chat.findFirst({
             where: {
                 AND: [
@@ -141,11 +145,9 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         });
 
         if (existingChat) {
-            // Return existing chat ID so frontend can redirect there
             return { chatId: existingChat.id };
         }
 
-        // 2. Create a new chat connecting both users
         const newChat = await prisma.chat.create({
             data: {
                 users: {
