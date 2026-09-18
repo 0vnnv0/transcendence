@@ -41,9 +41,6 @@ function MyProfile() {
 						<h1 className="text-title">{userName}</h1>
 						<p className="text-subtitle mb-2 lg:mb-4">{profile?.firstName && profile?.firstName} {profile?.lastName && profile.lastName}</p>
 						<div className="flex gap-2">
-							{userName === profile?.login && (
-								<Button size="md" icon="message">Message</Button>
-							)}
 							<Button
 								size="md"
 								variant="secondary"

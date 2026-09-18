@@ -2,6 +2,7 @@ export interface ChatUser {
 	id: number;
 	intraName: string;
 	avatarUrl?: string;
+	customAvatar?: string;
 }
 
 export interface ChatMessage {
