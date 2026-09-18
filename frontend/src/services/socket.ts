@@ -20,3 +20,13 @@ export const socket = io(window.location.origin, {
 	autoConnect: false,
 	transports: ['websocket', 'polling'],
 });
+
+// export const socket = io(window.location.origin, {
+// 	path: '/api/socket.io', 
+// 	auth: (callback) => {
+// 		const token = localStorage.getItem('token');
+// 		callback({ token: token ? `Bearer ${token}` : '' });
+// 	},
+// 	autoConnect: false,
+// 	transports: ['websocket', 'polling'],
+// });

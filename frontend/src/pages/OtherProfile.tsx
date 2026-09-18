@@ -12,6 +12,9 @@ import TagList from '../components/ui/TagList/TagList';
 import { formatAvailability } from '../utils/formatAvailability';
 import type { TagData } from '../components/ui/TagList/TagList';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { socket } from '../services/socket';
 import { toast } from 'react-hot-toast';
 import InfoCard from '../components/ui/Cards/InfoCard'
 import SearchBar from '../components/ui/Search/Search';
@@ -21,6 +24,23 @@ function OtherProfile() {
     const { username } = useParams<{ username: string }>();
     const userKey = (username && username !== "Guest") ? username : null;
     const { userId: currentUserId } = useAuth();
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        const refreshFriendshipStatus = () => {
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+        };
+
+        socket.on('friend_request_received', refreshFriendshipStatus);
+        socket.on('friend_request_accepted', refreshFriendshipStatus);
+        socket.on('friendship_removed', refreshFriendshipStatus);
+
+        return () => {
+            socket.off('friend_request_received', refreshFriendshipStatus);
+            socket.off('friend_request_accepted', refreshFriendshipStatus);
+            socket.off('friendship_removed', refreshFriendshipStatus);
+        };
+    }, [queryClient]);
 
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();

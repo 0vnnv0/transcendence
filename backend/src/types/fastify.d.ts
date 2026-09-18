@@ -19,6 +19,9 @@ declare module 'fastify' {
   interface FastifyInstance {
 	authenticate: onRequestHookHandler;
   }
+   	interface FastifyInstance {
+        friendService: FriendService;
+    }
 }
 
 //this adds it to the jwt module
