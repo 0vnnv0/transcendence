@@ -46,10 +46,10 @@ const ChatWindow: React.FC = () => {
 	  }, [socket, parsedChatId]);
 	//end of junruh
 
+    const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
     if (!currentUserId) {
         return <div className="text-purple">Loading user...</div>;
     }
-    const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
 	const otherUser = data?.participants.find(u => u.id !== currentUserId);
 
 	//junruh: added debug statements and reconnect

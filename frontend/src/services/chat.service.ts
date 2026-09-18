@@ -77,5 +77,9 @@ export const fetchRecentChats = async (): Promise<ChatPreview[]> => {
     if (!response.ok) {
         throw new Error('Fehler beim Laden der letzten Chats');
     }
-    return response.json();
+    const data = await response.json();
+    return data.map((chat: any) => ({
+        ...chat,
+        users: chat.users.map((u: any) => ({ ...u, intraName: u.login })),
+    }));
 };

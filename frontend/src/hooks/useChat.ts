@@ -52,7 +52,6 @@ export const useStartChat = () => {
     mutationFn: (data: { currentUserId: number; targetUserId: number }) => 
       createNewChat(data.currentUserId, data.targetUserId),
     
-    
     onSuccess: (response) => {
       toast.success('Chat created successfully');  
       

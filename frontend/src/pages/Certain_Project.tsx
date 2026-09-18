@@ -1,5 +1,5 @@
 
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import projectsData from '../data/projects.json';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
@@ -11,6 +11,7 @@ import { useProjectFilters } from '../store/useProjectFilters';
 import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
 import { getProjectImage } from '../utils/projectImages';
 import { formatProjectName } from '../utils/formatProjectName';
+import { useStartChat } from '../hooks/useChat';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
 import PageLayout from './PageLayout';
@@ -18,7 +19,9 @@ import PageLayout from './PageLayout';
 function Certain_Project() {
 
 	const { id } = useParams<{ id: string }>();
-	const { userName } = useAuth();
+	const { userName, userId: currentUserId } = useAuth();
+	const { mutate: startChat } = useStartChat();
+
 	const project = projectsData.find(p => p.slug === id);
 	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
 	const { viewMode, days: selectedDays } = useProjectFilters();
@@ -52,37 +55,9 @@ function Certain_Project() {
 				avatarUrl={user.customAvatar as string || user.avatarUrl as string}
 				ctaText="Contact"
 				tags={userTags}
+				onCtaClick={() => currentUserId && startChat({ currentUserId, targetUserId: user.id })}
 			/>)
 	});
-
-	// const availableUsers = mockUsers?.filter(user => 
-	// 	user.activeProjects?.some(p => p?.status === "searching_a_group"))
-	// 	.filter(user => {
-	// 		// no days selected -> don't filter by availability, show everyone
-	// 		if (selectedDays.length === 0) return true;
-	// 		// otherwise: u			<div className="top-6 w-full">
-	//			<SearchBar />
-	//		</div>ser must be free on at least one of the selected days
-	// 		return user.preferredDays.some(day => selectedDays.includes(day));
-	// 	})
-	// 	.map(user => {
-	// 		const days = formatAvailability(user?.preferredDays);
-	// 		const userTags: TagData[] = [
-	// 			{ icon: 'trophy', description: `Rank ${user?.currentRank}` },
-	// 			{ icon: 'clock', description: days },
-	// 		];
-
-	// 		return (
-	// 			<UserCard
-	// 				key={user.id}
-	// 				username={user.login}
-	// 				layout={layout}
-	// 				image={user.avatarUrl as string}
-	// 				ctaText="Contact"
-	// 				tags={userTags}
-	// 			/>
-	// 		);
-	// });
 
 	if (!project) {
 		return <div className="p-10 text-white text-2xl">Project not found!</div>;

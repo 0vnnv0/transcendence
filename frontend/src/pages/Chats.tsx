@@ -7,12 +7,11 @@ function Chats() {
 	
 		<section
 			className="flex min-h-screen bg-cover bg-center bg-no-repeat"
-			style={{ backgroundColor: "white" }}
 		>
-            <div className="md:w-70 flex-none">
+            <div className="md:w-56 xl:w-70 flex-none">
                 <Navbar />
             </div>
-            <div className="flex flex-col flex-1 w-full p-5 md:p-10 gap-10">
+            <div className="flex flex-col flex-1 w-full gap-10">
 				<ChatWindow />
 			</div>
 

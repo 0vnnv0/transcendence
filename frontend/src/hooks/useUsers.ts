@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchActiveUsersByProject, updateUserProfile } from '../services/user.service';
 import { toast } from 'react-hot-toast';
 import { uploadAvatarRequest } from '../services/user.service';
+import normalizeProfile from '../utils/normalizeUserData';
 
 export function useUserProfile(login: string | null) {
   return useQuery({
@@ -12,6 +13,7 @@ export function useUserProfile(login: string | null) {
     queryFn: () => fetchUserProfile(login!),
     enabled: !!login,
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes (prevents endless network calls)
+	select: normalizeProfile,
   });
 }
 
