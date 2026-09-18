@@ -8,7 +8,7 @@ import type { TagData } from '../components/ui/TagList/TagList';
 import { useActiveUsersByProject } from '../hooks/useUsers';
 import { useAuth } from '../components/context/AuthContext';
 import { useProjectFilters } from '../store/useProjectFilters';
-import { formatAvailability, isFullyAvailable } from '../utils/formatAvailability';
+import { formatAvailability } from '../utils/formatAvailability';
 import { getProjectImage } from '../utils/projectImages';
 import { formatProjectName } from '../utils/formatProjectName';
 import { useStartChat } from '../hooks/useChat';
@@ -36,11 +36,9 @@ function Certain_Project() {
 
 		const availableUsers = activeUsers?.filter(user => {
 			if (selectedDays.length === 0) return true;
-			if (isFullyAvailable(user?.availability?.preferredDays)) return true;
 			return user?.availability?.preferredDays?.some(day => selectedDays.includes(day)) ?? false;
 		})
 		.map(user => {
-			console.log("User", user)
 			const days = formatAvailability(user?.availability?.preferredDays);
 			const userTags: TagData[] = [
 				{ icon: 'trophy', description: `Rank ${user?.currentRank}` },

@@ -70,6 +70,7 @@ export function useActiveUsersByProject(username: string | null, projectName: st
 		queryFn: () => fetchActiveUsersByProject(username!, projectName),
 		enabled: !!username, // don't fire the request at all when there's no real user
 		retry: false,
+		select: (users) => users.map(normalizeProfile),
 	});
 }
 
