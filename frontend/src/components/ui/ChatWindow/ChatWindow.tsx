@@ -12,9 +12,16 @@ import { useEffect } from 'react'; //junruh
 const ChatWindow: React.FC = () => {
     const { chatId } = useParams<{ chatId: string }>();
     const parsedChatId = parseInt(chatId || '0', 10);
-    
     const { userId: currentUserId } = useAuth(); 
-
+	//junruh: for infinite scroll:
+	const { 
+		data, 
+		isLoading, 
+		isError, 
+		fetchNextPage, 
+		hasNextPage, 
+		isFetchingNextPage 
+	} = useChatMessages(parsedChatId, currentUserId, socket);
 	//junruh: manually joining sockets in case of new chats & attaching token dynamically to socket auth payload
 	useEffect(() => {
 		if (!socket) return;
@@ -44,13 +51,20 @@ const ChatWindow: React.FC = () => {
 		  socket.off('connect_error', onConnectError);
 		};
 	  }, [socket, parsedChatId]);
-	//end of junruh
+	//end of sockets
 
-    const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
+    // const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
     if (!currentUserId) {
         return <div className="text-purple">Loading user...</div>;
     }
-	const otherUser = data?.participants.find(u => u.id !== currentUserId);
+	
+	//junruh: handle pagination stuff, sorting, extracting participants
+	const allMessages = data?.pages
+    ? [...data.pages].reverse().flatMap(page => page.messages)
+    : [];
+
+    const participants = data?.pages[0]?.participants ?? [];
+    const otherUser = participants.find(u => u.id !== currentUserId);
 
 	//junruh: added debug statements and reconnect
     const handleSendMessage = (content: string) => {
@@ -88,17 +102,20 @@ const ChatWindow: React.FC = () => {
                 Error loading chat history.
             </div>
         );
-    } else if (!data || data.messages.length === 0) {
+    } else if (allMessages.length === 0) {
         mainContent = (
             <div className="flex-1 flex justify-center items-center text-gray-500 font-kyiv">
                 No messages yet. Say hi!
             </div>
         );
-    } else {
+    } else { //junruh modified for pagination
         mainContent = (
             <MessageList 
-                messages={data.messages} 
-                currentUserId={currentUserId} 
+                messages={allMessages} 
+                currentUserId={currentUserId}
+                onLoadMore={() => fetchNextPage()}
+                hasMore={!!hasNextPage}
+                isLoadingMore={isFetchingNextPage}
             />
         );
     }
