@@ -3,7 +3,7 @@
 import { PrismaClient } from "@prisma/client";
 
 export async function syncToDatabase(prisma: PrismaClient, users: any[]) {
-	console.log("Syncing to DB...");
+	// console.log("Syncing to DB...");
 
 	const userIds = users.map(user => user.id);
 
@@ -41,5 +41,5 @@ export async function syncToDatabase(prisma: PrismaClient, users: any[]) {
 		});
 	}
 
-	console.log("DB sync done");
+	// console.log("DB sync done");
 }

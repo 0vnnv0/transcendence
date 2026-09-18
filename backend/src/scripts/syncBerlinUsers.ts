@@ -24,22 +24,26 @@ import { FortyTwoClient } from "../services/fortyTwoClient.js";
 dotenv.config();
 
 export async function syncBerlinUsers() {
-	const token = await getAccessToken();
-	const client = new FortyTwoClient(token);
-	const service = new FortyTwoService(client);
+		const token = await getAccessToken();
+		const client = new FortyTwoClient(token);
+		const service = new FortyTwoService(client);
 
-	const activeUsers = await fetchActiveUsers(service);
+		const activeUsers = await fetchActiveUsers(service);
 
-	const coalitionMap = await fetchCoalitions(service);
-	const rankMap = await fetchRanks(service, activeUsers);
-	const projectMap = await fetchProjects(service);
+		const coalitionMap = await fetchCoalitions(service);
+		const rankMap = await fetchRanks(service, activeUsers);
+		const projectMap = await fetchProjects(service);
 
-	const users = activeUsers
-		.map(u => buildUserBase(u, coalitionMap, rankMap, projectMap))
-		.filter(u => u !== null);
+		const users = activeUsers
+			.map(u => buildUserBase(u, coalitionMap, rankMap, projectMap))
+			.filter(u => u !== null);
+		console.log("\n\n👥 \x1b[1mBUILDING USERS...\x1b[0m")
 
-	await syncToDatabase(prisma, users);
-	console.log("\nDONEEEE");
+
+		await syncToDatabase(prisma, users);
+		console.log("\n\n💾 \x1b[1mSYNCHING TO DATABASE...\x1b[0m")
+
+		console.log("\n\n✅ \x1b[1;35mSYNC COMPLETED!\x1b[0m");
 }
 
 // syncBerlinUsers().catch(console.error);

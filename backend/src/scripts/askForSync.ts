@@ -40,11 +40,11 @@ export async function main() {
 
 
 	if (answer.toLowerCase() === "y") {
-		console.log("\nStarting sync...\n");
+		console.log("\n\x1b[1;35mStarting sync...\x1b[0m\n");
 
 		await syncBerlinUsers();
 
-		console.log("\nSync finished.");
+		// console.log("\nSync finished.");
 	} else {
 		console.log("\nSkipping sync.");
 	}
