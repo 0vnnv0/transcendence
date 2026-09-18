@@ -23,15 +23,15 @@ export class AuthService {
       (c: any) => c.cursus.slug === '42cursus' || c.cursus_id === 21
     );
 
-    let isNewCore = false;
-    try {
-      const client = new FortyTwoClient(accessToken);
-      const service = new FortyTwoService(client);
-      const newCoreUsers = await service.fetchQuestUsers(128);
-      isNewCore = newCoreUsers.some((entry: any) => entry.user.id === userData.id);
-    } catch (error) {
-      console.error("Error fetching newCore status:", error);
-    }
+    // let isNewCore = false;
+    // try {
+    //   const client = new FortyTwoClient(accessToken);
+    //   const service = new FortyTwoService(client);
+    // //   const newCoreUsers = await service.fetchQuestUsers(128);
+    // //   isNewCore = newCoreUsers.some((entry: any) => entry.user.id === userData.id);
+    // } catch (error) {
+    //   console.error("Error fetching newCore status:", error);
+    // }
 
     return prisma.testUser.upsert({
       where: { login: userData.login },
@@ -50,7 +50,7 @@ export class AuthService {
         campusId: 51,
         campusName: "Berlin",
         currentRank: Math.floor(mainCursus?.level || userData.level || 0),
-        newCore: isNewCore,
+        // newCore: isNewCore,
         isOnline: true,
 		}
 	});

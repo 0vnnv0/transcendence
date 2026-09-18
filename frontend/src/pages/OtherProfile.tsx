@@ -189,7 +189,7 @@ function OtherProfile() {
                     </CardSection.Body>
                 </CardSection>
 
-                {currentProject && (
+                {/* {currentProject && (
                     <CardSection title="Current projects">
                         <CardSection.Body viewMode="grid" columns={2}>
                             <ProjectsList
@@ -200,7 +200,24 @@ function OtherProfile() {
                             />
                         </CardSection.Body>
                     </CardSection>
-                )}
+                )} */}
+
+				{currentProject?.status === "completed" ? (
+					<p className="text-subtitle text-green-500">
+						All group projects completed!
+					</p>
+				) : currentProject ? (
+					<CardSection title="Current projects">
+						<CardSection.Body viewMode="grid" columns={2}>
+							<ProjectsList
+								data={currentProject}
+								isLoading={currentProjectLoading}
+								isError={currentProjectError}
+								label="current project"
+							/>
+						</CardSection.Body>
+					</CardSection>
+				) : null}
 
                 {recProjects?.projects.length !== 0 && (
                     <CardSection title="Recommended next projects">
