@@ -63,13 +63,42 @@ Notion was used for Documentation.
 
 ## Technical Stack
 
-Frontend: React, Tailwind
+Frontend: React + Vite
+
+- Delivers an extremely fast development and build pipeline (Vite) combined with a component-based UI library (React) that enables a reactive and seamless user experience.
+
 Backend: Fastify
-Database: Prostgresql used with Prisma --> WHY used because of relational database capabilities
 
-Libraries:
+- A high-performance, low-overhead Node.js web framework featuring built-in schema validation (JSON Schema) and native TypeScript support.
 
-Justification
+Database: PostgreSQL + Prisma ORM
+
+- PostgreSQL was selected as a robust relational database capable of managing complex data relationships (e.g., users, friendships, chat histories). Prisma serves as a type-safe ORM to execute database queries efficiently and securely without writing raw SQL.
+
+#### Libraries & Justifications
+
+jsonwebtoken (JWT) & bcrypt
+
+- Used for secure, stateless authentication and authorization. bcrypt securely hashes user passwords before storing them in the database, while JWT generates tamper-proof tokens to authorize API requests.
+
+socket.io
+
+- Enables low-latency, bidirectional real-time communication between client and server. Essential for live features such as instant friend request updates, real-time chat, and online status indicators.
+
+axios
+
+- A reliable HTTP client for the browser that offers automatic JSON data transformation, global request/response interceptors (e.g., automatically attaching JWT bearer tokens), and cleaner error handling compared to the native fetch API.
+
+dotenv
+
+- Enforces the separation of code and configuration (12-Factor App methodology). Allows secure management of environment variables (such as database credentials, API keys, and JWT secrets) stored in a .env file outside the source code.
+
+aws-sdk (AWS)
+
+- Provides integration with AWS cloud services—primarily cloud storage solutions like AWS S3 for uploading, storing, and serving user media assets (e.g., profile avatars) scalably and securely.
+
+tailwindcss
+- A utility-first CSS framework for rapid, responsive UI development. It eliminates CSS bloat, accelerates styling directly within components, and enforces a consistent design system.
 
 ## Database Schema
 This is your Prisma schema file
