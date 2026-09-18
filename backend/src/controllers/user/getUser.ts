@@ -45,7 +45,6 @@ export function getUser(prisma: PrismaClient) {
             friendshipId = result.friendshipId;
         }
 
-		console.log("AVATAR URL: ", testUser.avatarUrl);
         return reply.send({
 			...testUser,
             id: testUser.id,

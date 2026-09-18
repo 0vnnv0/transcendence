@@ -10,99 +10,150 @@ import prisma from "../lib/prisma.js";
 
 const fastify = Fastify({ logger: true });
 
-
 export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) => {
-	const { email, password } = request.body as {email?: string, password?: string};
-	if (!email || !password) {
-		return reply.status(400).send({
-			error: 'Bad Request',
-			message: 'E-Mail and Password need to be filled in.'
-		});
-	}
-	//password rules
-	if (password.length < 6) {
-		return reply.code(400).send({
-			error: "Bad Request",
-			message: "Password needs to be at least 6 characters long."
-    	});
-  	}
+    const { email, password } = request.body as { email?: string; password?: string };
+    if (!email || !password) {
+        return reply.status(400).send({
+            error: 'Bad Request',
+            message: 'E-Mail and Password need to be filled in.'
+        });
+    }
 
-	try {
-		const existingUser = await prisma.loggedUser.findUnique({
-			where: { email }
-		});
-		if (existingUser) {
-			return reply.code(400).send({
-			error: "Bad Request",
-			message: "Email already exists, please log in."
-    	});
-		}
-		// secure hashed password
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const newUser = await prisma.loggedUser.create({
-			data: {
-				email,
-				password: hashedPassword
-			},
-			select: { id: true, email: true, createdAt: true}
-		});
-		reply.code(201); 
-		return {
-			message: "Registration successful!",
-			loggedUser: newUser
-		};
-	} catch (error) {
-		request.log.error(error);
-		return reply.code(500).send({ error: "Internal Server Error "});
-	}
+    if (password.length < 6) {
+        return reply.code(400).send({
+            error: "Bad Request",
+            message: "Password needs to be at least 6 characters long."
+        });
+    }
+
+    if (!email.endsWith('@student.42berlin.de')) {
+        return reply.code(400).send({
+            error: "Bad Request",
+            message: "Please use a valid 42 Berlin email address ending with @student.42berlin.de."
+        });
+    }
+
+    const username = email.split('@')[0];
+
+    try {
+        const existingTestUser = await prisma.testUser.findUnique({
+            where: { login: username }
+        });
+
+        if (!existingTestUser) {
+            return reply.code(400).send({
+                error: "Bad Request",
+                message: "No 42 Berlin student account found for this username. Please use your 42 credentials/email."
+            });
+        }
+
+        const existingUser = await prisma.loggedUser.findUnique({
+            where: { email }
+        });
+
+        if (existingUser) {
+            return reply.code(400).send({
+                error: "Bad Request",
+                message: "Email already exists, please log in."
+            });
+        }
+
+        // Secure hashed password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await prisma.loggedUser.create({
+            data: {
+                email,
+                password: hashedPassword
+            },
+            select: { id: true, email: true, createdAt: true }
+        });
+
+        const testUser = await prisma.testUser.update({
+            where: { login: username },
+            data: { isOnline: true }
+        });
+
+        const token = request.server.jwt.sign({
+            id: testUser.id,
+            intraName: testUser.login,
+        }, { expiresIn: '1d' });
+
+        return reply.code(201).send({
+            message: "Registration successful!",
+            token: token,
+            access_token: token,
+            loggedUser: { id: testUser.id, email: newUser.email }
+        });
+    } catch (error) {
+        request.log.error(error);
+        return reply.code(500).send({ error: "Internal Server Error" });
+    }
 };
 
 export const loginUser = async (request: FastifyRequest, reply: FastifyReply) => {
-	const { email, password } = request.body as {email?: string, password?: string};
-	if (!email || !password) {
-		return reply.status(400).send({
-			error: 'Bad Request',
-			message: 'E-Mail and Password need to be filled in.'
-		});
-	}
+    const { email, password } = request.body as { email?: string; password?: string };
+    if (!email || !password) {
+        return reply.status(400).send({
+            error: 'Bad Request',
+            message: 'E-Mail and Password need to be filled in.'
+        });
+    }
 
-	try {
-		const user = await prisma.loggedUser.findUnique({
-			where: { email }
-		});
-		if (!user) {
-			return reply.code(401).send({
-				error: "Unauthorized",
-				message: "Account does not exist. Try with another e-mail or sign up."
-			});
-		}
+    try {
+        const user = await prisma.loggedUser.findUnique({
+            where: { email }
+        });
+        if (!user) {
+            return reply.code(401).send({
+                error: "Unauthorized",
+                message: "Account does not exist. Try with another e-mail or sign up."
+            });
+        }
 
-		const passwordIsValid = await bcrypt.compare(password, user.password);
-		if (!passwordIsValid) {
-			return reply.code(401).send({
-				error: "Unauthorized",
-				message: "Wrong password. Try again."
-			});
-		}
+        const passwordIsValid = await bcrypt.compare(password, user.password);
+        if (!passwordIsValid) {
+            return reply.code(401).send({
+                error: "Unauthorized",
+                message: "Wrong password. Try again."
+            });
+        }
 
-		const token = request.server.jwt.sign({
-			id: user.id,
-			email: user.email,
-		}, { expiresIn: '1d'});
+        const username = user.email.split('@')[0];
 
-		return reply.send({
-			message: 'Login successful',
-			access_token: token,
-			loggedUser: { id: user.id, email: user.email }
-		});
-	} catch (error) {
-		fastify.log.error(error);
-		return reply.status(500).send({
-			error: 'Internal Server Errror',
-			message: 'Internal Error'
-		});
-	}
+        const testUser = await prisma.testUser.findUnique({
+            where: { login: username }
+        });
 
+        if (!testUser) {
+            return reply.code(400).send({
+                error: "Bad Request",
+                message: "No associated 42 student account found for this user."
+            });
+        }
+
+        // Status auf online setzen
+        await prisma.testUser.update({
+            where: { id: testUser.id },
+            data: { isOnline: true }
+        });
+
+        const token = request.server.jwt.sign({
+            id: testUser.id,
+            intraName: testUser.login,
+        }, { expiresIn: '1d' });
+
+        return reply.send({
+            message: 'Login successful',
+            access_token: token,
+            loggedUser: { id: testUser.id, email: user.email }
+        });
+    } catch (error) {
+        fastify.log.error(error);
+        return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: 'Internal Error'
+        });
+    }
 };
 
 export const logoutUser = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -157,7 +208,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     const token = request.server.jwt.sign({ 
       id: user.id, 
       intraName: user.login,
-      newCore: user.isNewCore,
+    //   newCore: user.isNewCore,
       isOnline: user.isOnline
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
