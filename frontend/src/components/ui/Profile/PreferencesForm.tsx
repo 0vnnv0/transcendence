@@ -35,7 +35,7 @@ const LOCATION_OPTIONS = [
 ];
 
 function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
-	const { handleSubmit, control, reset, formState: { errors } } = useForm<ProfileFormValues>({
+	const { handleSubmit, control, formState: { errors } } = useForm<ProfileFormValues>({
 		defaultValues: { days: [], location: 'campus' },
 	});
 
@@ -43,24 +43,6 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-	// Sync form with server data once it arrives — Controller's defaultValue
-	// only applies on first mount, so this is what actually populates the fields
-	// once the profile query resolves.
-	useEffect(() => {
-		if (!profile) return;
-			reset({
-				days: profile.availability?.preferredDays?.length
-					? profile.availability.preferredDays   // <-- use saved data if it exists
-					: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"], // <-- fallback only if empty/missing
-				location: profile.availability?.isRemote ? 'remote' : 'campus',
-			});
-	}, [profile, reset]);
-
-	// No saved days yet -> treat as "no data", form starts active/editable.
-	const hasSavedData = (profile?.availability?.preferredDays?.length ?? 0) > 0;
-	// Disabled only in "view mode": not currently editing AND there's already
-	// saved data to show. If nothing's saved, it's always active.
 
 	const updateUserData = (formData: ProfileFormValues) => {
 		mutate(
@@ -82,7 +64,7 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 
 	return (
 		<>
-			{(!hasSavedData || isEditing) ? (
+			{(isEditing) ? (
 				<div>
 					<h2 className="text-lead mb-2">Your availability</h2>
 					<div className="p-6 bg-white rounded-3xl shadow-sm hover:shadow-md transition-shadow">
@@ -90,7 +72,7 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 							onSubmit={handleSubmit(updateUserData)}
 							className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-between"
 						>
-							<div className="flex flex-col md:flex-row gap-2 justify-between">
+							<div className="flex flex-col md:flex-row gap-2 lg:gap-6 justify-between">
 								<div>
 									<label className="text-black block text-xs font-medium mb-2">Days per week</label>
 									<Controller
@@ -144,15 +126,9 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 					>Edit</Button>
 					<CardSection title="User Info">
 						<CardSection.Body viewMode="grid" columns="none">
-							{profile?.availability?.preferredDays &&
-								<InfoCard icon="flame" title="Weekdays" description={formatAvailability(profile?.availability?.preferredDays)} />
-							}
-							{profile?.availability?.workDaysPerWeek &&
-								<InfoCard icon="calendar" title="Days per week" description={profile?.availability?.workDaysPerWeek as unknown as string} />
-							}
+							<InfoCard icon="flame" title="Weekdays" description={formatAvailability(profile?.availability?.preferredDays)} />
+							<InfoCard icon="calendar" title="Days per week" description={String(profile?.availability?.workDaysPerWeek)} />
 							<InfoCard icon="home" title="Location" description={profile?.availability?.isRemote ? 'Remote' : 'On Campus'} />
-							{/* <InfoCard icon="trophy" title="Rank" description={`${profile?.currentRank}`} /> */}
-							{/* <InfoCard icon="smiley" title="Coalition" description={`${profile?.coalitionName}`} /> */}
 						</CardSection.Body>
 					</CardSection>
 				</div>

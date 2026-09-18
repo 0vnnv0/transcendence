@@ -6,12 +6,8 @@ const DAY_LABELS: Record<Day, string> = {
   Mon: "Mon", Tue: "Tue", Wed: "Wed", Thurs: "Thu", Fri: "Fri", Sat: "Sat", Sun: "Sun",
 };
 
-export function isFullyAvailable(days: Day[] | undefined | null): boolean {
-	return !days || days.length === 0;
-}
-
 export function formatAvailability(days: Day[] | undefined | null): string {
-  if (!days || days.length === 0) return "Mon-Sun";
+  if (!days || days.length === 0) return "Mon-Fri";
 
   const indices = Array.from(new Set(days.map((d) => DAY_ORDER.indexOf(d)))).sort((a, b) => a - b);
 
