@@ -95,7 +95,7 @@ export function useLogoutLogic(): LogoutLogicResult {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/json'
           }
         });
       } catch (error) {
