@@ -2,6 +2,8 @@ import PageLayout from './PageLayout';
 import { useFriends, useFriendRequests, useAcceptFriend, useRemoveFriend } from '../hooks/useFriends';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
+import { useStartChat } from '../hooks/useChat';
+import { useAuth } from '../components/context/AuthContext';
 
 
 function Friends() {
@@ -9,6 +11,10 @@ function Friends() {
     const { data: requests, isLoading: isLoadingReq, isError: isErrorReq } = useFriendRequests();
     const { mutate: acceptFriend } = useAcceptFriend();
     const { mutate: removeFriend } = useRemoveFriend();
+	const { userId: currentUserId } = useAuth();
+	
+	const { mutate: startChat, isPending: isStartingChat } = useStartChat();
+	
 
     let requestsContent;
     if (isLoadingReq) {
@@ -61,10 +67,12 @@ function Friends() {
         					route={`/users/${friend.intraName}`}
                             username={friend.intraName}
 							ctaText="message"
+							onCtaClick={() => currentUserId && startChat({ currentUserId, targetUserId: friend.id })}
 							isOnline={friend.isOnline}
 							showStatus
 						/>
 					))}
+					{isStartingChat ? 'Starting...' : 'Message'}
                 </>
             );
         }

@@ -65,8 +65,8 @@ function OtherProfile() {
     } else {
         const friendship = profile.friendship;
         const friendshipStatus = localStatus ?? friendship?.status;
-        const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
-        const effectiveReceiverId = friendship?.receiverId;
+        // const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
+        // const effectiveReceiverId = friendship?.receiverId;
 
         let friendActionButton;
 
@@ -74,7 +74,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => removeFriend(profile.id, {
                         onSuccess: () => setLocalStatus(null)
@@ -94,7 +94,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => acceptFriend(profile.id, {
                         onSuccess: () => setLocalStatus('ACCEPTED')
@@ -108,7 +108,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
@@ -159,7 +159,6 @@ function OtherProfile() {
 								<Button
 									size="md"
 									variant="secondary"
-									icon="message"
 									href={profile.intraUrl}
 									externalLink
 								>
