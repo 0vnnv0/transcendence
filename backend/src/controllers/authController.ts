@@ -131,12 +131,6 @@ export const loginUser = async (request: FastifyRequest, reply: FastifyReply) =>
             });
         }
 
-        // Status auf online setzen
-        await prisma.testUser.update({
-            where: { id: testUser.id },
-            data: { isOnline: true }
-        });
-
         const token = request.server.jwt.sign({
             id: testUser.id,
             intraName: testUser.login,
