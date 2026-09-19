@@ -92,7 +92,7 @@ function SearchResultsPage() {
 								layout="portrait"
 								title={result.title}
 								tags={['USER']}
-								image={result.avatarUrl}
+								image={result.custumAvatar || result.avatarUrl}
 								route={result.url}
 							/>
 						);

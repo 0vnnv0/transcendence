@@ -63,7 +63,7 @@ function Friends() {
                             key={request.intraName}
                             layout="portrait"
                             title={request.intraName}
-                            avatarUrl={request.avatarUrl}
+                            avatarUrl={request.custumAvatar || request.avatarUrl}
                             route={`/users/${request.intraName}`} 
                             username={request.intraName}
                             isOnline={request.isOnline}
@@ -94,7 +94,7 @@ function Friends() {
                             key={friend.intraName}
                             layout="portrait"
                             title={friend.intraName}
-							avatarUrl={friend.avatarUrl}
+							avatarUrl={friend.custumAvatar || friend.avatarUrl}
         					route={`/users/${friend.intraName}`}
                             username={friend.intraName}
 							ctaText="message"
