@@ -77,7 +77,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => removeFriend(profile.id, {
                     })}
@@ -96,7 +96,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => acceptFriend(profile.id, {
                     })}
@@ -109,7 +109,7 @@ function OtherProfile() {
             friendActionButton = (
                 <Button
                     size="md"
-                    icon="message"
+                    icon="smiley"
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
@@ -159,7 +159,6 @@ function OtherProfile() {
 								<Button
 									size="md"
 									variant="secondary"
-									icon="message"
 									href={profile.intraUrl}
 									externalLink
 								>
