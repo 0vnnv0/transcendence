@@ -63,7 +63,8 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 			id: u.id,
 			intraName: u.login,
 			avatarUrl: u.avatarUrl ?? undefined,
-			isOnline: u.isOnline
+			isOnline: u.isOnline,
+			customAvatar: u.customAvatar
 		}));
 
 		return {
@@ -73,7 +74,8 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 					id: m.sender.id,
 					intraName: m.sender.login,
 					avatarUrl: m.sender.avatarUrl ?? undefined,
-					isOnline: m.sender.isOnline
+					isOnline: m.sender.isOnline,
+					customAvatar: m.sender.customAvatar
 				}
 			})),
 			nextCursor,
