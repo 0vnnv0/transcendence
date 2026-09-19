@@ -42,17 +42,17 @@ export function App() {
       <Toaster position="top-center" />
 
       <Routes>
-		{/* <Route element={<PublicRoute />}> */}
+		<Route element={<PublicRoute />}>
            <Route path="/" element={<Login />} />
            <Route path="/authorize" element={<Authorize />} />
-        {/* </Route>
-		<Route element={<ProtectedRoute />}> */}
+        </Route>
+		<Route element={<ProtectedRoute />}>
 			<Route path="/" element={<Login />} />
 			<Route path="/authorize" element={<Authorize />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/projects" element={<Projects />} />
 			<Route path="/myprofile" element={<MyProfile />} />
-			{/* <Route path="/chats" element={<Chats />} /> */}
+			<Route path="/chats" element={<Chats />} />
 			<Route path="/project/:id" element={<Certain_Project />} />
 			<Route path="/chat/:chatId" element={<Chats />} />
 			<Route path="/friends" element={<Friends />} />
@@ -62,7 +62,7 @@ export function App() {
 			<Route path="/terms-and-conditions" element={<TermsOfService />} />
 			<Route path="/privacy-policy" element={<PrivacyPolicy />} />
 			<Route path="*" element={<NotFound />} />
-		{/* </Route> */}
+		</Route>
       </Routes>
     </>
   );

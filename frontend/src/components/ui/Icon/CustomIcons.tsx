@@ -121,6 +121,11 @@ const Profile = ({ size = 16, color = 'black', className = '', ...props }: IconP
 	</svg>
 );
 
+const Plus = ({ size = 16, color = 'black', className = '', ...props }: IconProps) => (
+	<svg width={size} height={size} className={`${colors[color]} ${className}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M15.8365 12L8.16346 12M12 15.8366V8.16353M19.125 12C19.125 15.935 15.935 19.125 12 19.125C8.06497 19.125 4.875 15.935 4.875 12C4.875 8.06497 8.06497 4.875 12 4.875C15.935 4.875 19.125 8.06497 19.125 12Z" stroke="currentColor" stroke-linecap="round"/>
+	</svg>
+);
 
 
 // This object acts as your master lookup dictionary
@@ -142,6 +147,7 @@ export const CustomIcons = {
   projects: Projects,
   chat: Chat,
   profile: Profile,
+  plus: Plus,
   // Add your remaining icons here...
 };
 
