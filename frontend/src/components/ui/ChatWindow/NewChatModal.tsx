@@ -15,8 +15,6 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
   onClose, 
   currentUserId 
 }) => {
-	// console.log("aktuelle auth userId:", currentUserId);
-
   const [inputValue, setInputValue] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 

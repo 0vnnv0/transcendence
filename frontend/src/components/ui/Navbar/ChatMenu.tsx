@@ -68,7 +68,7 @@ function ChatMenu() {
                 <li
                     key={chat.id}
                     onClick={() => navigate(`/chat/${chat.id}`)} 
-                    className="text-sm flex items-center gap-2 cursor-pointer hover:bg-gray-500/65 hover:rounded-md hover:scale-105 transition-all py-1"
+                    className="text-sm flex items-center gap-2 cursor-pointer hover:bg-gray-500/65 hover:rounded-lg hover:scale-105 transition-all p-1"
                 >
                     <div className="relative inline-block shrink-0">
                         <img 
