@@ -41,9 +41,6 @@ function MyProfile() {
 						<h1 className="text-title">{userName}</h1>
 						<p className="text-subtitle mb-2 lg:mb-4">{profile?.firstName && profile?.firstName} {profile?.lastName && profile.lastName}</p>
 						<div className="flex gap-2">
-							{userName === profile?.login && (
-								<Button size="md" icon="message">Message</Button>
-							)}
 							<Button
 								size="md"
 								variant="secondary"
@@ -60,7 +57,7 @@ function MyProfile() {
 					<p>No User Id found!</p> // or null, or a skeleton
 				)}
 
-				{currentProject && (
+				{/* {currentProject && (
 					<CardSection title="Current projects">
 						<CardSection.Body viewMode="grid" columns={2}>
 							<ProjectsList
@@ -71,7 +68,24 @@ function MyProfile() {
 							/>
 						</CardSection.Body>
 					</CardSection>
-				)}
+				)} */}
+
+				{currentProject?.status === "completed" ? (
+					<p className="text-subtitle text-green-500">
+						All group projects completed!
+					</p>
+				) : currentProject ? (
+					<CardSection title="Current projects">
+						<CardSection.Body viewMode="grid" columns={2}>
+							<ProjectsList
+								data={currentProject}
+								isLoading={currentProjectLoading}
+								isError={currentProjectError}
+								label="current project"
+							/>
+						</CardSection.Body>
+					</CardSection>
+				) : null}				
 
 				{recProjects?.projects.length !== 0 && (
 					<CardSection title="Recommended next projects">

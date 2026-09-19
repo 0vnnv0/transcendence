@@ -18,6 +18,13 @@ function Projects() {
 		content = <p className="text-subtitle text-purple">Loading projects...</p>
 	} else if (isError || !allProjects) {
 		content = <p className="text-subtitle text-red-500">[404] Error trying to load projects</p>
+	//pbohme
+	} else if (allProjects.status === "completed") {
+        content = (
+            <p className="text-subtitle text-green-500">
+                All group projects completed!
+            </p>
+        );	
 	} else {
 		const displayProjects = allProjects
 		.filter((project: any) => newCore ? project.newCore : project.oldCore)

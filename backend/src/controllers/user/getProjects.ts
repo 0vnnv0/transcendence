@@ -24,6 +24,17 @@ export function getProjects(prisma: PrismaClient) {
 			});
 		}
 
+		const done = user.completedProjects.length ?? 0;
+		const requiredGroupProjects = user.newCore ? 7 : 5;
+
+		if (done >= requiredGroupProjects) {
+			return reply.code(200).send({
+				status: "completed",
+				message: "All group projects completed.",
+				projects: [],
+			});
+		}
+
 		const available = getAvailableProjects(
 			user,
 			user.newCore ?? false

@@ -53,6 +53,7 @@ const ChatWindow: React.FC = () => {
 	  }, [socket, parsedChatId]);
 	//end of sockets
 
+    // const { data, isLoading, isError } = useChatMessages(parsedChatId, currentUserId, socket);
     if (!currentUserId) {
         return <div className="text-purple">Loading user...</div>;
     }

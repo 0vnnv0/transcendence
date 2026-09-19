@@ -34,8 +34,7 @@ const UserCard = ({
   onDecline,
 }: UserCardProps) => {
 
-  const isLandscape = layout === 'landscape';
-
+	const isLandscape = layout === 'landscape';
   return (
     <Link
 		to={`/users/${username}`}
