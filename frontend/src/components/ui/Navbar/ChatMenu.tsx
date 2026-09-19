@@ -17,12 +17,13 @@ function ChatMenu() {
     const { userId } = useAuth();
 
     const { data: recentChats, isLoading, isError } = useRecentChats(userId as number);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
         if (!socket) return;
 
         const handleNewMessage = (data: { chatId: number; updatedAt: string }) => {
-            useQueryClient.invalidateQueries({ queryKey: ['recentChats', userId] });
+            queryClient.invalidateQueries({ queryKey: ['recentChats', userId] });
         };
 
         socket.on('new_message', handleNewMessage);
@@ -30,7 +31,7 @@ function ChatMenu() {
         return () => {
             socket.off('new_message', handleNewMessage);
         };
-    }, [socket, useQueryClient, userId]);
+    }, [socket, queryClient, userId]);
 
     let chatIcon = "/chat_closed.svg";
     if (isChatsOpen) {
