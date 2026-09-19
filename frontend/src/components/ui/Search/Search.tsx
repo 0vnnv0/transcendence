@@ -37,7 +37,8 @@ const SearchBar: React.FC = () => {
     const handleResultClick = (url: string) => {
         setIsOpen(false);
         setSearchQuery(''); 
-        navigate(url);      
+		console.log("Url: ", url)
+        navigate(url);
 	}
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -19,8 +19,8 @@ function ProjectsList({ data, isLoading, isError, label }: ProjectsListProps) {
 
 	return (
 		<>
-			{data.projects.map((project: any) => (
-				<ProjectCard
+			{data.projects.map((project: any) => {
+				return <ProjectCard
 					key={project.id}
 					layout="portrait"
 					image={getProjectImage(project.slug)}
@@ -30,7 +30,7 @@ function ProjectsList({ data, isLoading, isError, label }: ProjectsListProps) {
 					route={`/project/${project.slug}`}
 					description={project.description}
 				/>
-			))}
+			})}
 		</>
 	);
 }
