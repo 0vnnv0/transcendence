@@ -22,7 +22,6 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
   }
 
   const res = await response.json() as Promise<FullUserProfile>;
-  console.log("Get user profile vom Server: ", res)
   return res;
 };
 
@@ -50,8 +49,7 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserP
   }
   
   const data = await response.json();
-  console.log("Gefundene Suchergebnisse:", data);
-  console.log("Raw Backend Response für", searchQuery, ":", data);
+
   const results = Array.isArray(data) ? data : (data.users || []);
   
   const users: FullUserProfile[] = results
@@ -148,21 +146,6 @@ export async function uploadToS3(
 		throw new Error(`S3 upload failed: ${res.status}`);
 	}
 }
-
-// export function getAvatarUrl(userId: number): string {
-// 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
-// 	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
-// }
-
-// export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
-// 	const presignedPost = await getUploadUrl(file.type);
-// 	console.log('presigned key: ', presignedPost.fields.key)
-// 	await uploadToS3(presignedPost, file);
-
-// 	const avatarUrl = getAvatarUrl(userId);
-// 	const result = await updateAvatarUrl(userId, avatarUrl)
-//   	return { avatarUrl: `${result.avatarUrl}?t=${Date.now()}` };
-// }
 
 export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 	const presignedPost = await getUploadUrl(file.type);

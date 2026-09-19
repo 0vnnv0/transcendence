@@ -129,7 +129,6 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			url: `/project/${(p.slug).toLowerCase()}`
 		}));
 
-		console.log("FORMATTEDUSERS: ", formattedUsers);
 		return reply.send([...formattedUsers, ...formattedProjects]);
 
 	} catch (error) {

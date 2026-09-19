@@ -37,7 +37,6 @@ const SearchBar: React.FC = () => {
     const handleResultClick = (url: string) => {
         setIsOpen(false);
         setSearchQuery(''); 
-		console.log("Url: ", url)
         navigate(url);
 	}
 
