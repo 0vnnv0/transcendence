@@ -43,21 +43,6 @@ function OtherProfile() {
 
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();
-
-    // Lokaler Status pro User-Key gemappt, damit das Umschalten bei Profilwechsel isoliert bleibt
-    const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
-    const localStatus = username ? localStatuses[username] : undefined;
-    const setLocalStatus = (status: string | null) => {
-        if (!username) return;
-        setLocalStatuses(prev => {
-            if (status === null) {
-                const next = { ...prev };
-                delete next[username];
-                return next;
-            }
-            return { ...prev, [username]: status };
-        });
-    };
    
     const { mutate: addFriend, isPending: isAddingFriend } = useAddFriend();
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
@@ -67,7 +52,7 @@ function OtherProfile() {
     const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
     let mainContent = null;
-    
+
     if (isLoading) {
         mainContent = (
             <div className="flex h-full items-center justify-center">
@@ -84,9 +69,7 @@ function OtherProfile() {
         );
     } else {
         const friendship = profile.friendship;
-        const friendshipStatus = localStatus ?? friendship?.status;
-        const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
-        const effectiveReceiverId = friendship?.receiverId;
+        const friendshipStatus = friendship?.status;
 
         let friendActionButton;
 
@@ -97,7 +80,6 @@ function OtherProfile() {
                     icon="message"
                     variant="secondary"
                     onClick={() => removeFriend(profile.id, {
-                        onSuccess: () => setLocalStatus(null)
                     })}
                     disabled={isRemovingFriend}
                 >
@@ -117,7 +99,6 @@ function OtherProfile() {
                     icon="message"
                     variant="secondary"
                     onClick={() => acceptFriend(profile.id, {
-                        onSuccess: () => setLocalStatus('ACCEPTED')
                     })}
                     disabled={isAcceptingFriend}
                 >
@@ -132,7 +113,6 @@ function OtherProfile() {
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
-                            setLocalStatus('PENDING_SENT');
                             toast.success("Friend request sent successfully!");
                         }
                     })}

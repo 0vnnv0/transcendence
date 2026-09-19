@@ -5,24 +5,24 @@ import CardSection from '../components/sections/CardSection';
 
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { socket } from '../services/socket'; // Eure globale Socket-Instanz
+import { socket } from '../services/socket';
 
 function Friends() {
 	const queryClient = useQueryClient();
 
     useEffect(() => {
-        // 1. Wenn mir jemand eine Anfrage schickt -> Pending-Liste neu laden
+        // Wenn mir jemand eine Anfrage schickt -> Pending-Liste neu laden
         socket.on('friend_request_received', () => {
 			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
         });
 
-        // 2. Wenn meine Anfrage akzeptiert wurde -> Freundesliste neu laden
+        // Wenn meine Anfrage akzeptiert wurde -> Freundesliste neu laden
         socket.on('friend_request_accepted', () => {
 			queryClient.invalidateQueries({ queryKey: ['friends'] });
 			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
 		});
 
-		// 3. If a friend or request is removed, refresh both affected lists
+		// Wenn request removed -> refresh beides
 		socket.on('friendship_removed', () => {
 			queryClient.invalidateQueries({ queryKey: ['friends'] });
 			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
