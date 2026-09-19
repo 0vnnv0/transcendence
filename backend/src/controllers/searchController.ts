@@ -2,6 +2,55 @@ import prisma from "../lib/prisma.js";
 import { PROJECTS } from "../types/coreProjects.js";
 import { FastifyRequest, FastifyReply } from 'fastify';
 
+async function searchUsers(searchTerm: string) {
+    const loginUsers = await prisma.testUser.findMany({
+        where: {
+            login: {
+                contains: searchTerm,
+                mode: "insensitive",
+            },
+        },
+        select: {
+            id: true,
+            login: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+        },
+    });
+
+    const nameUsers = await prisma.testUser.findMany({
+        where: {
+            OR: [
+                {
+                    firstName: {
+                        contains: searchTerm,
+                        mode: "insensitive",
+                    },
+                },
+                {
+                    lastName: {
+                        contains: searchTerm,
+                        mode: "insensitive",
+                    },
+                },
+            ],
+        },
+        select: {
+            id: true,
+            login: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+        },
+    });
+
+    return {
+        loginUsers,
+        nameUsers,
+    };	
+}
+
 export const globalSearch = async (request: FastifyRequest, reply: FastifyReply) => {
 	const { q } = request.query as { q?: string };
 
@@ -18,13 +67,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 		// parallel search
 		const [users, projects] = await Promise.all([
 			// search user by Intra Name
-			prisma.testUser.findMany({
-				where: {
-					login: { contains: searchTerm, mode: 'insensitive'}
-				},
-				take: 5, // return only first 5 elements
-				select: { id: true, login: true, avatarUrl: true }
-			}),
+			searchUsers(searchTerm),
 
 			Promise.resolve(
 				PROJECTS.filter((project) => {
@@ -38,13 +81,39 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 				}).slice(0, 5)
 			)
 		]);
-		const formattedUsers = users.map( (u: any) => ({
+
+		const loginUsers = users.loginUsers.slice(0, 5);
+		const nameUsers = users.nameUsers.slice(0, 5);		
+
+		const formattedLoginUsers = loginUsers.map((u: any) => ({
 			id: u.id,
 			title: u.login,
+			login: u.login,
+			firstName: u.firstName,
+			lastName: u.lastName,
 			avatarUrl: u.customUrl || u.avatarUrl,
-			type: 'user',
-			url: `/users/${u.login}`
+			type: "login",
+			url: `/users/${u.login}`,
 		}));
+
+		const formattedNameUsers = nameUsers.map((u: any) => ({
+			id: u.id,
+			title: u.login,
+			login: u.login,
+			firstName: u.firstName,
+			lastName: u.lastName,
+			avatarUrl: u.customUrl || u.avatarUrl,
+			type: "name",
+			url: `/users/${u.login}`,
+		}));
+
+        const formattedUsers = [
+            ...formattedLoginUsers,
+            ...formattedNameUsers,
+        ].filter(
+            (user, index, self) =>
+                index === self.findIndex((u) => u.id === user.id)
+        );		
 
 		const formattedProjects = projects.map( (p: any) => ({
 			id: p.id,
@@ -82,12 +151,7 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 		// parallel search
 		const [users, projects] = await Promise.all([
 			// search user by Intra Name
-			prisma.testUser.findMany({
-				where: {
-					login: { contains: searchTerm, mode: 'insensitive'}
-				},
-				select: { id: true, login: true, avatarUrl: true }
-			}),
+			searchUsers(searchTerm),
 
 			Promise.resolve(
 				PROJECTS.filter((project) => {
@@ -101,13 +165,47 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 				})
 			)
 		]);
-		const formattedUsers = users.map( (u: any) => ({
+
+		const loginUsers = users.loginUsers;
+		const nameUsers = users.nameUsers;
+
+		const formattedLoginUsers = loginUsers.map((u: any) => ({
 			id: u.id,
 			title: u.login,
+			login: u.login,
+			firstName: u.firstName,
+			lastName: u.lastName,
 			avatarUrl: u.customUrl || u.avatarUrl,
-			type: 'user',
-			url: `/users/${u.login}`
+			type: "login",
+			url: `/users/${u.login}`,
 		}));
+
+		const formattedNameUsers = nameUsers.map((u: any) => ({
+			id: u.id,
+			title: u.login,
+			login: u.login,
+			firstName: u.firstName,
+			lastName: u.lastName,
+			avatarUrl: u.customUrl || u.avatarUrl,
+			type: "name",
+			url: `/users/${u.login}`,
+		}));
+
+        const formattedUsers = [
+            ...formattedLoginUsers,
+            ...formattedNameUsers,
+        ].filter(
+            (user, index, self) =>
+                index === self.findIndex((u) => u.id === user.id)
+        );	
+
+		// const formattedUsers = users.map( (u: any) => ({
+		// 	id: u.id,
+		// 	title: u.login,
+		// 	avatarUrl: u.customUrl || u.avatarUrl,
+		// 	type: 'user',
+		// 	url: `/users/${u.login}`
+		// }));
 
 		const formattedProjects = projects.map( (p: any) => ({
 			id: p.id,
