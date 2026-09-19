@@ -98,12 +98,6 @@ const ChatWindow: React.FC = () => {
                 Loading messages...
             </div>
         );
-    // } else if (isError) {
-    //     mainContent = (
-    //         <div className="flex-1 flex justify-center items-center text-red-500 font-kyiv">
-    //             Error loading chat history.
-    //         </div>
-    //     );
 	} else if (isError) {
 		if ((error as any)?.status === 403) {
 			mainContent = <Forbidden />;
@@ -162,19 +156,6 @@ const ChatWindow: React.FC = () => {
 		</>
 	);
 
-
-    // return (
-    //     <div className="flex flex-col h-screen bg-white w-full">
-    //         <ChatHeader otherUser={enhancedOtherUser} isLoading={isLoading} />
-
-    //         {mainContent}
-
-    //         <MessageInput 
-    //             onSendMessage={handleSendMessage} 
-    //             disabled={isLoading || isError} 
-    //         />
-    //     </div>
-    // );
 };
 
 export default ChatWindow;

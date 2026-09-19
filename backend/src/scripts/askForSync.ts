@@ -44,7 +44,6 @@ export async function main() {
 
 		await syncBerlinUsers();
 
-		// console.log("\nSync finished.");
 	} else {
 		console.log("\nSkipping sync.");
 	}

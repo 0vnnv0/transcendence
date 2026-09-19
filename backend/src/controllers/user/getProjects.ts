@@ -40,23 +40,6 @@ export function getProjects(prisma: PrismaClient) {
 			user,
 			user.newCore ?? false
 		);
-		
-		console.log("USER RANK:", user.currentRank);
-		console.log("NEW CORE:", user.newCore);
-		console.log(
-			"AVAILABLE:",
-			available.map(p => ({
-				slug: p.slug,
-				rank: p.projectRank,
-			}))
-		);
-		console.log("ACTIVE:", user.activeProjects);
-
-		// if (available.length === 0) {
-		// 	return reply.code(404).send({
-		// 		error: "No available projects found",
-		// 	});
-		// }
 
 		const userRank = user.currentRank ?? 0;
 
@@ -65,12 +48,6 @@ export function getProjects(prisma: PrismaClient) {
 				const projects = available.filter(
 					project => project.projectRank >= userRank
 				);
-
-				// if (projects.length === 0) {
-				// 	return reply.code(404).send({
-				// 		error: "No available projects found",
-				// 	});
-				// }
 
 				return {
 					login: user.login,

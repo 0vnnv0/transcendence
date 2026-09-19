@@ -56,42 +56,6 @@ export const useChatMessages = (chatId: number, userId: number | null, socket: S
 	return queryInfo;
   };
 
-/*export const useChatMessages = (chatId: number, userId: number | null, socket: Socket | null) => {
-  const queryClient = useQueryClient();
-  const queryKey = ['chat', chatId, 'messages'];
-
-	const queryInfo = useQuery<LoadMessagesResponse, Error>({
-		queryKey,
-		queryFn: () => fetchChatHistory(chatId),
-		enabled: !!chatId && !!userId, 
-	});
-
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleNewMessage = (newMessage: ChatMessage) => {
-		if (Number(newMessage.chatId) !== Number(chatId)) return; //junruh: added typecasting so this doesnt silently fail
-
-      queryClient.setQueryData<LoadMessagesResponse>(queryKey, (oldData) => {
-        if (!oldData) return oldData;
-        
-        return {
-          ...oldData,
-          messages: [...oldData.messages, newMessage], 
-        };
-      });
-    };
-
-    socket.on('new_message', handleNewMessage);
-
-    return () => {
-      socket.off('new_message', handleNewMessage);
-    };
-  }, [socket, chatId, queryClient, queryKey]);
-
-  return queryInfo;
-};*/
-
 export const useStartChat = () => {
   const navigate = useNavigate();
 

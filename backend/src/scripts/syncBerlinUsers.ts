@@ -46,4 +46,3 @@ export async function syncBerlinUsers() {
 		console.log("\n\n✅ \x1b[1;35mSYNC COMPLETED!\x1b[0m");
 }
 
-// syncBerlinUsers().catch(console.error);

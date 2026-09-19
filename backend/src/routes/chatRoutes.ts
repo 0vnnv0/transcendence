@@ -126,7 +126,7 @@ async function createChat(fastify: FastifyInstance, prisma: PrismaClient, reques
         targetUserId: number; 
     };
 	const userId = (request.user as { id: number }).id;
-	console.log("userid: " + userId + "current: " + currentUserId);
+	// console.log("userid: " + userId + "current: " + currentUserId);
 	
 	if (!userId  || userId !== currentUserId)
 		return response.code(401).send({ error: "Unauthorized access." });

@@ -193,62 +193,6 @@ async function userLeaveChat(
 	}
 }
 
-//this registers a message to be sent, saves it to the db and emits it to the designated chat id
-// async function sendMessage (
-// 	chatId: number, 
-// 	content: String,
-// 	socket: Socket,
-//     prisma: PrismaClient,
-// 	io: Server
-// ) {
-// 	try {
-// 		const senderId = socket.data.userId;
-
-// 		if (!senderId) {
-// 			console.log("NO SENDER ID");
-// 			return;
-// 		}
-// 		if (!(await isInChat(senderId, chatId, prisma))) return;
-// 		if (!content || !String(content).trim()) return;
-
-// 		const message = await prisma.chatMessage.create({
-// 			data: {
-// 				chatId: Number(chatId),
-// 				senderId: Number(senderId),
-// 				content: String(content)
-// 			},
-// 			include: {
-// 				sender: {
-// 					select: {
-// 						id: true,
-// 						login: true,
-// 					},
-// 				},
-// 			},
-// 		});
-// 		await prisma.chat.update({
-// 			where: { id: Number(chatId) },
-// 			data: { updatedAt: new Date() }
-// 		});
-// 		console.log(`Sending message to chat_${chatId}`);
-// 		//io.to(`chat_${chatId}`).emit("new_message", message);
-// 		io.to(`chat_${chatId}`).emit("new_message", {
-// 			...message,
-// 			sender: {
-// 				id: message.sender.id,
-// 				intraName: message.sender.login,
-// 				avatarUrl: (message.sender as any).avatarUrl ?? undefined
-// 			}
-// 		});
-// 	}
-// 	catch (err) {
-// 		console.error(err);
-// 		socket.emit("error_occurred", {
-// 			message: "Could not send Message."
-// 		});
-// 	}
-// }
-
 async function sendMessage (
     chatId: number, 
     content: String,

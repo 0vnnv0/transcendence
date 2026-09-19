@@ -57,8 +57,6 @@ async function buildServer() {
 		prefix: "/",
 	});
 
-	// await displayUsersRoutes(fastify);
-
 	const io = new Server(fastify.server, {
 		cors: {
 			origin: "*",

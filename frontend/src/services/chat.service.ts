@@ -2,18 +2,6 @@
 import type { LoadMessagesResponse, CreateChatResponse } from '../types/chat';
 import type { ChatPreview } from '../types/chat';
 
-//junruh: replaced: 
-// export const fetchChatHistory = async (chatId: number, userId: number): Promise<LoadMessagesResponse> => {
-//   const response = await fetch(`/api/chat/${chatId}?userId=${userId}`);
-  
-//   if (!response.ok) {
-//     throw new Error('Error trying to load message');
-//   }
-  
-//   return response.json();
-// };
-
-//junruh: changed fetch call to send jwt token with request, otherwise we cant authenticate
 export const fetchChatHistory = async (chatId: number, cursorId?: number): Promise<LoadMessagesResponse> => {
 	const token = localStorage.getItem('token');
 	
@@ -28,10 +16,6 @@ export const fetchChatHistory = async (chatId: number, cursorId?: number): Promi
 		'Authorization': token ? `Bearer ${token}` : '', 
 	  },
 	});
-  
-	// if (!response.ok) {
-	//   throw new Error('Error trying to load messages');
-	// }
 
 	if (!response.ok) {
 		const error = new Error("Unable to load chat history") as Error & {
@@ -46,7 +30,6 @@ export const fetchChatHistory = async (chatId: number, cursorId?: number): Promi
 	return response.json();
   };
 
-//junruh: also added authorization here
 export const createNewChat = async (currentUserId: number, targetUserId: number): Promise<CreateChatResponse> => {
 	console.log("Sende an Backend - currentUserId:", currentUserId, "targetUserId:", targetUserId);	
 	const token = localStorage.getItem('token');
@@ -66,14 +49,6 @@ export const createNewChat = async (currentUserId: number, targetUserId: number)
 
     return response.json();
 };
-//junruh: replaced this next bit bc we need jwt:
-// export const fetchRecentChats = async (userId: number): Promise<ChatPreview[]> => {
-//     const response = await fetch(`/api/chats?userId=${userId}`);
-//     if (!response.ok) {
-//         throw new Error('Fehler beim Laden der letzten Chats');
-//     }
-//     return response.json();
-// };
 
 export const fetchRecentChats = async (): Promise<ChatPreview[]> => {
     // 1. Get token from storage
