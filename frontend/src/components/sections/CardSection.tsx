@@ -4,12 +4,13 @@ import ProjectFilters from '../ui/Filters/Filters';
 
 // Main Wrapper Props
 type CardSectionProps = {
+  isError?: boolean;
   title?: string;
   filter?: boolean;
   children: React.ReactNode;
 };
 
-function CardSection({ title, filter = false, children }: CardSectionProps) {
+function CardSection({ title, filter = false, children, isError }: CardSectionProps) {
   // We search through children to separate the Filters from the Body content
   const childrenArray = React.Children.toArray(children);
 
@@ -22,18 +23,23 @@ function CardSection({ title, filter = false, children }: CardSectionProps) {
   );
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className={`flex flex-col lg:flex-row justify-between w-full items-start lg:items-end gap-3 lg:gap-0 ${filter ? 'my-4' : ''}`}>
-			<h2 className="text-lead">
-				{title}
-			</h2>
-			{filter && <ProjectFilters />}
+	<>
+		{ !isError &&
+		<div className="flex flex-col gap-2 w-full">
+
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+						<div className={`flex flex-col lg:flex-row justify-between w-full items-start lg:items-end gap-3 lg:gap-0 ${filter ? 'my-4' : ''}`}>
+							<h2 className="text-lead">
+								{title}
+							</h2>
+							{filter && <ProjectFilters />}
+						</div>
+					{filtersChild}
+				</div>
+			{bodyChild}
 		</div>
-        {filtersChild}
-      </div>
-      {bodyChild}
-    </div>
+		}
+	</>
   );
 }
 

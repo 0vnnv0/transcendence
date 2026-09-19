@@ -79,9 +79,9 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
               <img 
                 src={user.customAvatar || user.avatarUrl} 
                 className="h-8 w-8 rounded-full object-cover"
-                alt={user.login}
+                alt={user.intraName}
               />
-              <span className="text-white font-kyiv">{user.login}</span>
+              <span className="text-white font-kyiv">{user.intraName}</span>
             </li>
           ))}
         </ul>
