@@ -18,12 +18,6 @@ function SearchResultsPage() {
 	const [currentPage, setCurrentPage] = useState<number>(1);
     const { data: results, isLoading, isError } = useFullSearch(query);
 
-    // const availableTypes = useMemo(() => {
-    //     if (!results) return [];
-    //     const types = new Set(results.map((r) => r.type));
-    //     return Array.from(types);
-    // }, [results]);
-
 	useEffect(() => {
         setCurrentPage(1);
     }, [selectedType, sortBy, query]);
@@ -32,10 +26,6 @@ function SearchResultsPage() {
         if (!results) return [];
 
         let filtered = [...results];
-
-        // if (selectedType !== 'ALL') {
-        //     filtered = filtered.filter((item) => item.type === selectedType);
-        // }
 
 		if (selectedType === 'PROJECT') {
 			filtered = filtered.filter(
@@ -136,15 +126,6 @@ function SearchResultsPage() {
                                     	className={`${baseTagStyle} ${selectedType === 'ALL' ? activeTagStyle : inactiveTagStyle}`}>
 										ALL
 									</button>
-
-									{/* {availableTypes.map((type) => (
-										<button
-											key={type}
-											onClick={() => setSelectedType(type)}
-											className={`${baseTagStyle} ${selectedType === type ? activeTagStyle : inactiveTagStyle}`}>
-											{type.toUpperCase()}
-										</button>
-									))} */}
 
 									<button
 										onClick={() => setSelectedType('PROJECT')}

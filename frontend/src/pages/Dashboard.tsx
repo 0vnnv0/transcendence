@@ -21,11 +21,6 @@ interface ProjectData {
 	keywords: string[];
 }
 
-// interface BackendResponse {
-// 	login: string;
-// 	projects: ProjectData[];
-// }
-
 function Dashboard() {
 	const { userName } = useAuth();
 
@@ -41,7 +36,6 @@ function Dashboard() {
 	const isLandscape = nextProjects.length == 1;
 
     const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
-	// const recommendedProjects: ProjectData[] = projectsData ? projectsData.slice(1) : [];
 	let nextProjectContent;
 
 	if (isNextLoading) {

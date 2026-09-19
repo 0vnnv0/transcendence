@@ -14,7 +14,6 @@ function AuthSuccess() {
 	const [searchParams] = useSearchParams();
 
 	useEffect(() => {
-		// const token = searchParams.get('token');
 		const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
 		const urlParams = new URLSearchParams(window.location.search);
         

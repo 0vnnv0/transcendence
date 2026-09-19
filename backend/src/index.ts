@@ -1,7 +1,4 @@
-//DUMMIE
-//dummie for indexfile
 import buildServer from "./serverSetup.js";
-//import { Pool } from 'pg';
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { setupChatSockets } from "./sockets/chat.js";
@@ -55,7 +52,6 @@ async function start() {
 
 	setupChatSockets(io, prisma);
 	await chatRoutes(app, prisma);
-	//await profileRoutes(app, {prisma});
 	app.register(profileRoutes, {prisma});
 	await userRoutes(app, prisma);
 	await projectRoutes(app);

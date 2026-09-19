@@ -34,7 +34,6 @@ const ProjectCard = ({
         ${isLandscape ? 'flex-row justify-between' : 'flex-col'}
       `}
     >
-      {/* Tags positioned absolutely for project cards */}
       {tags && (
         <div className="absolute top-4 right-4 max-w-[300px] h-6 overflow-hidden">
           <TagList tags={tags} amount={3}/>

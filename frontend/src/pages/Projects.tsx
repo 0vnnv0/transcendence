@@ -8,7 +8,6 @@ import Button from '../components/ui/Button/Button';
 import PageLayout from './PageLayout';
 
 function Projects() {
-	// const { userName, userRank, newCore } = useAuthorize();
 
 	const newCore = false;
 	const { data: allProjects, isLoading, isError } = useProjects();
@@ -18,7 +17,6 @@ function Projects() {
 		content = <p className="text-subtitle text-purple">Loading projects...</p>
 	} else if (isError || !allProjects) {
 		content = <p className="text-subtitle text-red-500">[404] Error trying to load projects</p>
-	//pbohme
 	} else if (allProjects.status === "completed") {
         content = (
             <p className="text-subtitle text-green-500">

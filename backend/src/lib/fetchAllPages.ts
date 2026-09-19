@@ -24,27 +24,3 @@ export async function fetchAllPages<T>(
 
   return all;
 }
-
-// import axios from "axios";
-
-// export async function fetchAllPages(url: string, token: string) {
-// 	const all: any[] = [];
-// 	let page = 1;
-// 	const perPage = 100;
-
-// 	while (true) {
-// 		const res = await axios.get(url, {
-// 			headers: { Authorization: `Bearer ${token}` },
-// 			params: { page, per_page: perPage },
-// 		});
-
-// 		const data = res.data;
-
-// 		if (!data || data.length === 0) break;
-
-// 		all.push(...data);
-// 		page++;
-// 	}
-
-// 	return all;
-// }

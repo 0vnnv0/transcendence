@@ -180,12 +180,6 @@ export function getMatches(prisma: PrismaClient) {
 
 			if (!candidateMetaOk) return false;
 
-			// // rank range logic (angepasst)
-			// const rankDiff = Math.abs(
-			// 	(user.currentRank ?? 0) - (candidate.currentRank ?? 0)
-			// );
-
-			// if (rankDiff > 1) return false;
 			const userRank = user.currentRank ?? 0;
 			const candidateRank = candidate.currentRank ?? 0;
 			if (candidateRank < userRank - 1) return false;
