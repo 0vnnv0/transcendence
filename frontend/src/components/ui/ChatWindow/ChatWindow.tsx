@@ -139,7 +139,7 @@ const ChatWindow: React.FC = () => {
 			{isForbidden ? (
 				<Forbidden />
 			) : (
-				<div className="flex flex-col h-[stretch] md:h-screen bg-white w-full">
+				<div className="flex flex-col h-screen bg-white w-full">
 					<ChatHeader
 						otherUser={enhancedOtherUser}
 						isLoading={isLoading}
