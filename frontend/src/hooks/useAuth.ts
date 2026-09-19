@@ -33,11 +33,12 @@ export function useLogin(): UseMutationResult<LoginResponse, AxiosError<BackendE
 
   return useMutation<LoginResponse, AxiosError<BackendErrorResponse>, AuthCredentials>({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      if (data?.access_token) {
-        localStorage.setItem('token', data.access_token);
+    onSuccess: () => {
+    //   if (data?.access_token) {
+        // localStorage.setItem('token', data.access_token);
+		sessionStorage.setItem('pending_auth', 'true');
         navigate('/authorize');
-      }
+    //   }
     },
     onError: (error) => {
       console.error('Login error:', error.response?.data?.message || error.message);
@@ -50,9 +51,10 @@ export function useSignUp(): UseMutationResult<TokenResponse, Error, AuthCredent
 
   return useMutation<TokenResponse, Error, AuthCredentials>({
     mutationFn: signUpUser,
-    onSuccess: (data) => {
-      localStorage.setItem('token', data.token);
-      navigate('/authorize');
+    onSuccess: () => {
+    //   localStorage.setItem('token', data.token);
+		sessionStorage.setItem('pending_auth', 'true');
+      	navigate('/authorize');
     },
     onError: (error) => {
       console.error('SignUp error:', error.message);
