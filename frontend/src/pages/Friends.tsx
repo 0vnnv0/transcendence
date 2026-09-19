@@ -103,7 +103,7 @@ function Friends() {
 							showStatus
 						/>
 					))}
-					{isStartingChat ? 'Starting...' : 'Message'}
+					{/* {isStartingChat ? 'Starting...' : 'Message'} */}
                 </>
             );
         }

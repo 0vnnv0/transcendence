@@ -120,8 +120,7 @@ async function registerUser(
         socket.join(`chat_${chat.id}`);
     }
 	socket.emit("chat_list", chats);
-    socket.emit("initial_online_users", onlineUsers);
-
+	socket.emit("initial_online_users", Array.from(onlineUsers.keys()));
     console.log(`User ${id} joined ${chats.length} chats`);
 }
 
