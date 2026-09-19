@@ -77,11 +77,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                 ${isStartingChat ? 'opacity-50 pointer-events-none' : 'hover:bg-gray-700'}`}
             >
               <img 
-                src={user.avatarUrl} 
+                src={user.customAvatar || user.avatarUrl} 
                 className="h-8 w-8 rounded-full object-cover"
-                alt={user.intraName}
+                alt={user.login}
               />
-              <span className="text-white font-kyiv">{user.intraName}</span>
+              <span className="text-white font-kyiv">{user.login}</span>
             </li>
           ))}
         </ul>
