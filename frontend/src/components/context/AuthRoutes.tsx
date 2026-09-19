@@ -13,3 +13,14 @@ export function ProtectedRoute() {
   if (!token) return <Navigate to="/" replace />;
   return <Outlet />;
 }
+
+export function AuthorizeRoute() {
+  const isPending = sessionStorage.getItem('pending_auth') === 'true';
+  const token = localStorage.getItem('token');
+
+  if (token) return <Navigate to="/dashboard" replace />;
+  
+  if (!isPending) return <Navigate to="/" replace />;
+
+  return <Outlet />;
+}

@@ -10,25 +10,25 @@ import App from './App.tsx'
 import { AuthProvider } from './components/context/AuthContext';
 
 const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			refetchOnWindowFocus: true,
-		}
-	}
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: true,
+        }
+    }
 });
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
 	<AuthProvider>
+	<QueryClientProvider client={queryClient}>
 		<SocketProvider>
-			<QueryClientProvider client={queryClient}>
-				<BrowserRouter>
-					<ErrorBoundary>
-						<App />
-					</ErrorBoundary>
-				</BrowserRouter>
-			</QueryClientProvider>
+		<BrowserRouter>
+			<ErrorBoundary>
+			<App />
+			</ErrorBoundary>
+		</BrowserRouter>
 		</SocketProvider>
+	</QueryClientProvider>
 	</AuthProvider>
   </StrictMode>,
 )

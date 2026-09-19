@@ -58,7 +58,6 @@ export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) =
             });
         }
 
-        // Secure hashed password
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await prisma.loggedUser.create({
             data: {
@@ -73,15 +72,8 @@ export const signUpUser = async (request: FastifyRequest, reply: FastifyReply) =
             data: { isOnline: true }
         });
 
-        const token = request.server.jwt.sign({
-            id: testUser.id,
-            intraName: testUser.login,
-        }, { expiresIn: '1d' });
-
         return reply.code(201).send({
             message: "Registration successful!",
-            token: token,
-            access_token: token,
             loggedUser: { id: testUser.id, email: newUser.email }
         });
     } catch (error) {
@@ -202,12 +194,12 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     const token = request.server.jwt.sign({ 
       id: user.id, 
       intraName: user.login,
-    //   newCore: user.isNewCore,
       isOnline: user.isOnline
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
-	//const url_base = process.env.FRONTEND_REDIRECT_URL!;
-	const frontendRedirectUrl = `https://localhost:8443/authsuccess?token=${token}`; // const frontendRedirectUrl = `http://c0c7c2.42berlin.de:8080/authsuccess?token=${token}`;
+	const baseUrl = process.env.FRONTEND_REDIRECT_URL || "https://c1b5c2.42berlin.de:8443";
+	const frontendRedirectUrl = `${baseUrl}/authsuccess#token=${token}`;
+	return reply.redirect(frontendRedirectUrl);
 	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
 	console.error("DEBUG AUTH ERROR:", error); // Das zeigt den echten Fehler im Terminal

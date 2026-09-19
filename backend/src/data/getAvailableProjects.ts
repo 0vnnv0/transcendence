@@ -35,10 +35,10 @@ export function getAvailableProjects(user: DBUser, newCore: boolean) {
 
 			if (done.has(project.slug)) return false;
 
-			const active = activeProjectMap.get(project.slug);
-			if (active?.hasTeam === true) {
-				return false;
-			}
+			// const active = activeProjectMap.get(project.slug);
+			// if (active?.hasTeam === true) {
+			// 	return false;
+			// }
 
 			if (!newCore &&
 				isExcludedByOldCoreRules(project.slug, done, activeProjectMap)
