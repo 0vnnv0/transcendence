@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from './pages/ErrorBoundary.tsx';
+import { SocketProvider } from './components/context/SocketContext.tsx';
 
 import './index.css'
 import App from './App.tsx'
@@ -19,13 +20,15 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
 	<AuthProvider>
-	<QueryClientProvider client={queryClient}>
-		<BrowserRouter>
-			<ErrorBoundary>
-				<App />
-			</ErrorBoundary>
-		</BrowserRouter>
-	</QueryClientProvider>
+		<SocketProvider>
+			<QueryClientProvider client={queryClient}>
+				<BrowserRouter>
+					<ErrorBoundary>
+						<App />
+					</ErrorBoundary>
+				</BrowserRouter>
+			</QueryClientProvider>
+		</SocketProvider>
 	</AuthProvider>
   </StrictMode>,
 )

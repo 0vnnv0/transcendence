@@ -35,24 +35,25 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         socket.on('connect', onConnect);
 
 		socket.on("initial_online_users", (data) => {
-            let ids: number[] = [];
-            
-            if (Array.isArray(data)) {
-                ids = data.map(Number);
-            } else if (data && typeof data === 'object') {
-                ids = Object.keys(data).map(Number);
-            }
-            
-            setOnlineUserIds(ids);
-        });
+   			 console.log("📥 EMPFANGEN initial_online_users:", data);
+ 		   let ids: number[] = [];
+ 		   if (Array.isArray(data)) {
+   		     ids = data.map(Number);
+  		  } else if (data && typeof data === 'object') {
+ 		       ids = Object.keys(data).map(Number);
+		    }
+ 		   setOnlineUserIds(ids);
+		});
 
-        socket.on("user_online", ({ userId: onlineId }) => {
-            setOnlineUserIds(prev => [...new Set([...prev, onlineId])]);
-        });
+		socket.on("user_online", (data) => {
+			console.log("🟢 EVENT user_online empfangen:", data);
+			setOnlineUserIds(prev => [...new Set([...prev, data.userId])]);
+		});
 
-        socket.on("user_offline", ({ userId: offlineId }) => {
-            setOnlineUserIds(prev => prev.filter(id => id !== offlineId));
-        });
+		socket.on("user_offline", (data) => {
+			console.log("🔴 EVENT user_offline empfangen:", data);
+			setOnlineUserIds(prev => prev.filter(id => id !== data.userId));
+		});
 
         return () => {
             socket.off('connect', onConnect);
