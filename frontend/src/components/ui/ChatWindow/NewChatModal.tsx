@@ -63,7 +63,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
   } else {
     // Aktuellen User aus den Ergebnissen filtern
     const availableUsers = users.filter(user => user.id !== currentUserId);
-	console.log("AV Users, ", availableUsers)
+	
     if (availableUsers.length === 0) {
       listContent = <div className="p-4 text-gray-400 font-kyiv">That's you!</div>;
     } else {

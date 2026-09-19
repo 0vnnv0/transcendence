@@ -20,15 +20,15 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
 	<AuthProvider>
+	<QueryClientProvider client={queryClient}>
 		<SocketProvider>
-			<QueryClientProvider client={queryClient}>
-				<BrowserRouter>
-					<ErrorBoundary>
-						<App />
-					</ErrorBoundary>
-				</BrowserRouter>
-			</QueryClientProvider>
+		<BrowserRouter>
+			<ErrorBoundary>
+			<App />
+			</ErrorBoundary>
+		</BrowserRouter>
 		</SocketProvider>
+	</QueryClientProvider>
 	</AuthProvider>
   </StrictMode>,
 )
