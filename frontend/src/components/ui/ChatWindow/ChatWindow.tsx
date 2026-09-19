@@ -8,6 +8,7 @@ import { socket } from '../../../services/socket';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { useEffect } from 'react'; //junruh
+import Forbidden from '../../../pages/Forbidden';
 
 const ChatWindow: React.FC = () => {
     const { chatId } = useParams<{ chatId: string }>();
@@ -18,6 +19,7 @@ const ChatWindow: React.FC = () => {
 		data, 
 		isLoading, 
 		isError, 
+		error,
 		fetchNextPage, 
 		hasNextPage, 
 		isFetchingNextPage 
@@ -96,12 +98,22 @@ const ChatWindow: React.FC = () => {
                 Loading messages...
             </div>
         );
-    } else if (isError) {
-        mainContent = (
-            <div className="flex-1 flex justify-center items-center text-red-500 font-kyiv">
-                Error loading chat history.
-            </div>
-        );
+    // } else if (isError) {
+    //     mainContent = (
+    //         <div className="flex-1 flex justify-center items-center text-red-500 font-kyiv">
+    //             Error loading chat history.
+    //         </div>
+    //     );
+	} else if (isError) {
+		if ((error as any)?.status === 403) {
+			mainContent = <Forbidden />;
+		} else {
+			mainContent = (
+				<div className="flex-1 flex justify-center items-center text-red-500 font-kyiv">
+					Error loading chat history.
+				</div>
+			);
+		}	
     } else if (allMessages.length === 0) {
         mainContent = (
             <div className="flex-1 flex justify-center items-center text-gray-500 font-kyiv">
@@ -126,19 +138,43 @@ const ChatWindow: React.FC = () => {
 		isOnline: onlineUserIds.includes(otherUser.id)
 	} : undefined;
 	
+	const isForbidden = isError && (error as ApiError)?.status === 403;
 
-    return (
-        <div className="flex flex-col h-screen bg-white w-full">
-            <ChatHeader otherUser={enhancedOtherUser} isLoading={isLoading} />
+	return (
+		<>
+			{isForbidden ? (
+				<Forbidden />
+			) : (
+				<div className="flex flex-col h-screen bg-white w-full">
+					<ChatHeader
+						otherUser={enhancedOtherUser}
+						isLoading={isLoading}
+					/>
 
-            {mainContent}
+					{mainContent}
 
-            <MessageInput 
-                onSendMessage={handleSendMessage} 
-                disabled={isLoading || isError} 
-            />
-        </div>
-    );
+					<MessageInput
+						onSendMessage={handleSendMessage}
+						disabled={isLoading || isError}
+					/>
+				</div>
+			)}
+		</>
+	);
+
+
+    // return (
+    //     <div className="flex flex-col h-screen bg-white w-full">
+    //         <ChatHeader otherUser={enhancedOtherUser} isLoading={isLoading} />
+
+    //         {mainContent}
+
+    //         <MessageInput 
+    //             onSendMessage={handleSendMessage} 
+    //             disabled={isLoading || isError} 
+    //         />
+    //     </div>
+    // );
 };
 
 export default ChatWindow;
