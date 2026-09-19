@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import type { ChatUser } from "../../../types/chat";
+import { useSocket } from "../../context/SocketContext";
 
 interface ChatHeaderProps {
     otherUser?: ChatUser;
@@ -9,10 +10,13 @@ interface ChatHeaderProps {
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
     const navigate = useNavigate();
+    const { onlineUserIds } = useSocket(); 
 
     if (isLoading || !otherUser) {
         return <div className="p-4 border-b border-gray-200 h-[73px] animate-pulse bg-purple/55" />;
     }
+
+    const isOnline = otherUser.id ? onlineUserIds.includes(otherUser.id) : otherUser.isOnline;
 
     return (
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
@@ -27,9 +31,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
                     <span
                         className={`
                             absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white
-                            ${otherUser.isOnline ? 'bg-green-500' : 'bg-gray-400'}
+                            ${isOnline ? 'bg-green-500' : 'bg-gray-400'}
                         `}
-                        aria-label={otherUser.isOnline ? 'online' : 'offline'}
+                        aria-label={isOnline ? 'online' : 'offline'}
                     />
                 </div>
 
@@ -41,7 +45,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ChatHeader;
