@@ -19,7 +19,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
             <div className="flex items-center space-x-3">
                 <div className="relative inline-block">
                     <img 
-                        src={otherUser.avatarUrl}
+                        src={otherUser.customAvatar || otherUser.avatarUrl}
                         alt={otherUser.intraName}
                         className="size-15 rounded-full object-cover cursor-pointer"
                         onClick={() => navigate(`/users/${otherUser.intraName}`)}
