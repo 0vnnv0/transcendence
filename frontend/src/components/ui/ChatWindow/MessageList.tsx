@@ -74,25 +74,27 @@ const MessageList: React.FC<MessageListProps> = ({
             {messages.map((msg) => {
                 const isMe = msg.senderId === currentUserId;
                 
-                return (
-                    <div 
-                        key={msg.id} 
-                        className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
-                    >
-                        <div 
-                            className={`max-w-[70%] p-3 rounded-lg text-white font-kyiv flex flex-col gap-1 ${
-                                isMe ? 'bg-purple-600 rounded-br-none' : 'bg-gray-700 rounded-bl-none'
-                            }`}
-                        >
-                            {!isMe && msg.sender?.intraName && (
-                                <span className="text-xs text-gray-300 font-bold">
-                                    {msg.sender.intraName}
-                                </span>
-                            )}
-                            <span>{msg.content}</span>
-                        </div>
-                    </div>
-                );
+				return (
+					<div 
+						key={msg.id} 
+						className={`flex min-w-0 w-full ${isMe ? 'justify-end' : 'justify-start'}`}
+					>
+						<div 
+							className={`max-w-[70%] sm:max-w-[60%] p-3 rounded-lg text-white font-kyiv flex flex-col gap-1 min-w-0 overflow-hidden ${
+								isMe ? 'bg-purple-600 rounded-br-none' : 'bg-gray-700 rounded-bl-none'
+							}`}
+						>
+							{!isMe && msg.sender?.intraName && (
+								<span className="text-xs text-gray-300 font-bold truncate">
+									{msg.sender.intraName}
+								</span>
+							)}
+							<p className="whitespace-pre-wrap break-all [overflow-wrap:anywhere] text-sm">
+								{msg.content}
+							</p>
+						</div>
+					</div>
+				);
             })}
             
             <div ref={endOfListRef} />

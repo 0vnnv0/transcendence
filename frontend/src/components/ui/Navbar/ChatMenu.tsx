@@ -20,18 +20,20 @@ function ChatMenu() {
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-        if (!socket) return;
+		if (!socket) return;
 
-        const handleNewMessage = (data: { chatId: number; updatedAt: string }) => {
-            queryClient.invalidateQueries({ queryKey: ['recentChats', userId] });
-        };
+		const handleSidebarUpdate = (data: { chatId: number; chat?: any; updatedAt?: string }) => {
+			console.log("➡️ [SIDEBAR] Update received:", data);
 
-        socket.on('new_message', handleNewMessage);
+			queryClient.invalidateQueries({ queryKey: ['recentChats', userId] });
+		};
 
-        return () => {
-            socket.off('new_message', handleNewMessage);
-        };
-    }, [socket, queryClient, userId]);
+		socket.on('sidebar_update', handleSidebarUpdate);
+
+		return () => {
+			socket.off('sidebar_update', handleSidebarUpdate);
+		};
+	}, [socket, queryClient, userId]);
 
     let chatIcon = "/chat_closed.svg";
     if (isChatsOpen) {
