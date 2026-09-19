@@ -34,8 +34,15 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         socket.on('connect', onConnect);
 
-        socket.on("initial_online_users", (onlineUsersMap) => {
-            const ids = Object.keys(onlineUsersMap).map(Number);
+		socket.on("initial_online_users", (data) => {
+            let ids: number[] = [];
+            
+            if (Array.isArray(data)) {
+                ids = data.map(Number);
+            } else if (data && typeof data === 'object') {
+                ids = Object.keys(data).map(Number);
+            }
+            
             setOnlineUserIds(ids);
         });
 
