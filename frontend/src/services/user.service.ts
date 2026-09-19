@@ -55,7 +55,7 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserP
   const results = Array.isArray(data) ? data : (data.users || []);
   
   const users: FullUserProfile[] = results
-    .filter((item: any) => item.type === 'user')
+    .filter((item: any) => (item.type === 'login' || item.type === 'name'))
     .map((item: any) => ({
       id: item.id,
       intraName: item.title, 
@@ -148,10 +148,10 @@ export async function uploadToS3(
 	}
 }
 
-export function getAvatarUrl(userId: number): string {
-	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
-	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
-}
+// export function getAvatarUrl(userId: number): string {
+// 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+// 	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
+// }
 
 // export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 // 	const presignedPost = await getUploadUrl(file.type);

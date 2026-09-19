@@ -4,6 +4,18 @@ import prisma from "../lib/prisma.js";
 
 export class FriendService {
 
+	private io: any; 
+
+    constructor(io?: any) {
+        this.io = io;
+    }
+
+    private notifyUser(userId: number, event: string, payload: any) {
+        if (this.io) {
+            // Sendet das Event an den Raum des Ziel-Users: `user_123`
+            this.io.to(`user_${userId}`).emit(event, payload);
+		}
+	}
 	async getFriendsList(userId: number) {
     const friendships = await prisma.friendship.findMany({
         where: {
@@ -122,14 +134,20 @@ export class FriendService {
 			if (existing.status === 'PENDING') throw new Error('Request already pending');
 		}
 
-		// Freundschaftsanfrage erstellen
-		return prisma.friendship.create({
-			data: {
-				senderId,
-				receiverId,
-				status: 'PENDING'
-			}
-		});
+		const created = await prisma.friendship.create({
+            data: {
+                senderId,
+                receiverId,
+                status: 'PENDING'
+            }
+        });
+
+		this.notifyUser(receiverId, 'friend_request_received', {
+            friendshipId: created.id,
+            senderId
+        });
+
+		return created;
 	}
 
 
@@ -147,10 +165,23 @@ export class FriendService {
 			throw new Error('Friend request not found or already accepted');
 		}
 
-		return prisma.friendship.update({
-			where: { id: request.id },
-        	data: { status: 'ACCEPTED' }
-		});
+		const updated = await prisma.friendship.update({
+            where: { id: request.id },
+            data: { status: 'ACCEPTED' }
+        });
+
+		this.notifyUser(senderId, 'friend_request_accepted', {
+            friendshipId: updated.id,
+            acceptedById: receiverId
+        });
+
+        // Empfänger zur Sicherheit triggern (für synchrone UI-Updates)
+        this.notifyUser(receiverId, 'friend_request_accepted', {
+            friendshipId: updated.id,
+            acceptedById: receiverId
+        });
+
+		return updated;
 	}
 
 	async removeFriendOrRequest(userId: number, targetId: number | string) {
@@ -169,9 +200,23 @@ export class FriendService {
 			throw new Error('Friend request not found');
 		}
 
-		return prisma.friendship.delete({
-			where: { id: request.id },
+		const otherUserId = request.senderId === userId ? request.receiverId : request.senderId;
+
+        const deleted = await prisma.friendship.delete({
+            where: { id: request.id },
+        });
+
+		this.notifyUser(otherUserId, 'friendship_removed', {
+            friendshipId: request.id,
+            removedById: userId
+        });
+
+		this.notifyUser(userId, 'friendship_removed', {
+			friendshipId: request.id,
+			removedById: userId
 		});
+
+        return deleted;
 	}
 
 	//pbohme

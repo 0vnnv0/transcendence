@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useRecentChats } from '../../../hooks/useChat'; // Pfad anpassen
 import { NewChatModal } from '../ChatWindow/NewChatModal';
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 
 function ChatMenu() {
     const navigate = useNavigate();
+	const { onlineUserIds } = useSocket();
     const [isChatsOpen, setIsChatsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-	const { userId } = useAuth();
+    const { userId } = useAuth();
 
     const { data: recentChats, isLoading, isError } = useRecentChats(userId as number);
 
@@ -20,7 +22,7 @@ function ChatMenu() {
 
     const handleCreateChat = (e: React.MouseEvent) => {
         e.stopPropagation();
-		setIsModalOpen(true);
+        setIsModalOpen(true);
         console.log("Neuen Chat starten!");
     }
 
@@ -36,30 +38,39 @@ function ChatMenu() {
         const top5Chats = recentChats.slice(0, 5);
         
         chatListContent = top5Chats.map((chat) => {
-            const otherUser = chat.users.find(u => u.id !== userId) 
-                || { intraName: "Unbekannt", id: 0 };
+            const otherUser = chat.users.find(u => u.id !== userId);
+
+            const displayName = otherUser?.intraName || "Unbekannt";
+            const avatarSrc = otherUser?.customAvatar || otherUser?.avatarUrl || "/default-avatar.png";
+            const isOnline = otherUser ? onlineUserIds.includes(otherUser.id) : false;
 
             return (
                 <li
                     key={chat.id}
                     onClick={() => navigate(`/chat/${chat.id}`)} 
-                    className="text-sm flex item-center gap-2 cursor-pointer hover:bg-gray-500/60 hover:rounded-md hover:scale-110"
+                    className="text-sm flex items-center gap-2 cursor-pointer hover:bg-gray-500/65 hover:rounded-md hover:scale-105 transition-all py-1"
                 >
-                    <div className="relative inline-block">
+                    <div className="relative inline-block shrink-0">
                         <img 
-                            src={otherUser.customAvatar || otherUser.avatarUrl} 
-                            className="h-6 w-6 rounded-md object-cover transition-all"
-                            alt={otherUser.intraName}
+                            src={avatarSrc} 
+                            className="h-6 w-6 rounded-md object-cover"
+                            alt={displayName}
                         />
-                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-black rounded-full bg-gray-500"></span>
+                        <span
+                            className={`
+                                absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-black
+                                ${isOnline ? 'bg-green-500' : 'bg-gray-400'}
+                            `}
+                            aria-label={isOnline ? 'online' : 'offline'}
+                        />
                     </div>
-                    {otherUser.intraName}
+                    <span className="truncate">{displayName}</span>
                 </li>
             );
         });
     }
 
-return (
+    return (
         <>
             <li className="flex flex-col mt-30 w-full gap-1">
                 <div className="w-full flex items-center justify-between font-kyiv text-base text-white">

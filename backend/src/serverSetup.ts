@@ -9,7 +9,7 @@ import { chatRoutes } from "./routes/chatRoutes.js";
 import { authRoutes } from "./routes/authRoutes.js";
 import { searchRoutes } from "./routes/searchRoutes.js"
 import { friendRoutes } from "./routes/friendRoutes.js";
-
+import { FriendService } from './services/friendService.js';
 
 
 // Plugin Json Web Token, damit User eingeloggt bleibt
@@ -49,10 +49,6 @@ async function buildServer() {
 		}
 	});
 
-	await fastify.register(authRoutes);
-	await fastify.register(searchRoutes);
-	await fastify.register(friendRoutes);
-
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
 
@@ -72,6 +68,12 @@ async function buildServer() {
 	io.on("connection", (socket) => {
 		console.log("socket connected:", socket.id);
 	});
+
+	const friendService = new FriendService(io);
+	fastify.decorate('friendService', friendService);
+	await fastify.register(authRoutes);
+	await fastify.register(searchRoutes);
+	await fastify.register(friendRoutes);
 
 	return {app: fastify, io};
 }

@@ -11,7 +11,7 @@ export async function fetchProjects(service: FortyTwoService) {
 	await sleep(500);
 
 	const minirt = await service.fetchProjectUsers(1315);
-	console.log("🪩", "miniRT loaded")
+	console.log("🪩", " miniRT loaded")
 	await sleep(500);
 
 	const cub3d = await service.fetchProjectUsers(1326);
@@ -47,7 +47,7 @@ export async function fetchProjects(service: FortyTwoService) {
 	await sleep(500);
 
 	const agent = await service.fetchProjectUsers(2703);
-	console.log("🕵️‍♂️", " agent smith loaded")
+	console.log("🕵️‍♀️", " agent smith loaded")
 	await sleep(500);
 
 	const answer = await service.fetchProjectUsers(2701);

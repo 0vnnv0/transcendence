@@ -31,7 +31,11 @@ function Certain_Project() {
 	const projectTags: TagData[]  = [
 		{ icon: 'clock', description: `${project?.estimatedHours} hours` },
 		{ icon: 'smiley', description:  `${teamSize} people` },
-		{ icon: 'flame', description: `${project?.keywords?.[1]}` },
+		{ icon: 'flame',
+			description: project?.keywords?.[0] !== 'Group'
+				? `${project?.keywords?.[0]}`
+				: `${project?.keywords?.[1]}`,
+		},
 	];
 
 		const availableUsers = activeUsers?.filter(user => {

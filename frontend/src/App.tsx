@@ -10,7 +10,7 @@ import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
 import Friends from './pages/Friends'
 import SearchResultsPage from './pages/SearchResultsPage'
-// import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
+import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
 import { Toaster } from 'react-hot-toast'
 import NotFound from './pages/NotFound'
 import TermsOfService from './pages/LegalPages/TermsOfService'
@@ -42,21 +42,27 @@ export function App() {
       <Toaster position="top-center" />
 
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/authorize" element={<Authorize />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/myprofile" element={<MyProfile />} />
-        <Route path="/chats" element={<Chats />} />
-        <Route path="/project/:id" element={<Certain_Project />} />
-        <Route path="/chat/:chatId" element={<Chats />} />
-        <Route path="/friends" element={<Friends />} />
-        <Route path="/users/:username" element={<OtherProfile />} />
-        <Route path="/authsuccess" element={<AuthSuccess />} />
-		<Route path="/search" element={<SearchResultsPage />} />
-		<Route path="/terms-and-conditions" element={<TermsOfService />} />
-		<Route path="/privacy-policy" element={<PrivacyPolicy />} />
-		<Route path="*" element={<NotFound />} />
+		{/* <Route element={<PublicRoute />}> */}
+           <Route path="/" element={<Login />} />
+           <Route path="/authorize" element={<Authorize />} />
+        {/* </Route>
+		<Route element={<ProtectedRoute />}> */}
+			<Route path="/" element={<Login />} />
+			<Route path="/authorize" element={<Authorize />} />
+			<Route path="/dashboard" element={<Dashboard />} />
+			<Route path="/projects" element={<Projects />} />
+			<Route path="/myprofile" element={<MyProfile />} />
+			{/* <Route path="/chats" element={<Chats />} /> */}
+			<Route path="/project/:id" element={<Certain_Project />} />
+			<Route path="/chat/:chatId" element={<Chats />} />
+			<Route path="/friends" element={<Friends />} />
+			<Route path="/users/:username" element={<OtherProfile />} />
+			<Route path="/authsuccess" element={<AuthSuccess />} />
+			<Route path="/search" element={<SearchResultsPage />} />
+			<Route path="/terms-and-conditions" element={<TermsOfService />} />
+			<Route path="/privacy-policy" element={<PrivacyPolicy />} />
+			<Route path="*" element={<NotFound />} />
+		{/* </Route> */}
       </Routes>
     </>
   );

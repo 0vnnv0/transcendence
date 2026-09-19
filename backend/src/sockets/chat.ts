@@ -43,8 +43,13 @@ export function setupChatSockets(io: Server, prisma: PrismaClient) {
     });
 
 	io.on("connection", (socket) => {
-		console.log("Socket connected:", socket.id);
-		
+		const userId = socket.data.userId as number;
+		console.log(`Socket connected: ${socket.id} (User ID: ${userId})`);
+
+		if (userId) {
+			socket.join(`user_${userId}`);
+		}
+
 		socket.on("register", ({ userId }) => 
 			registerUser(userId, socket, prisma, onlineUsers));
 		socket.on("add_user", (chatId, futureUserId) =>
@@ -115,8 +120,7 @@ async function registerUser(
         socket.join(`chat_${chat.id}`);
     }
 	socket.emit("chat_list", chats);
-    socket.emit("initial_online_users", onlineUsers);
-
+	socket.emit("initial_online_users", Array.from(onlineUsers.keys()));
     console.log(`User ${id} joined ${chats.length} chats`);
 }
 

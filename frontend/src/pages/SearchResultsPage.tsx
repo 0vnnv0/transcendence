@@ -6,7 +6,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFullSearch } from '../hooks/useGlobalSearch.ts';
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 12;
 
 function SearchResultsPage() {
     const [searchParams] = useSearchParams();
@@ -18,11 +18,11 @@ function SearchResultsPage() {
 	const [currentPage, setCurrentPage] = useState<number>(1);
     const { data: results, isLoading, isError } = useFullSearch(query);
 
-    const availableTypes = useMemo(() => {
-        if (!results) return [];
-        const types = new Set(results.map((r) => r.type));
-        return Array.from(types);
-    }, [results]);
+    // const availableTypes = useMemo(() => {
+    //     if (!results) return [];
+    //     const types = new Set(results.map((r) => r.type));
+    //     return Array.from(types);
+    // }, [results]);
 
 	useEffect(() => {
         setCurrentPage(1);
@@ -33,9 +33,27 @@ function SearchResultsPage() {
 
         let filtered = [...results];
 
-        if (selectedType !== 'ALL') {
-            filtered = filtered.filter((item) => item.type === selectedType);
-        }
+        // if (selectedType !== 'ALL') {
+        //     filtered = filtered.filter((item) => item.type === selectedType);
+        // }
+
+		if (selectedType === 'PROJECT') {
+			filtered = filtered.filter(
+				(item) => item.type === 'project'
+			);
+		} else if (selectedType === 'USER') {
+			filtered = filtered.filter(
+				(item) => item.type === 'login' || item.type === 'name'
+			);
+		} else if (selectedType === 'LOGIN') {
+			filtered = filtered.filter(
+				(item) => item.type === 'login'
+			);
+		} else if (selectedType === 'NAME') {
+			filtered = filtered.filter(
+				(item) => item.type === 'name'
+			);
+		}
 
         filtered.sort((a, b) => {
             if (sortBy === 'title') {
@@ -67,17 +85,17 @@ function SearchResultsPage() {
         content = (
             <>
                 {paginatedResults.map((result: any) => {
-                if (result.type === 'USER' || result.type === 'user') {
-                    return (
-                        <ProjectCard
-                            key={`${result.type}-${result.id}`}
-                            layout="portrait"
-                            title={result.title}
-							tags={[result.type]}
-                            image={result.avatarUrl}
-                            route={result.url}
-                        />
-                    );
+					if (result.type === 'login' || result.type === 'name') {
+						return (
+							<ProjectCard
+								key={`${result.type}-${result.id}`}
+								layout="portrait"
+								title={result.title}
+								tags={['USER']}
+								image={result.custumAvatar || result.avatarUrl}
+								route={result.url}
+							/>
+						);
                 }
                 return (
                     <ProjectCard
@@ -120,14 +138,42 @@ function SearchResultsPage() {
 										ALL
 									</button>
 
-									{availableTypes.map((type) => (
+									{/* {availableTypes.map((type) => (
 										<button
 											key={type}
 											onClick={() => setSelectedType(type)}
 											className={`${baseTagStyle} ${selectedType === type ? activeTagStyle : inactiveTagStyle}`}>
 											{type.toUpperCase()}
 										</button>
-									))}
+									))} */}
+
+									<button
+										onClick={() => setSelectedType('PROJECT')}
+										className={`${baseTagStyle} ${selectedType === 'PROJECT' ? activeTagStyle : inactiveTagStyle}`}
+									>
+										PROJECT
+									</button>
+
+									<button
+										onClick={() => setSelectedType('USER')}
+										className={`${baseTagStyle} ${selectedType === 'USER' ? activeTagStyle : inactiveTagStyle}`}
+									>
+										USER
+									</button>
+
+									<button
+										onClick={() => setSelectedType('NAME')}
+										className={`${baseTagStyle} ${selectedType === 'NAME' ? activeTagStyle : inactiveTagStyle}`}
+									>
+										NAME
+									</button>
+
+									<button
+										onClick={() => setSelectedType('LOGIN')}
+										className={`${baseTagStyle} ${selectedType === 'LOGIN' ? activeTagStyle : inactiveTagStyle}`}
+									>
+										LOGIN
+									</button>
 								</div>
 
 								<div className="flex items-center gap-2">
