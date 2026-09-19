@@ -17,7 +17,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
     return (
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-                {/* Wrapper für Avatar und Status mit relative positionierung */}
                 <div className="relative inline-block">
                     <img 
                         src={otherUser.avatarUrl}
