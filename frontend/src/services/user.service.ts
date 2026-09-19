@@ -55,7 +55,7 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserP
   const results = Array.isArray(data) ? data : (data.users || []);
   
   const users: FullUserProfile[] = results
-    .filter((item: any) => item.type === 'user')
+    .filter((item: any) => (item.type === 'login' || item.type === 'name'))
     .map((item: any) => ({
       id: item.id,
       intraName: item.title, 
