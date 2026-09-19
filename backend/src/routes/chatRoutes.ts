@@ -51,7 +51,7 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 			take: limit,
 			...(cursorId && { skip: 1, cursor: { id: cursorId } }),
 			include: {
-				sender: { select: { id: true, login: true, avatarUrl: true } },
+				sender: { select: { id: true, login: true, avatarUrl: true, isOnline: true } },
 			},
 		});
 
@@ -62,7 +62,8 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 		const participants = chat.users.map(u => ({
 			id: u.id,
 			intraName: u.login,
-			avatarUrl: u.avatarUrl ?? undefined
+			avatarUrl: u.avatarUrl ?? undefined,
+			isOnline: u.isOnline
 		}));
 
 		return {
@@ -71,7 +72,8 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 				sender: {
 					id: m.sender.id,
 					intraName: m.sender.login,
-					avatarUrl: m.sender.avatarUrl ?? undefined
+					avatarUrl: m.sender.avatarUrl ?? undefined,
+					isOnline: m.sender.isOnline
 				}
 			})),
 			nextCursor,
