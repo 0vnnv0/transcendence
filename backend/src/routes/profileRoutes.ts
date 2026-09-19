@@ -116,7 +116,7 @@ async function getProfileInfo(request: FastifyRequest, response: FastifyReply, f
 		return response.code(401).send({ error: "You are not logged in." });
 
 	const { userId } = request.params as { userId: any };
-	console.log("userId" + Number(userId));
+	// console.log("userId" + Number(userId));
 	try {
 
         const userData = await prisma.testUser.findUnique({

@@ -40,17 +40,6 @@ export function getProjects(prisma: PrismaClient) {
 			user,
 			user.newCore ?? false
 		);
-		
-		console.log("USER RANK:", user.currentRank);
-		console.log("NEW CORE:", user.newCore);
-		console.log(
-			"AVAILABLE:",
-			available.map(p => ({
-				slug: p.slug,
-				rank: p.projectRank,
-			}))
-		);
-		console.log("ACTIVE:", user.activeProjects);
 
 		const userRank = user.currentRank ?? 0;
 
