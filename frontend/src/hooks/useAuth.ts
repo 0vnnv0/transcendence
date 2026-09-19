@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { signUpUser, loginUser, authorizeUser, type AuthCredentials } from '../services/auth.service';
 import { useAuth } from '../components/context/AuthContext';
+import { socket } from '../services/socket';
 
 // =============================================================================
 // TypeScript Interfaces & Types
@@ -101,6 +102,9 @@ export function useLogoutLogic(): LogoutLogicResult {
       } catch (error) {
         console.error("Backend-Logout unsuccessful.", error);
       }
+    }
+	if (socket.connected) {
+        socket.disconnect();
     }
 
     localStorage.removeItem('token');
