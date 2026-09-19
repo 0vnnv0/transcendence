@@ -11,6 +11,9 @@ import ProjectsList from '../components/ui/Profile/ProjectsList';
 import { formatAvailability } from '../utils/formatAvailability';
 import type { TagData } from '../components/ui/TagList/TagList';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { socket } from '../services/socket';
 import { toast } from 'react-hot-toast';
 import InfoCard from '../components/ui/Cards/InfoCard'
 import SearchBar from '../components/ui/Search/Search';
@@ -20,24 +23,26 @@ function OtherProfile() {
     const { username } = useParams<{ username: string }>();
     const userKey = (username && username !== "Guest") ? username : null;
     const { userId: currentUserId } = useAuth();
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        const refreshFriendshipStatus = () => {
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+        };
+
+        socket.on('friend_request_received', refreshFriendshipStatus);
+        socket.on('friend_request_accepted', refreshFriendshipStatus);
+        socket.on('friendship_removed', refreshFriendshipStatus);
+
+        return () => {
+            socket.off('friend_request_received', refreshFriendshipStatus);
+            socket.off('friend_request_accepted', refreshFriendshipStatus);
+            socket.off('friendship_removed', refreshFriendshipStatus);
+        };
+    }, [queryClient]);
 
     const { data: profile, isLoading, isError } = useUserProfile(userKey);
     const { mutate: startChat, isPending: isStartingChat } = useStartChat();
-
-    // Lokaler Status pro User-Key gemappt, damit das Umschalten bei Profilwechsel isoliert bleibt
-    const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
-    const localStatus = username ? localStatuses[username] : undefined;
-    const setLocalStatus = (status: string | null) => {
-        if (!username) return;
-        setLocalStatuses(prev => {
-            if (status === null) {
-                const next = { ...prev };
-                delete next[username];
-                return next;
-            }
-            return { ...prev, [username]: status };
-        });
-    };
    
     const { mutate: addFriend, isPending: isAddingFriend } = useAddFriend();
     const { mutate: removeFriend, isPending: isRemovingFriend } = useRemoveFriend();
@@ -47,7 +52,7 @@ function OtherProfile() {
     const { data: recProjects, isLoading: recProjectsLoading, isError: recProjectsError } = useRecommendedProjects(userKey);
 
     let mainContent = null;
-    
+
     if (isLoading) {
         mainContent = (
             <div className="flex h-full items-center justify-center">
@@ -64,9 +69,7 @@ function OtherProfile() {
         );
     } else {
         const friendship = profile.friendship;
-        const friendshipStatus = localStatus ?? friendship?.status;
-        // const effectiveSenderId = localStatus ? currentUserId : friendship?.senderId;
-        // const effectiveReceiverId = friendship?.receiverId;
+        const friendshipStatus = friendship?.status;
 
         let friendActionButton;
 
@@ -77,7 +80,6 @@ function OtherProfile() {
                     icon="smiley"
                     variant="secondary"
                     onClick={() => removeFriend(profile.id, {
-                        onSuccess: () => setLocalStatus(null)
                     })}
                     disabled={isRemovingFriend}
                 >
@@ -97,7 +99,6 @@ function OtherProfile() {
                     icon="smiley"
                     variant="secondary"
                     onClick={() => acceptFriend(profile.id, {
-                        onSuccess: () => setLocalStatus('ACCEPTED')
                     })}
                     disabled={isAcceptingFriend}
                 >
@@ -112,7 +113,6 @@ function OtherProfile() {
                     variant="secondary"
                     onClick={() => addFriend(profile.id, {
                         onSuccess: () => {
-                            setLocalStatus('PENDING_SENT');
                             toast.success("Friend request sent successfully!");
                         }
                     })}
