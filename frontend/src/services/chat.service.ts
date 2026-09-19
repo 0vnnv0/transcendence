@@ -29,8 +29,18 @@ export const fetchChatHistory = async (chatId: number, cursorId?: number): Promi
 	  },
 	});
   
+	// if (!response.ok) {
+	//   throw new Error('Error trying to load messages');
+	// }
+
 	if (!response.ok) {
-	  throw new Error('Error trying to load messages');
+		const error = new Error("Unable to load chat history") as Error & {
+			status?: number;
+		};
+
+		error.status = response.status;
+
+		throw error;
 	}
   
 	return response.json();
