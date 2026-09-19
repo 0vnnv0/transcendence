@@ -1,11 +1,11 @@
-
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import projectsData from '../data/projects.json';
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 import TagList from '../components/ui/TagList/TagList';
 import type { TagData } from '../components/ui/TagList/TagList';
-import { useActiveUsersByProject } from '../hooks/useUsers';
+import { useActiveUsersByProject, useUserProfile } from '../hooks/useUsers';
 import { useAuth } from '../components/context/AuthContext';
 import { useProjectFilters } from '../store/useProjectFilters';
 import { formatAvailability } from '../utils/formatAvailability';
@@ -15,6 +15,8 @@ import { useStartChat } from '../hooks/useChat';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
 import PageLayout from './PageLayout';
+import RankFilter from '../components/ui/Filters/RankFilters';
+
 
 function Certain_Project() {
 
@@ -22,8 +24,12 @@ function Certain_Project() {
 	const { userName, userId: currentUserId } = useAuth();
 	const { mutate: startChat } = useStartChat();
 
+	const {data: currentUser } = useUserProfile(userName);
+
+	const [selectedRank, setSelectedRank] = useState<number | null>(null);
+
 	const project = projectsData.find(p => p.slug === id);
-	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
+	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string, selectedRank);
 	const { viewMode, days: selectedDays } = useProjectFilters();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
@@ -64,6 +70,13 @@ function Certain_Project() {
 	if (!project) {
 		return <div className="p-10 text-white text-2xl">Project not found!</div>;
 	}
+
+	console.log('RANK FILTER DEBUG', {
+		userRank: currentUser?.currentRank,
+		projectRank: project?.projectRank,
+		selectedRank,
+	});
+
 	return (
 		<PageLayout>
 			<div className="z-0 absolute top-0 left-0 right-0 h-100 bg-linear-to-b from-[#ffccb9] to-background-neutral" />
@@ -92,11 +105,31 @@ function Certain_Project() {
 				</div>	
 			</div>
 
+			{/* <CardSection title="Available Students" filter isError={isError}>
+				<CardSection.Body viewMode={viewMode}>
+					{availableUsers}
+				</CardSection.Body>
+			</CardSection> */}
+
 			<CardSection title="Available Students" filter isError={isError}>
+				<CardSection.Filters>
+					<RankFilter
+						userRank={currentUser?.currentRank ?? 1}
+						projectRank={project?.projectRank ?? currentUser?.currentRank ?? 1}
+						selectedRank={selectedRank}
+						onChange={setSelectedRank}
+					/>
+				</CardSection.Filters>
+
 				<CardSection.Body viewMode={viewMode}>
 					{availableUsers}
 				</CardSection.Body>
 			</CardSection>
+
+				{/* <CardSection.Body viewMode={viewMode}>
+					{availableUsers}
+				</CardSection.Body>
+			</CardSection> */}
 			{isError && 
 				<p className="text-subtitle text-red-500">{error instanceof Error ? error.message : 'Something went wrong'}</p>
 			}

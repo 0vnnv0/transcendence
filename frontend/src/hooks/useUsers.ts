@@ -61,10 +61,10 @@ export function useUploadAvatar(userId: number, login: string) {
   })
 }
 
-export function useActiveUsersByProject(username: string | null, projectName: string) {
+export function useActiveUsersByProject(username: string | null, projectName: string, rank: number | null) {
 	return useQuery({
-		queryKey: ['activeUsers', username, projectName],
-		queryFn: () => fetchActiveUsersByProject(username!, projectName),
+		queryKey: ['activeUsers', username, projectName, rank],
+		queryFn: () => fetchActiveUsersByProject(username!, projectName, rank),
 		enabled: !!username, // don't fire the request at all when there's no real user
 		retry: false,
 		select: (users) => users.map(normalizeProfile),
