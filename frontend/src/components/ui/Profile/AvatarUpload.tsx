@@ -13,8 +13,6 @@ function AvatarUpload({ avatarUrl, userId, login }: AvatarUploadProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { mutate: uploadAvatar, isPending } = useUploadAvatar(userId, login);
 
-	console.log("AvatarUrl? ", avatarUrl)
-
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
 		if (!file) return;
