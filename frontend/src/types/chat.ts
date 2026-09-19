@@ -3,6 +3,7 @@ export interface ChatUser {
 	intraName: string;
 	avatarUrl?: string;
 	customAvatar?: string;
+	isOnline?: boolean;
 }
 
 export interface ChatMessage {

@@ -121,7 +121,7 @@ const ChatWindow: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-purple/50 w-full">
+        <div className="flex flex-col h-screen bg-white w-full">
             <ChatHeader otherUser={otherUser} isLoading={isLoading} />
 
             {mainContent}

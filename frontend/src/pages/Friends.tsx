@@ -3,8 +3,39 @@ import { useFriends, useFriendRequests, useAcceptFriend, useRemoveFriend } from 
 import UserCard from '../components/ui/Cards/UserCard';
 import CardSection from '../components/sections/CardSection';
 
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { socket } from '../services/socket';
 
 function Friends() {
+	const queryClient = useQueryClient();
+
+    useEffect(() => {
+        // Wenn mir jemand eine Anfrage schickt -> Pending-Liste neu laden
+        socket.on('friend_request_received', () => {
+			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
+        });
+
+        // Wenn meine Anfrage akzeptiert wurde -> Freundesliste neu laden
+        socket.on('friend_request_accepted', () => {
+			queryClient.invalidateQueries({ queryKey: ['friends'] });
+			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
+		});
+
+		// Wenn request removed -> refresh beides
+		socket.on('friendship_removed', () => {
+			queryClient.invalidateQueries({ queryKey: ['friends'] });
+			queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
+        });
+
+        // Cleanup beim Unmount
+        return () => {
+            socket.off('friend_request_received');
+            socket.off('friend_request_accepted');
+			socket.off('friendship_removed');
+        };
+    }, [queryClient]);
+	
     const { data: allFriends, isLoading, isError } = useFriends();
     const { data: requests, isLoading: isLoadingReq, isError: isErrorReq } = useFriendRequests();
     const { mutate: acceptFriend } = useAcceptFriend();
@@ -31,7 +62,7 @@ function Friends() {
                             username={request.intraName}
                             isOnline={request.isOnline}
                             onAccept={() => acceptFriend(request.id)}
-                            onDecline={() => removeFriend(request.friendshipId)}
+                            onDecline={() => removeFriend(request.id)}
 							showStatus
 						/>
                     ))}
