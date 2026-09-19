@@ -148,10 +148,10 @@ export async function uploadToS3(
 	}
 }
 
-export function getAvatarUrl(userId: number): string {
-	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
-	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
-}
+// export function getAvatarUrl(userId: number): string {
+// 	const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+// 	return `https://${cfDomain}/avatars/${userId}/avatar.webp`;
+// }
 
 // export async function uploadAvatarRequest(file: File, userId: number): Promise<{ avatarUrl: string }> {
 // 	const presignedPost = await getUploadUrl(file.type);

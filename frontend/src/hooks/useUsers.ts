@@ -49,12 +49,9 @@ export function useUploadAvatar(userId: number, login: string) {
 
     // Real server response arrived and succeeded — replace preview with the real URL
     onSuccess: (data) => {
-		console.log('Neue Avatar URL vom Upload:', data.avatarUrl);
       toast.success('Profile picture changed successfully.');
       queryClient.setQueryData(['userProfile', login], (old: any) => {
-		console.log('Cache vorher:', old?.customAvatar);
 		const updated = old ? { ...old, customAvatar: data.avatarUrl } : old;
-		console.log('Cache nachher:', updated?.customAvatar);
 		return updated;
 	  })
     },
