@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import type { ChatUser } from "../../../types/chat";
-import { useSocket } from "../../../context/SocketContext"; // Pfad ggf. anpassen
+import { useSocket } from "../../context/SocketContext";
 
 interface ChatHeaderProps {
     otherUser?: ChatUser;
@@ -10,7 +10,7 @@ interface ChatHeaderProps {
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ otherUser, isLoading }) => {
     const navigate = useNavigate();
-    const { onlineUserIds } = useSocket(); // Live-Daten aus dem Socket-Context holen
+    const { onlineUserIds } = useSocket(); 
 
     if (isLoading || !otherUser) {
         return <div className="p-4 border-b border-gray-200 h-[73px] animate-pulse bg-purple/55" />;

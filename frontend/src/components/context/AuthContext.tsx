@@ -6,15 +6,15 @@ interface AuthContextType {
 	userName: string;
 	userId: number | null;
 	updateUser: (token: string) => void;
+	logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>{
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [userName, setUserName] = useState<string>("Guest");
 	const [userId, setUserId] = useState<number | null>(null);
 
-	// 2. Define the implementation of updateUser inside the provider
     const updateUser = (token: string) => {
         try {
             const decoded = jwtDecode<{ id: number; intraName: string }>(token);
@@ -25,6 +25,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+	const logout = () => {
+		localStorage.removeItem('token');
+		setUserId(null);
+		setUserName("Guest");
+		if (socket.connected) {
+			socket.disconnect();
+		}
+	};
+
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 		if (token) {
@@ -34,13 +43,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 				setUserId(decoded.id);
 			} catch (e) {
 				localStorage.removeItem('token');
-			}}
+			}
+		}
   	}, []);
 
 	useEffect(() => {
 		if (userId) {
 			socket.connect();
-			socket.emit("register", { userID: userId });
+			socket.emit("register", { userId: userId }); 
+			
 			return () => {
 				socket.disconnect();
 			}
@@ -48,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	}, [userId]);
 
 	return (
-		<AuthContext.Provider value={{ userName, userId, updateUser }}>
+		<AuthContext.Provider value={{ userName, userId, updateUser, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);
