@@ -207,7 +207,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
 	//const url_base = process.env.FRONTEND_REDIRECT_URL!;
-	const frontendRedirectUrl = `https://localhost:8443/authsuccess?token=${token}`; // const frontendRedirectUrl = `http://c0c7c2.42berlin.de:8080/authsuccess?token=${token}`;
+	const frontendRedirectUrl = `https://c1b4c2.42berlin.de:8443/authsuccess?token=${token}`; // const frontendRedirectUrl = `http://c0c7c2.42berlin.de:8080/authsuccess?token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
 	console.error("DEBUG AUTH ERROR:", error); // Das zeigt den echten Fehler im Terminal
