@@ -37,34 +37,35 @@ function Dashboard() {
         isError: isRecError
     } = useRecommendedProjects(userName);
 
-    const nextProject: ProjectData | undefined = nextProjectData?.projects?.[0];
-	// const nextProject: ProjectData | undefined = projectsData[0];
-	console.log('Next, ', nextProject)
+    const nextProjects: ProjectData[] = nextProjectData?.projects || [];
+	const isLandscape = nextProjects.length == 1;
 
     const recommendedProjects: ProjectData[] = recommendedData?.projects || [];
 	// const recommendedProjects: ProjectData[] = projectsData ? projectsData.slice(1) : [];
-	console.log('Recommended, ', recommendedProjects);
 	let nextProjectContent;
 
 	if (isNextLoading) {
 			nextProjectContent = <p className="text-subtitle text-purple">Looking for project...</p>;
 		} else if (isNextError) {
 			nextProjectContent = <p className="text-subtitle text-red-500">[404] Error trying to connect with server</p>;
-		} else if (nextProject) {
-			const nrOfUsers = nextProject.teamSize.min == nextProject.teamSize.max ? `${nextProject.teamSize.max}` : `${nextProject.teamSize.min}-${nextProject.teamSize.max}`
-			nextProjectContent = (
-				<ProjectCard
-					layout="landscape"
-					image={getProjectImage(nextProject.slug)}
-					title={nextProject.name}
-					tags={[
-						`${nrOfUsers} People`,
-						...nextProject.keywords
-					]}
-					route={`/project/${nextProject.slug}`}
-					description={nextProject.description}
-				/>
-			);
+		} else if (nextProjects) {
+			nextProjectContent = nextProjects.map((project: ProjectData) => {
+				const nrOfUsers = project.teamSize.min == project.teamSize.max ? `${project.teamSize.max}` : `${project.teamSize.min}-${project.teamSize.max}`
+				return (
+					<ProjectCard
+						key={project.id}
+						layout={isLandscape ? 'landscape' : 'portrait'}
+						image={getProjectImage(project.slug)}
+						title={project.name}
+						tags={[
+							`${nrOfUsers} People`,
+							...project.keywords
+						]}
+						route={`/project/${project.slug}`}
+						description={project.description}
+					/>
+				)
+			})
 		} else {
 			nextProjectContent = <p className="text-subtitle text-red-500">[404] Couldn't find the next project</p>;
 		}
@@ -111,7 +112,7 @@ return (
 		</h1>
 
 		<CardSection title="Your next project available">
-			<CardSection.Body viewMode="list">
+			<CardSection.Body viewMode={isLandscape ? 'list' : 'grid'}>
 				{nextProjectContent}
 			</CardSection.Body>
 		</CardSection>

@@ -13,6 +13,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
     const { userId } = useAuth();
 
+    // Wenn sich der User ausloggt (userId wird null), sofort alle Toasts schließen
+    useEffect(() => {
+        if (!userId) {
+            toast.dismiss();
+        }
+    }, [userId]);
+
     useEffect(() => {
         if (!userId) {
             toast.remove();
@@ -77,6 +84,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
             const isInThisChat = activeChatId === message.chatId;
 
+            // Kein Toast anzeigen, wenn man sich im selben Chat befindet
             if (!isInThisChat) {
                 const senderName = message.sender?.intraName || "Jemand";
                 

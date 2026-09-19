@@ -92,7 +92,7 @@ function SearchResultsPage() {
 								layout="portrait"
 								title={result.title}
 								tags={['USER']}
-								image={result.custumAvatar || result.avatarUrl}
+								image={result.customAvatar || result.avatarUrl}
 								route={result.url}
 							/>
 						);
@@ -119,7 +119,6 @@ function SearchResultsPage() {
 	const disabledTagStyle = "opacity-30 cursor-not-allowed bg-gray-100 border-gray-300 text-gray-400";
 	return (
 		<PageLayout>
-				
 				<div className="flex flex-col flex-1 gap-10">
 					<h1 className="text-title text-black">
 						Search Results

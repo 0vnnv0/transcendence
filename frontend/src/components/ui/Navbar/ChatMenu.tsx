@@ -4,6 +4,9 @@ import { useRecentChats } from '../../../hooks/useChat'; // Pfad anpassen
 import { NewChatModal } from '../ChatWindow/NewChatModal';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { socket } from '../../../services/socket';
 
 function ChatMenu() {
     const navigate = useNavigate();
@@ -14,6 +17,21 @@ function ChatMenu() {
     const { userId } = useAuth();
 
     const { data: recentChats, isLoading, isError } = useRecentChats(userId as number);
+	const queryClient = useQueryClient();
+
+	useEffect(() => {
+        if (!socket) return;
+
+        const handleNewMessage = (data: { chatId: number; updatedAt: string }) => {
+            queryClient.invalidateQueries({ queryKey: ['recentChats', userId] });
+        };
+
+        socket.on('new_message', handleNewMessage);
+
+        return () => {
+            socket.off('new_message', handleNewMessage);
+        };
+    }, [socket, queryClient, userId]);
 
     let chatIcon = "/chat_closed.svg";
     if (isChatsOpen) {
