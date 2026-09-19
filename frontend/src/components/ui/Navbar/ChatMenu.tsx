@@ -56,7 +56,7 @@ function ChatMenu() {
                         />
                         <span
                             className={`
-                                absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white
+                                absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-black
                                 ${isOnline ? 'bg-green-500' : 'bg-gray-400'}
                             `}
                             aria-label={isOnline ? 'online' : 'offline'}
