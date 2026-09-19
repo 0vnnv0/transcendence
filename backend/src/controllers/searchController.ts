@@ -221,7 +221,7 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 			projectRank: p.projectRank,
 			slug: p.slug,
 			keywords: p.keywords,
-			url: `/project/${(p.name).toLowerCase()}`
+			url: `/project/${(p.slug).toLowerCase()}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);
