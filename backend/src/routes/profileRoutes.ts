@@ -10,6 +10,8 @@ import { S3Client, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/clien
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
+const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+
 export const s3 = new S3Client({
     region: "eu-north-1"
 });
@@ -347,7 +349,7 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
     }
 }
 
-const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+// const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
 
 async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
