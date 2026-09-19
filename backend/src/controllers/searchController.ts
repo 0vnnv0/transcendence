@@ -16,6 +16,7 @@ async function searchUsers(searchTerm: string) {
             firstName: true,
             lastName: true,
             avatarUrl: true,
+			customAvatar: true
         },
     });
 
@@ -42,6 +43,7 @@ async function searchUsers(searchTerm: string) {
             firstName: true,
             lastName: true,
             avatarUrl: true,
+			customAvatar: true
         },
     });
 
@@ -91,9 +93,10 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			login: u.login,
 			firstName: u.firstName,
 			lastName: u.lastName,
-			avatarUrl: u.customUrl || u.avatarUrl,
+			avatarUrl: u.avatarUrl,
 			type: "login",
 			url: `/users/${u.login}`,
+			customAvatar: u.customAvatar
 		}));
 
 		const formattedNameUsers = nameUsers.map((u: any) => ({
@@ -102,9 +105,10 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			login: u.login,
 			firstName: u.firstName,
 			lastName: u.lastName,
-			avatarUrl: u.customUrl || u.avatarUrl,
+			avatarUrl: u.avatarUrl,
 			type: "name",
 			url: `/users/${u.login}`,
+			customAvatar: u.customAvatar
 		}));
 
         const formattedUsers = [
@@ -125,6 +129,7 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			url: `/project/${(p.slug).toLowerCase()}`
 		}));
 
+		console.log("FORMATTEDUSERS: ", formattedUsers);
 		return reply.send([...formattedUsers, ...formattedProjects]);
 
 	} catch (error) {
@@ -175,9 +180,10 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 			login: u.login,
 			firstName: u.firstName,
 			lastName: u.lastName,
-			avatarUrl: u.customUrl || u.avatarUrl,
+			avatarUrl: u.avatarUrl,
 			type: "login",
 			url: `/users/${u.login}`,
+			customAvatar: u.customAvatar
 		}));
 
 		const formattedNameUsers = nameUsers.map((u: any) => ({
@@ -186,9 +192,10 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 			login: u.login,
 			firstName: u.firstName,
 			lastName: u.lastName,
-			avatarUrl: u.customUrl || u.avatarUrl,
+			avatarUrl: u.avatarUrl,
 			type: "name",
 			url: `/users/${u.login}`,
+			customAvatar: u.customAvatar
 		}));
 
         const formattedUsers = [
@@ -214,7 +221,7 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
 			projectRank: p.projectRank,
 			slug: p.slug,
 			keywords: p.keywords,
-			url: `/project/${(p.name).toLowerCase()}`
+			url: `/project/${(p.slug).toLowerCase()}`
 		}));
 
 		return reply.send([...formattedUsers, ...formattedProjects]);

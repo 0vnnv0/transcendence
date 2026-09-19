@@ -27,10 +27,10 @@ export class FriendService {
         },
         include: {
             sender: {
-                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true }
+                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true, customAvatar: true }
             },
             receiver: {
-                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true }
+                select: { id: true, login: true, intraEmail: true, isOnline: true, avatarUrl: true , customAvatar: true}
             }
         }
     });
@@ -45,7 +45,8 @@ export class FriendService {
             intraName: friendProfile.login,
             intraEmail: friendProfile.intraEmail,
             isOnline: friendProfile.isOnline,
-            avatarUrl: friendProfile.avatarUrl
+            avatarUrl: friendProfile.avatarUrl,
+			customAvatar: friendProfile.customAvatar
         };
     });
 }
@@ -58,7 +59,7 @@ export class FriendService {
 			},
 			include: {
 				sender: {
-					select: {id: true, login: true, intraEmail: true, avatarUrl: true, isOnline: true }
+					select: {id: true, login: true, intraEmail: true, avatarUrl: true, isOnline: true, customAvatar: true }
 				}
 			}
 		});
@@ -70,6 +71,7 @@ export class FriendService {
 			intraEmail: r.sender.intraEmail,
 			avatarUrl: r.sender.avatarUrl,
 			isOnline: r.sender.isOnline,
+			customAvatar: r.sender.customAvatar
 		}));
 	}
 
