@@ -12,8 +12,8 @@ interface PageLayoutProps {
 
 function PageLayout({ children }: PageLayoutProps) {
 	return (
-		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat">
-			<div className="md:w-56 xl:w-70 flex-none z-10">
+		<section className="bg-background-neutral flex min-h-screen bg-cover bg-center bg-no-repeat pb-20 md:pb-0">
+			<div className="md:w-56 xl:w-70 flex-none z-100">
 				<Navbar />
 			</div>
 			<div className="flex flex-col items-between w-full">

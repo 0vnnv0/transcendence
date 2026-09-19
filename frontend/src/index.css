@@ -90,3 +90,8 @@
   font-style: normal;
   font-display: swap; /* Helps with performance */
 }
+
+@utility h-stretch {
+	height: -webkit-fill-available;
+	height: stretch;
+}

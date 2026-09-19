@@ -18,7 +18,7 @@ function Navbar() {
 
   return (
 	<>
-		<nav className="hidden md:flex fixed left-0 top-0 h-screen w-56 xl:w-70 flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-background-grey">
+		<nav className="hidden md:flex fixed left-0 top-0 h-screen w-56 xl:w-70 flex-col flex-1 min-h-screen items-start gap-4 p-6 bg-background-grey z-50">
 			<div className="top-6 w-full">
 				<SearchBar />
 			</div>

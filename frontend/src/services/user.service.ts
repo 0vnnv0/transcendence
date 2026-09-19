@@ -22,7 +22,6 @@ export const fetchUserProfile = async (login: string): Promise<FullUserProfile> 
   }
 
   const res = await response.json() as Promise<FullUserProfile>;
-  console.log("Get user profile vom Server: ", res)
   return res;
 };
 
@@ -50,8 +49,7 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserP
   }
   
   const data = await response.json();
-  console.log("Gefundene Suchergebnisse:", data);
-  console.log("Raw Backend Response für", searchQuery, ":", data);
+
   const results = Array.isArray(data) ? data : (data.users || []);
   
   const users: FullUserProfile[] = results

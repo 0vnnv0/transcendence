@@ -128,7 +128,6 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			keywords: p.keywords,
 			url: `/project/${(p.slug).toLowerCase()}`
 		}));
-		
 		return reply.send([...formattedUsers, ...formattedProjects]);
 
 	} catch (error) {

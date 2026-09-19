@@ -32,7 +32,7 @@ export function App() {
 
 		<Route path="/authsuccess" element={<AuthSuccess />} />
 		<Route element={<ProtectedRoute />}>
-		    <Route path="/authorize" element={<Authorize />} />
+		    {/* <Route path="/authorize" element={<Authorize />} /> */}
 			<Route path="/" element={<Login />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/projects" element={<Projects />} />
