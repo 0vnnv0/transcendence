@@ -153,7 +153,7 @@ function OtherProfile() {
 									onClick={() => currentUserId && startChat({ currentUserId, targetUserId: profile.id })}
 									disabled={isStartingChat || !currentUserId}
 								>
-									{isStartingChat ? 'Starting...' : 'Message'}
+									{/* {isStartingChat ? 'Starting...' : 'Message'} */}
 								</Button>
 
 								<Button

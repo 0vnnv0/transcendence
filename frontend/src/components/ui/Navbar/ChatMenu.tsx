@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useRecentChats } from '../../../hooks/useChat'; // Pfad anpassen
 import { NewChatModal } from '../ChatWindow/NewChatModal';
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 
 function ChatMenu() {
     const navigate = useNavigate();
+	const { onlineUserIds } = useSocket();
     const [isChatsOpen, setIsChatsOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -40,7 +42,7 @@ function ChatMenu() {
 
             const displayName = otherUser?.intraName || "Unbekannt";
             const avatarSrc = otherUser?.customAvatar || otherUser?.avatarUrl || "/default-avatar.png";
-            const isOnline = otherUser?.isOnline ?? false;
+            const isOnline = otherUser ? onlineUserIds.includes(otherUser.id) : false;
 
             return (
                 <li

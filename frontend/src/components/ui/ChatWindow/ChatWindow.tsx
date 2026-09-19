@@ -6,7 +6,7 @@ import MessageInput from './MessageInput';
 import ChatHeader from './ChatHeader'; 
 import { socket } from '../../../services/socket'; 
 import { useAuth } from '../../context/AuthContext';
-
+import { useSocket } from '../../context/SocketContext';
 import { useEffect } from 'react'; //junruh
 
 const ChatWindow: React.FC = () => {
@@ -119,10 +119,17 @@ const ChatWindow: React.FC = () => {
             />
         );
     }
+	const { onlineUserIds } = useSocket();
+
+	const enhancedOtherUser = otherUser ? {
+		...otherUser,
+		isOnline: onlineUserIds.includes(otherUser.id)
+	} : undefined;
+	
 
     return (
         <div className="flex flex-col h-screen bg-white w-full">
-            <ChatHeader otherUser={otherUser} isLoading={isLoading} />
+            <ChatHeader otherUser={enhancedOtherUser} isLoading={isLoading} />
 
             {mainContent}
 
