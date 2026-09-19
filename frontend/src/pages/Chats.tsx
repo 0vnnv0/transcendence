@@ -28,9 +28,9 @@ function ConversationView() {
 				<Navbar />
 			</div>
 			<div className="flex flex-col flex-1 w-full">
-				<div className="md:hidden p-4 pb-0">
+				{/* <div className="md:hidden p-4 pb-0">
 					<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
-				</div>
+				</div> */}
 				<ChatWindow />
 			</div>
 		</section>
