@@ -349,7 +349,7 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
     }
 }
 
-const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+// const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
 
 async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
