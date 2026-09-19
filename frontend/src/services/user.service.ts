@@ -59,7 +59,8 @@ export const fetchUsersBySearch = async (searchQuery: string): Promise<FullUserP
     .map((item: any) => ({
       id: item.id,
       intraName: item.title, 
-      avatarUrl: item.avatarUrl
+      avatarUrl: item.avatarUrl,
+	  customAvatar: item.customAvatar
     }));
 	
     

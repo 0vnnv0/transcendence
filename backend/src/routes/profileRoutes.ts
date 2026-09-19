@@ -10,6 +10,8 @@ import { S3Client, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/clien
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
+const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
+
 export const s3 = new S3Client({
     region: "eu-north-1"
 });
