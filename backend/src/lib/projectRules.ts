@@ -20,15 +20,27 @@ export function isExcludedByOldCoreRules(
 	for (const group of OLD_CORE_EXCLUSIONS) {
 		if (!group.includes(slug)) continue;
 
-		// 1. schon fertig in der Gruppe?
-		const anyDone = group.some((p) => doneSlugs.has(p));
+		for (const project of group) {
+			if (project === slug) continue;
 
-		// 2. irgendeins der Projekte ist aktiv (egal ob team oder nicht)
-		const anyActive = group.some((p) => activeProjectMap.has(p));
+			if (doneSlugs.has(project)) {
+				return true;
+			}
 
-		if (anyDone || anyActive) {
-			return true;
+			if (activeProjectMap.has(project)) {
+				return true;
+			}
 		}
+
+		// // 1. schon fertig in der Gruppe?
+		// const anyDone = group.some((p) => doneSlugs.has(p));
+
+		// // 2. irgendeins der Projekte ist aktiv (egal ob team oder nicht)
+		// const anyActive = group.some((p) => activeProjectMap.has(p));
+
+		// if (anyDone || anyActive) {
+		// 	return true;
+		// }
 	}
 
 	return false;
