@@ -42,7 +42,7 @@ const SearchBar: React.FC = () => {
 	}
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter' && searchQuery.trim().length > 0) {
+		if (e.key === 'Enter' && searchQuery.trim().length > 1) {
 			setIsOpen(false);
 			navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
 		}
