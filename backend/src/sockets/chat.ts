@@ -295,9 +295,10 @@ async function sendMessage (
             },
         });
 
-        await prisma.chat.update({
+        const updatedChat = await prisma.chat.update({
             where: { id: Number(chatId) },
-            data: { updatedAt: new Date() }
+            data: { updatedAt: new Date() },
+			include: {users: true}
         });
 
         // Broadcast with intraName formatting
@@ -311,6 +312,13 @@ async function sendMessage (
         };
 
         io.to(`chat_${chatId}`).emit("new_message", formattedMessage);
+		updatedChat.users.forEach((user) => {
+            io.to(`user_${user.id}`).emit("sidebar_update", {
+                chatId: updatedChat.id,
+                chat: updatedChat,
+                updatedAt: updatedChat.updatedAt
+            });
+        });
     }
     catch (err) {
         socket.emit("error_occurred", {

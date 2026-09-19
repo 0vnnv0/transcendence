@@ -34,8 +34,6 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 
 	try {
 		const limit = 50;
-
-		// NEU: Chat + Teilnehmer separat laden
 		const chat = await prisma.chat.findUnique({
 			where: { id: Number(chatId) },
 			include: { users: true }
@@ -58,7 +56,6 @@ async function loadMessages(fastify: FastifyInstance, prisma: PrismaClient, requ
 		const nextCursor = messages.length === limit ? messages[messages.length - 1]?.id : null;
 		const chronologicalMessages = messages.reverse();
 
-		// NEU: Mapping login -> intraName, konsistent zu ChatUser type
 		const participants = chat.users.map(u => ({
 			id: u.id,
 			intraName: u.login,

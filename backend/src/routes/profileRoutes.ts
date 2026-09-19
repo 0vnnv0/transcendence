@@ -1,8 +1,5 @@
 /// <reference path="../types/fastify.d.ts" />
 
-//todo:
-
-//if using delete need to add deleting the pfp
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
@@ -217,7 +214,6 @@ async function modProfileInfo(
 
 async function deleteProfile(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
-	// use these next parts to verify that the user is logged in and has access rights, ask about prev validation though, and also add a check for blocked users
 	const usingUserId = request.user.id;
 	if (!usingUserId)
 		return response.code(401).send({ error: "You are not logged in." });
@@ -241,54 +237,6 @@ async function deleteProfile(request: FastifyRequest, response: FastifyReply, fa
 		return response.code(500).send({ error: "An error occurred while deleting the profile." });
 	  }
 }
-
-// async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
-// {
-//     const userId = request.user?.id;
-//     if (!userId) {
-//         return response.code(401).send({ error: "you are not logged in." });
-//     }
-
-//     const body = request.body as { contentType?: string };
-//     const contentType = body?.contentType;
-
-//     if (!contentType || typeof contentType !== 'string') {
-//         return response.code(400).send({ error: "missing or invalid contentType in request body." });
-//     }
-
-//     if (!allowedTypes.includes(contentType)) {
-//         return response.code(415).send({ error: "invalid file type. Only JPEG, PNG, and WebP are allowed." });
-//     }
-
-//     const key = `uploads/${userId}`;
-// 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
-// 	if (typeof bucketName !== 'string')
-// 		return response.code(500).send({ error: "missing bucket name" });
-
-//     try {
-//         const { url, fields } = await createPresignedPost(s3, {
-//             Bucket: bucketName,
-//             Key: key,
-//             Conditions: [
-//                 ["eq", "$Content-Type", contentType],
-//                 ["content-length-range", 1, MAX_FILE_SIZE],
-//             ],
-//             Fields: {
-//                 "Content-Type": contentType,
-//             },
-//             Expires: 300,
-//         });
-
-//         return response.code(200).send({
-//             url,
-//             fields,
-//             key,
-//         });
-//     } catch (err) {
-//         request.log.error(err);
-//         return response.code(500).send({ error: "failed to generate upload URL." });
-//     }
-// }
 
 const extensionMap: Record<string, string> = {
     'image/jpeg': 'jpg',
@@ -315,9 +263,6 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
     }
 
     const ext = extensionMap[contentType];
-	// es ist ein caching issue da die url immer die gleiche ist
-	// wir koennen das mit einer timestamp faken so dass es neu gelesen wird
-	// key (avatars) muss mit dem link den wir anfragen uebereinstimmen
     const key = `avatars/${userId}/avatar-${Date.now()}.${ext}`;
 
 	const bucketName = process.env.AWS_S3_BUCKET_NAME!;
@@ -348,8 +293,6 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
         return response.code(500).send({ error: "failed to generate upload URL." });
     }
 }
-
-// const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
 
 async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
