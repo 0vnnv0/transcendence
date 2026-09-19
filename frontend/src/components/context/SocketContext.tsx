@@ -13,6 +13,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
     const { userId } = useAuth();
 
+    // Wenn sich der User ausloggt (userId wird null), sofort alle Toasts schließen
+    useEffect(() => {
+        if (!userId) {
+            toast.dismiss();
+        }
+    }, [userId]);
+
     useEffect(() => {
         if (!userId) return;
 
@@ -53,8 +60,26 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
             setOnlineUserIds(prev => prev.filter(id => id !== data.userId));
         });
 
-        socket.on("new_message", (message) => {
-            if (message.senderId !== userId) {
+        return () => {
+            socket.off('connect', onConnect);
+            socket.off("initial_online_users");
+            socket.off("user_online");
+            socket.off("user_offline");
+        };
+    }, [userId]);
+
+    useEffect(() => {
+        if (!userId) return;
+
+        const handleNewMessage = (message: any) => {
+            // Aktuelle Chat-ID sicher aus window.location auslesen (funktioniert immer, unabhängig vom Router)
+            const currentPathMatch = window.location.pathname.match(/\/chat\/(\d+)/);
+            const activeChatId = currentPathMatch ? parseInt(currentPathMatch[1], 10) : null;
+
+            const isInThisChat = activeChatId === message.chatId;
+
+            // Kein Toast anzeigen, wenn man sich im selben Chat befindet
+            if (!isInThisChat) {
                 const senderName = message.sender?.intraName || "Jemand";
                 
                 toast.custom((t) => (
@@ -63,21 +88,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                             window.location.href = `/chat/${message.chatId}`;
                             toast.dismiss(t.id);
                         }}
-                        className="cursor-pointer bg-gray-800 text-white p-3 rounded-lg shadow-lg border border-gray-700 flex flex-col gap-1 hover:bg-gray-700 transition"
+                        className="cursor-pointer bg-purple-dark text-white p-3 rounded-lg shadow-lg border border-gray-700 flex flex-col gap-1 hover:bg-gray-700 transition"
                     >
-                        <span className="font-bold text-xs text-orange-400">Neue Nachricht von {senderName}</span>
+                        <span className="font-bold text-xs text-mild-purple">Neue Nachricht von {senderName}</span>
                         <span className="text-sm truncate max-w-xs">{message.content}</span>
                     </div>
                 ), { duration: 4000 });
             }
-        });
+        };
+
+        socket.on("new_message", handleNewMessage);
 
         return () => {
-            socket.off('connect', onConnect);
-            socket.off("initial_online_users");
-            socket.off("user_online");
-            socket.off("user_offline");
-            socket.off("new_message");
+            socket.off("new_message", handleNewMessage);
         };
     }, [userId]);
 
