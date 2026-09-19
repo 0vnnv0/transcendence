@@ -50,15 +50,15 @@ function Certain_Project() {
 			];
 
 			return (
-			<UserCard
-				key={user.id}
-				username={user.login}
-				layout={layout}
-				avatarUrl={user.customAvatar as string || user.avatarUrl as string}
-				ctaText="Contact"
-				tags={userTags}
-				onCtaClick={() => currentUserId && startChat({ currentUserId, targetUserId: user.id })}
-			/>)
+				<UserCard
+					key={user.id}
+					username={user.login}
+					layout={layout}
+					avatarUrl={user.customAvatar as string || user.avatarUrl as string}
+					ctaText="Contact"
+					tags={userTags}
+					onCtaClick={() => currentUserId && startChat({ currentUserId, targetUserId: user.id })}
+				/>)
 	});
 
 	if (!project) {
@@ -92,7 +92,7 @@ function Certain_Project() {
 				</div>	
 			</div>
 
-			<CardSection title="Available Students" filter>
+			<CardSection title="Available Students" filter isError={isError}>
 				<CardSection.Body viewMode={viewMode}>
 					{availableUsers}
 				</CardSection.Body>
