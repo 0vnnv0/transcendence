@@ -197,7 +197,8 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
       isOnline: user.isOnline
     }, { expiresIn: '1d' }); // Token ist 1 Tag gültig
 
-	const baseUrl = process.env.FRONTEND_REDIRECT_URL || "https://c1b5c2.42berlin.de:8443";
+	// const baseUrl = process.env.FT_REDIRECT_URI || "https://c1b5c2.42berlin.de:8443";
+	const baseUrl = "https://localhost:8443";
 	const frontendRedirectUrl = `${baseUrl}/authsuccess#token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
 	return reply.redirect(frontendRedirectUrl);
