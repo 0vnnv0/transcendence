@@ -106,7 +106,6 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
               onClick={onClose}
               className="text-gray-400 hover:text-white text-xl font-bold cursor-pointer transition-colors"
             >
-              &times;
             </button>
           </div>
           

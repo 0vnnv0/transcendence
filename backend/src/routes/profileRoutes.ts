@@ -320,7 +320,7 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
 	// key (avatars) muss mit dem link den wir anfragen uebereinstimmen
     const key = `avatars/${userId}/avatar-${Date.now()}.${ext}`;
 
-	const bucketName = process.env.AWS_S3_BUCKET_NAME;
+	const bucketName = process.env.AWS_S3_BUCKET_NAME!;
 	if (typeof bucketName !== 'string')
 		return response.code(500).send({ error: "missing bucket name" });
 
@@ -348,6 +348,8 @@ async function getS3Url(request: FastifyRequest, response: FastifyReply, fastify
         return response.code(500).send({ error: "failed to generate upload URL." });
     }
 }
+
+const cfDomain = 'd3reft7l9ycc4f.cloudfront.net';
 
 async function updateS3Link(request: FastifyRequest<{ Body: ConfirmAvatarBody }>, response: FastifyReply, fastify: FastifyInstance, prisma: PrismaClient)
 {
