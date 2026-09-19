@@ -20,7 +20,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
 		}
 
         onSendMessage(content.trim());
-        setContent('');
+        setContent(''); // Feld nach dem Senden leeren
     };
 
     return (
