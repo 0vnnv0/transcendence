@@ -46,9 +46,9 @@ const UserCard = ({
 		`}
 	>  
 	  { friendship && !isLandscape && (
-		<div className="absolute top-4 right-4">
+		<div className="absolute top-4 right-4 z-10">
 		  <Tag description='Friends' icon='smiley' color='orange' />
-		 </div>
+		</div>
 	  )}
       <div className={`relative ${isLandscape ? 'w-22 h-full sm:h-22' : 'w-full h-50 sm:h-40 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
 		<img

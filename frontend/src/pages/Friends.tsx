@@ -46,7 +46,6 @@ function Friends() {
 	
 	const { mutate: startChat, isPending: isStartingChat } = useStartChat();
 	
-
     let requestsContent;
     if (isLoadingReq) {
         requestsContent = <p className="text-subtitle text-purple">Loading requests...</p>
