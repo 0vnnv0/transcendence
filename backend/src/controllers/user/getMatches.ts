@@ -35,6 +35,24 @@ export function getMatches(prisma: PrismaClient) {
 			return reply.code(404).send({ error: "User not found" });
 		}
 
+		const friendships: any[] = await prisma.friendship.findMany({
+			where: {
+				status: "ACCEPTED",
+				OR: [
+					{ senderId: user.id },
+					{ receiverId: user.id }
+				]
+			}
+		});
+
+		const friendIds = new Set(
+			friendships.map(friendship =>
+				friendship.senderId === user.id
+					? friendship.receiverId
+					: friendship.senderId
+			)
+		);
+
 		const comp = (user.completedProjects as string[] | null) ?? [];
 		if (comp.includes(slug)) {
 			return reply.code(409).send({
@@ -77,7 +95,7 @@ export function getMatches(prisma: PrismaClient) {
 				user.completedProjects as string[] | null ?? []
 			);
 
-			const userActive = 
+			const userActive =
 				(user.activeProject as {
 					slug: string;
 					status: string;
@@ -155,7 +173,7 @@ export function getMatches(prisma: PrismaClient) {
 
 				const candidateActiveProjectMap = new Map(
 					candidateActive.map(project => [
-						project.slug, 
+						project.slug,
 						{
 							hasTeam: project.hasTeam,
 							status: project.status
@@ -188,11 +206,16 @@ export function getMatches(prisma: PrismaClient) {
 			return true;
 		});
 
+		const matchesWithFriendship = matches.map(candidate => ({
+			...candidate,
+			isFriend: friendIds.has(candidate.id)
+		}));
+
 		// 6. RETURN
 		return {
 			project: slug,
 			user: user.login,
-			matches
-		};		
+			matches: matchesWithFriendship
+		};
 	}
 }

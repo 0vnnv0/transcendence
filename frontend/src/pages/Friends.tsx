@@ -46,7 +46,6 @@ function Friends() {
 	
 	const { mutate: startChat, isPending: isStartingChat } = useStartChat();
 	
-
     let requestsContent;
     if (isLoadingReq) {
         requestsContent = <p className="text-subtitle text-purple">Loading requests...</p>
@@ -65,6 +64,7 @@ function Friends() {
                             title={request.intraName}
                             avatarUrl={request.customAvatar || request.avatarUrl}
                             route={`/users/${request.intraName}`} 
+							friendship={request?.friendship?.status === 'ACCEPTED'}
                             username={request.intraName}
                             isOnline={request.isOnline}
                             onAccept={() => acceptFriend(request.id)}

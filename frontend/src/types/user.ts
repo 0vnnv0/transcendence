@@ -24,6 +24,7 @@ export interface FullUserProfile {
   coalitionName?: string; // gibts schon
   activeProjects?: ActiveProject[];
   friendship?: Friendship | null;
+  isFriend: boolean;
   availability: {
 	  workDaysPerWeek: number;
 	  preferredDays: ("Mon" | "Tue" | "Wed" | "Thurs" | "Fri" | "Sat" | "Sun")[];

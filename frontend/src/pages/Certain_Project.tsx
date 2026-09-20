@@ -76,6 +76,7 @@ function Certain_Project() {
 					key={user.id}
 					username={user.login}
 					layout={layout}
+					friendship={user?.isFriend}
 					avatarUrl={user.customAvatar as string || user.avatarUrl as string}
 					ctaText="Contact"
 					tags={userTags}
