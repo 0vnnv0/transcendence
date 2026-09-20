@@ -20,7 +20,7 @@ const ChatWindow: React.FC = () => {
 		isLoading, 
 		isError, 
 		error,
-		fetchNextPage, 
+		fetchNextPage,
 		hasNextPage, 
 		isFetchingNextPage 
 	} = useChatMessages(parsedChatId, currentUserId, socket);
