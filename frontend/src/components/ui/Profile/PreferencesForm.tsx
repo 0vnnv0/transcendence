@@ -74,13 +74,13 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 						>
 							<div className="flex flex-col md:flex-row gap-2 lg:gap-6 justify-between">
 								<div>
-									<label className="text-black block text-xs font-medium mb-2">Days per week</label>
 									<Controller
 										name="days"
 										control={control}
 										rules={{ validate: (value) => value.length > 0 || "Select at least one day" }}
 										render={({ field: { value, onChange } }) => (
 											<MultiSelect
+												type="Days per week"
 												options={DAY_OPTIONS}
 												value={value}
 												onChange={onChange}
@@ -90,12 +90,12 @@ function PreferencesForm({ profile, userId, userName }: PreferencesFormProps) {
 								</div>
 
 								<div>
-									<label className="text-black block text-xs font-medium mb-2">Working from</label>
 									<Controller
 										name="location"
 										control={control}
 										render={({ field: { value, onChange } }) => (
 											<Toggle
+												type="Working from"
 												value={value}
 												onChange={onChange}
 												options={LOCATION_OPTIONS}

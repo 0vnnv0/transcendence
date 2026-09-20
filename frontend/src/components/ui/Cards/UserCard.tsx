@@ -50,7 +50,7 @@ const UserCard = ({
 		  <Tag description='Friends' icon='smiley' color='orange' />
 		 </div>
 	  )}
-      <div className={`relative ${isLandscape ? 'w-22 h-22' : 'w-full h-50 sm:h-40 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
+      <div className={`relative ${isLandscape ? 'w-22 h-full sm:h-22' : 'w-full h-50 sm:h-40 xl:h-48'} rounded-2xl overflow-hidden bg-gray-400`}> {/* fixed size lives here */}
 		<img
 			src={avatarUrl}
 			alt=""
@@ -73,7 +73,7 @@ const UserCard = ({
         `}
       >
         <h1 className="text-subtitle">{username}</h1>
-        <div className={`flex gap-3 ${isLandscape ? 'flex-row justify-between items-center' : 'flex-col'}`}>     
+        <div className={`flex gap-3 ${isLandscape ? 'flex-col sm:flex-row justify-between items-start sm:items-center' : 'flex-col'}`}>     
 			<div className="flex flex-row gap-1">
 				{tags && <TagList tags={tags} />}
 				{ friendship && isLandscape &&
