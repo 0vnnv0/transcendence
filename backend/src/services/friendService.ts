@@ -248,13 +248,35 @@ export class FriendService {
 			throw new Error(`Friendship is already ${status}`);
 		}
 
-		return prisma.friendship.update({
-			where: {
-				id: friendship.id
-			},
-			data: {
-				status
-			}
-		});
-	}	
+    const updatedFriendship = await prisma.friendship.update({
+        where: {
+            id: friendship.id
+        },
+        data: {
+            status
+        }
+    });
+
+	if (status === 'ACCEPTED') {
+			this.notifyUser(senderId, 'friend_request_accepted', {
+				friendshipId: updatedFriendship.id,
+				acceptedById: receiverId
+			});
+
+			this.notifyUser(receiverId, 'friend_request_accepted', {
+				friendshipId: updatedFriendship.id,
+				acceptedById: receiverId
+			});
+		} 
+	}
+
+	// 	return prisma.friendship.update({
+	// 		where: {
+	// 			id: friendship.id
+	// 		},
+	// 		data: {
+	// 			status
+	// 		}
+	// 	});
+	// }	
 }

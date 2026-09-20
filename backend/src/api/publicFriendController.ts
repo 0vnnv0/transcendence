@@ -4,10 +4,15 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { FriendService } from "../services/friendService.js";
 
-const friendService = new FriendService();
+// const friendService = new FriendService();
 
 export class PublicFriendController {
-    constructor(private prisma: PrismaClient) {}
+	private friendService: FriendService;
+    constructor(
+		private prisma: PrismaClient,
+		private io: any) {
+			this.friendService = new FriendService(io);
+		}
 
     // GET /api/friendships/:login
     async getFriendships(
@@ -16,7 +21,7 @@ export class PublicFriendController {
     ) {
         const { login } = request.params as { login: string };
 
-        const user = await friendService.getUserByLogin(login);
+        const user = await this.friendService.getUserByLogin(login);
 
         if (!user) {
             return reply.status(404).send({
@@ -24,7 +29,7 @@ export class PublicFriendController {
             });
         }
 
-        const friendships = await friendService.getFriendsList(user.id);
+        const friendships = await this.friendService.getFriendsList(user.id);
 
         return reply.send(friendships);
     }
@@ -46,8 +51,8 @@ export class PublicFriendController {
 			});
 		}
 
-		const sender = await friendService.getUserByLogin(senderLogin);
-		const receiver = await friendService.getUserByLogin(receiverLogin);
+		const sender = await this.friendService.getUserByLogin(senderLogin);
+		const receiver = await this.friendService.getUserByLogin(receiverLogin);
 
 		if (!sender) {
 			return reply.status(404).send({
@@ -62,7 +67,7 @@ export class PublicFriendController {
 		}
 
 		try {
-			const friendship = await friendService.sendFriendRequest(
+			const friendship = await this.friendService.sendFriendRequest(
 				sender.id,
 				receiver.id
 			);
@@ -100,8 +105,8 @@ export class PublicFriendController {
 			});
 		}
 
-		const sender = await friendService.getUserByLogin(senderLogin);
-		const receiver = await friendService.getUserByLogin(receiverLogin);
+		const sender = await this.friendService.getUserByLogin(senderLogin);
+		const receiver = await this.friendService.getUserByLogin(receiverLogin);
 
 		if (!sender) {
 			return reply.status(404).send({
@@ -116,7 +121,7 @@ export class PublicFriendController {
 		}
 
 		try {
-			await friendService.updateFriendshipStatus(
+			await this.friendService.updateFriendshipStatus(
 				sender.id,
 				receiver.id,
 				status
@@ -147,8 +152,8 @@ export class PublicFriendController {
 			});
 		}
 
-		const sender = await friendService.getUserByLogin(senderLogin);
-		const receiver = await friendService.getUserByLogin(receiverLogin);
+		const sender = await this.friendService.getUserByLogin(senderLogin);
+		const receiver = await this.friendService.getUserByLogin(receiverLogin);
 
 		if (!sender) {
 			return reply.status(404).send({
@@ -163,7 +168,7 @@ export class PublicFriendController {
 		}
 
 		try {
-			await friendService.removeFriendOrRequest(
+			await this.friendService.removeFriendOrRequest(
 				receiver.id,
 				sender.id
 			);
