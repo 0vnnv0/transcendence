@@ -200,9 +200,7 @@ export const handleCallback = async (request: FastifyRequest, reply: FastifyRepl
 	const baseUrl = process.env.FRONTEND_REDIRECT || "https://localhost:8443";
 	const frontendRedirectUrl = `${baseUrl}/authsuccess#token=${token}`;
 	return reply.redirect(frontendRedirectUrl);
-	return reply.redirect(frontendRedirectUrl);
   } catch (error) {
-	console.error("DEBUG AUTH ERROR:", error); // Das zeigt den echten Fehler im Terminal
     return reply.code(500).send({ error: "Auth Service Error" });
   }
 };
