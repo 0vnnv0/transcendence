@@ -29,7 +29,7 @@ function Login() {
       <section className={`${layout} p-50`}>
         <div className={`${layout} pb-1 backdrop-blur-md bg-white/10 rounded-2xl p-6 border border-white/20`}>
          <img className="h-15" src="logo-white.svg" alt="logo"/>
-          <p className="text-white/70">Login to find the love of your life</p>
+          <p className="text-white/70">Login to find the match of your life</p>
 			<form 
 				onSubmit={handleSubmit(onSignUpSubmit)} 
 				className="p-8 w-96"
