@@ -16,6 +16,7 @@ import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
 import PageLayout from './PageLayout';
 import RankFilter from '../components/ui/Filters/RankFilters';
+import type { FullUserProfile } from '../types/user';
 
 
 function Certain_Project() {
@@ -26,10 +27,18 @@ function Certain_Project() {
 
 	const {data: currentUser } = useUserProfile(userName);
 
-	const [selectedRank, setSelectedRank] = useState<number | null>(null);
+	const [selectedRank, setSelectedRank] = useState<number[]>([]);
 
 	const project = projectsData.find(p => p.slug === id);
-	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string, selectedRank);
+	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
+	
+	const filteredUsers = activeUsers?.filter((user: FullUserProfile) => {
+		if (selectedRank.length === 0) return true;
+
+		return selectedRank.includes(user.currentRank ?? 0);
+	});
+	
+	
 	const { viewMode, days: selectedDays } = useProjectFilters();
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
@@ -44,7 +53,7 @@ function Certain_Project() {
 		},
 	];
 
-		const availableUsers = activeUsers?.filter(user => {
+		const availableUsers = filteredUsers?.filter(user => {
 			if (selectedDays.length === 0) return true;
 			return user?.availability?.preferredDays?.some(day => selectedDays.includes(day)) ?? false;
 		})
@@ -70,12 +79,6 @@ function Certain_Project() {
 	if (!project) {
 		return <div className="p-10 text-white text-2xl">Project not found!</div>;
 	}
-
-	console.log('RANK FILTER DEBUG', {
-		userRank: currentUser?.currentRank,
-		projectRank: project?.projectRank,
-		selectedRank,
-	});
 
 	return (
 		<PageLayout>
@@ -105,31 +108,23 @@ function Certain_Project() {
 				</div>	
 			</div>
 
-			{/* <CardSection title="Available Students" filter isError={isError}>
-				<CardSection.Body viewMode={viewMode}>
-					{availableUsers}
-				</CardSection.Body>
-			</CardSection> */}
-
 			<CardSection title="Available Students" filter isError={isError}>
-				<CardSection.Filters>
-					<RankFilter
-						userRank={currentUser?.currentRank ?? 1}
-						projectRank={project?.projectRank ?? currentUser?.currentRank ?? 1}
-						selectedRank={selectedRank}
-						onChange={setSelectedRank}
-					/>
-				</CardSection.Filters>
+			<CardSection.Filters>
+				<RankFilter
+				userRank={currentUser?.currentRank ?? 1}
+				projectRank={
+					project?.projectRank ?? currentUser?.currentRank ?? 1
+				}
+				selectedRanks={selectedRank}
+				onChange={setSelectedRank}
+				/>
+			</CardSection.Filters>
 
-				<CardSection.Body viewMode={viewMode}>
-					{availableUsers}
-				</CardSection.Body>
+			<CardSection.Body viewMode={viewMode}>
+				{availableUsers}
+			</CardSection.Body>
 			</CardSection>
 
-				{/* <CardSection.Body viewMode={viewMode}>
-					{availableUsers}
-				</CardSection.Body>
-			</CardSection> */}
 			{isError && 
 				<p className="text-subtitle text-red-500">{error instanceof Error ? error.message : 'Something went wrong'}</p>
 			}

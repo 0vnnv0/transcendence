@@ -159,9 +159,8 @@ export async function uploadAvatarRequest(file: File, userId: number): Promise<{
   	return { avatarUrl: result.avatarUrl }; // kein ?t= mehr nötig, der Key selbst ist ja schon einzigartig
 }
 
-export const fetchActiveUsersByProject = async (username: string, projectName: string, rank: number | null): Promise<FullUserProfile[]> => {
-  const query = rank !== null ? `?rank=${rank}` : '';
-  const response = await fetch(`/api/users/${username}/${projectName}/matches${query}`);
+export const fetchActiveUsersByProject = async (username: string, projectName: string): Promise<FullUserProfile[]> => {
+  const response = await fetch(`/api/users/${username}/${projectName}/matches`);
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => null);

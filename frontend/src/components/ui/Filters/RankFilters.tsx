@@ -1,16 +1,18 @@
 import Option from "../Options/Options";
 
+interface RankFilterProps {
+  userRank: number;
+  projectRank: number;
+  selectedRanks: number[];
+  onChange: (ranks: number[]) => void;
+}
+
 function RankFilter({
   userRank,
   projectRank,
-  selectedRank,
+  selectedRanks,
   onChange,
-}: {
-  userRank: number;
-  projectRank: number;
-  selectedRank: number | null;
-  onChange: (rank: number | null) => void;
-}) {
+}: RankFilterProps) {
   const startRank = Math.max(1, userRank - 1);
 
   const ranks = Array.from(
@@ -18,16 +20,22 @@ function RankFilter({
     (_, index) => startRank + index
   );
 
+  const toggleRank = (rank: number) => {
+    if (selectedRanks.includes(rank)) {
+      onChange(selectedRanks.filter((r) => r !== rank));
+    } else {
+      onChange([...selectedRanks, rank]);
+    }
+  };
+
   return (
     <div className="flex gap-0.5">
       {ranks.map((rank) => (
         <Option
           key={rank}
           label={`Rank ${rank}`}
-          selected={selectedRank === rank}
-          onClick={() =>
-            onChange(selectedRank === rank ? null : rank)
-          }
+          selected={selectedRanks.includes(rank)}
+          onClick={() => toggleRank(rank)}
         />
       ))}
     </div>
@@ -35,6 +43,42 @@ function RankFilter({
 }
 
 export default RankFilter;
+
+// function RankFilter({
+//   userRank,
+//   projectRank,
+//   selectedRank,
+//   onChange,
+// }: {
+//   userRank: number;
+//   projectRank: number;
+//   selectedRank: number | null;
+//   onChange: (rank: number | null) => void;
+// }) {
+//   const startRank = Math.max(1, userRank - 1);
+
+//   const ranks = Array.from(
+//     { length: projectRank - startRank + 1 },
+//     (_, index) => startRank + index
+//   );
+
+//   return (
+//     <div className="flex gap-0.5">
+//       {ranks.map((rank) => (
+//         <Option
+//           key={rank}
+//           label={`Rank ${rank}`}
+//           selected={selectedRank === rank}
+//           onClick={() =>
+//             onChange(selectedRank === rank ? null : rank)
+//           }
+//         />
+//       ))}
+//     </div>
+//   );
+// }
+
+// export default RankFilter;
 
 
 
