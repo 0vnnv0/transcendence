@@ -28,7 +28,7 @@ const UserCard = ({
   username,
   tags,
   ctaText,
-  friendship = false,
+  friendship,
   onCtaClick,
   onAccept,
   onDecline,

@@ -65,7 +65,7 @@ function Friends() {
                             title={request.intraName}
                             avatarUrl={request.customAvatar || request.avatarUrl}
                             route={`/users/${request.intraName}`} 
-							friendship={!!request.friendship}
+							friendship={request?.friendship?.status === 'ACCEPTED'}
                             username={request.intraName}
                             isOnline={request.isOnline}
                             onAccept={() => acceptFriend(request.id)}
