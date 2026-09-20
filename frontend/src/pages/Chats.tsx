@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import Navbar from '../components/ui/Navbar/Navbar';
 import ChatWindow from '../components/ui/ChatWindow/ChatWindow';
-import Button from '../components/ui/Button/Button';
 import ChatsList from '../components/ui/ChatList/ChatList';
 
 
