@@ -55,7 +55,7 @@ async function start() {
 	app.register(profileRoutes, {prisma});
 	await userRoutes(app, prisma);
 	await projectRoutes(app);
-	await apiRoutes(app, prisma);
+	await apiRoutes(app, prisma, io);
 	try {
 		await app.listen({
 			port: 3000,

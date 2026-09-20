@@ -12,8 +12,14 @@ const publicFriendController = new PublicFriendController(prisma);
 
 export async function apiRoutes(
     server: FastifyInstance,
-    prisma: PrismaClient
+    prisma: PrismaClient,
+	io: any
 ) {
+	const publicFriendController = new PublicFriendController(
+		prisma,
+		io
+	);
+
     server.register(async (api) => {
 
         api.addHook("onRequest", authenticateApiKey);
