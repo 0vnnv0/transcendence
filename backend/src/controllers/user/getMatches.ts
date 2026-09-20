@@ -150,18 +150,40 @@ export function getMatches(prisma: PrismaClient) {
 
 			if (candidateActiveProject?.hasTeam) return false;
 
+			if (!candidate.newCore) {
+				const candidateDoneSlugs = new Set(candidateCompleted);
+
+				const candidateActiveProjectMap = new Map(
+					candidateActive.map(project => [
+						project.slug, 
+						{
+							hasTeam: project.hasTeam,
+							status: project.status
+						}
+					])
+				);
+
+				if (
+					isExcludedByOldCoreRules(
+						slug,
+						candidateDoneSlugs,
+						candidateActiveProjectMap
+					)
+				) {
+					return false;
+				}
+			}
+
 			// core match
 			const candidateMetaOk =
 				candidate.newCore === user.newCore;
 
 			if (!candidateMetaOk) return false;
 
-			// rank range logic (angepasst)
-			const rankDiff = Math.abs(
-				(user.currentRank ?? 0) - (candidate.currentRank ?? 0)
-			);
-
-			if (rankDiff > 1) return false;
+			const userRank = user.currentRank ?? 0;
+			const candidateRank = candidate.currentRank ?? 0;
+			if (candidateRank < userRank - 1) return false;
+			if (candidateRank > projectMeta.projectRank) return false;
 
 			return true;
 		});

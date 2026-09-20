@@ -18,7 +18,5 @@ export async function fetchCoalitions(service: FortyTwoService) {
 	console.log("🍀", "\x1b[32mFulgens users: \x1b[0m", fulgens.length)
 	await sleep(1000);
 
-	// console.log("\x1b[mALL COALITIONS LOADED.\x1b[m");
-
 	return buildCoalitionMap(arctos, melursus, fulgens);
 }

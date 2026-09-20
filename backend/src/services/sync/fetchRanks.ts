@@ -36,8 +36,6 @@ export async function fetchRanks(
 
 	const newCore = await service.fetchQuestUsers(128);
 
-	// console.log("ranks loaded"");
-
 	return buildRankMap(
 		activeUsers,
 		rank1,

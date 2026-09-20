@@ -24,7 +24,6 @@ function MyProfile() {
 			{isLoading && <p className="text-subtitle text-purple">Loading ...</p>}
 			{isError && <p className="text-subtitle text-red-500">[404] Error trying to load current project</p>}
 
-            {/* <div className="z-10 flex flex-col flex-1 w-full p-5 md:p-10 gap-10"> */}
 				<div className="top-6 w-full flex md:hidden justify-between gap-4">
 					<div className="flex gap-4">
 						<Button goBack={true} variant="tertiary" size="sm" icon="arrowLeft">Back</Button>
@@ -86,7 +85,6 @@ function MyProfile() {
 						</CardSection.Body>
 					</CardSection>
 				)}
-			{/* </div> */}
 		</PageLayout>
 	)
 }

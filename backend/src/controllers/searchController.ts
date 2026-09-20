@@ -128,8 +128,6 @@ export const globalSearch = async (request: FastifyRequest, reply: FastifyReply)
 			keywords: p.keywords,
 			url: `/project/${(p.slug).toLowerCase()}`
 		}));
-
-		console.log("FORMATTEDUSERS: ", formattedUsers);
 		return reply.send([...formattedUsers, ...formattedProjects]);
 
 	} catch (error) {
@@ -204,15 +202,7 @@ export const fullSearch = async (request: FastifyRequest, reply: FastifyReply) =
         ].filter(
             (user, index, self) =>
                 index === self.findIndex((u) => u.id === user.id)
-        );	
-
-		// const formattedUsers = users.map( (u: any) => ({
-		// 	id: u.id,
-		// 	title: u.login,
-		// 	avatarUrl: u.customUrl || u.avatarUrl,
-		// 	type: 'user',
-		// 	url: `/users/${u.login}`
-		// }));
+        );
 
 		const formattedProjects = projects.map( (p: any) => ({
 			id: p.id,

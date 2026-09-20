@@ -10,11 +10,11 @@ import App from './App.tsx'
 import { AuthProvider } from './components/context/AuthContext';
 
 const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			refetchOnWindowFocus: true,
-		}
-	}
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: true,
+        }
+    }
 });
 
 createRoot(document.getElementById('root')!).render(

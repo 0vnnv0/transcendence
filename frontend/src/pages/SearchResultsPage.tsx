@@ -5,6 +5,7 @@ import PageLayout from './PageLayout.tsx';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFullSearch } from '../hooks/useGlobalSearch.ts';
+import SearchBar from '../components/ui/Search/Search.tsx';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -18,12 +19,6 @@ function SearchResultsPage() {
 	const [currentPage, setCurrentPage] = useState<number>(1);
     const { data: results, isLoading, isError } = useFullSearch(query);
 
-    // const availableTypes = useMemo(() => {
-    //     if (!results) return [];
-    //     const types = new Set(results.map((r) => r.type));
-    //     return Array.from(types);
-    // }, [results]);
-
 	useEffect(() => {
         setCurrentPage(1);
     }, [selectedType, sortBy, query]);
@@ -32,10 +27,6 @@ function SearchResultsPage() {
         if (!results) return [];
 
         let filtered = [...results];
-
-        // if (selectedType !== 'ALL') {
-        //     filtered = filtered.filter((item) => item.type === selectedType);
-        // }
 
 		if (selectedType === 'PROJECT') {
 			filtered = filtered.filter(
@@ -119,6 +110,9 @@ function SearchResultsPage() {
 	const disabledTagStyle = "opacity-30 cursor-not-allowed bg-gray-100 border-gray-300 text-gray-400";
 	return (
 		<PageLayout>
+				<div className="flex gap-4 md:hidden">
+					<SearchBar />
+				</div>
 				<div className="flex flex-col flex-1 gap-10">
 					<h1 className="text-title text-black">
 						Search Results
@@ -136,15 +130,6 @@ function SearchResultsPage() {
                                     	className={`${baseTagStyle} ${selectedType === 'ALL' ? activeTagStyle : inactiveTagStyle}`}>
 										ALL
 									</button>
-
-									{/* {availableTypes.map((type) => (
-										<button
-											key={type}
-											onClick={() => setSelectedType(type)}
-											className={`${baseTagStyle} ${selectedType === type ? activeTagStyle : inactiveTagStyle}`}>
-											{type.toUpperCase()}
-										</button>
-									))} */}
 
 									<button
 										onClick={() => setSelectedType('PROJECT')}

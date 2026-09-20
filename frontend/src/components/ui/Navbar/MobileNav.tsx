@@ -3,7 +3,7 @@ import Footer from '../Footer/Footer'
 
 function MobileNav() {
     return (
-		<div className="fixed md:hidden bottom-4 left-3 right-3 flex flex-col gap-2 z-50 ">
+		<div className="fixed md:hidden bottom-4 left-3 right-3 flex flex-col gap-2 z-100 ">
 			<nav
 				className="flex items-center justify-around
 						bg-background-grey rounded-3xl px-2 py-2 shadow-lg"

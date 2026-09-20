@@ -14,10 +14,14 @@ function AuthSuccess() {
 	const [searchParams] = useSearchParams();
 
 	useEffect(() => {
-		const token = searchParams.get('token');
+		const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+		const urlParams = new URLSearchParams(window.location.search);
+        
+        const token = hashParams.get('token') || urlParams.get('token');
 
 		if (token) {
 			localStorage.setItem('token', token);
+			sessionStorage.removeItem('pending_auth');
 			try {
 				const decodedToken = jwtDecode<MyTokenPayload>(token);
 				console.log("Welcome back: ", decodedToken.intraName)

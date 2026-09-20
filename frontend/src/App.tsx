@@ -10,7 +10,7 @@ import AuthSuccess from './pages/AuthSuccess'
 import OtherProfile from './pages/OtherProfile'
 import Friends from './pages/Friends'
 import SearchResultsPage from './pages/SearchResultsPage'
-import { ProtectedRoute, PublicRoute } from './components/context/AuthRoutes'
+import { ProtectedRoute, PublicRoute, AuthorizeRoute } from './components/context/AuthRoutes'
 import { Toaster } from 'react-hot-toast'
 import NotFound from './pages/NotFound'
 import TermsOfService from './pages/LegalPages/TermsOfService'
@@ -25,10 +25,15 @@ export function App() {
 		<Route element={<PublicRoute />}>
            <Route path="/" element={<Login />} />
         </Route>
+
+		<Route element={<AuthorizeRoute />}>
+            <Route path="/authorize" element={<Authorize />} />
+        </Route>
+
+		<Route path="/authsuccess" element={<AuthSuccess />} />
 		<Route element={<ProtectedRoute />}>
-		    <Route path="/authorize" element={<Authorize />} />
+		    {/* <Route path="/authorize" element={<Authorize />} /> */}
 			<Route path="/" element={<Login />} />
-			<Route path="/authorize" element={<Authorize />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/projects" element={<Projects />} />
 			<Route path="/myprofile" element={<MyProfile />} />
@@ -37,7 +42,6 @@ export function App() {
 			<Route path="/chat/:chatId" element={<Chats />} />
 			<Route path="/friends" element={<Friends />} />
 			<Route path="/users/:username" element={<OtherProfile />} />
-			<Route path="/authsuccess" element={<AuthSuccess />} />
 			<Route path="/search" element={<SearchResultsPage />} />
 			<Route path="/terms-and-conditions" element={<TermsOfService />} />
 			<Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -47,29 +51,5 @@ export function App() {
     </>
   );
 }
-
-// function App() {
-//   return (
-//     <Routes>
-// 		<Route element={<PublicRoute />}>
-//         <Route path="/" element={<Login />} />
-//         <Route path="/authorize" element={<Authorize />} />
-//       </Route>
-// 	  <Route element={<ProtectedRoute />}>
-//         <Route path="/dashboard" element={<Dashboard />} />
-//         <Route path="/feed" element={<Feed />} />
-//         <Route path="/projects" element={<Projects />} />
-//         <Route path="/myprofile" element={<MyProfile />} />
-//         <Route path="/chats" element={<Chats />} />
-//         <Route path="/project/:id" element={<Certain_Project />} />
-//         <Route path="/chat/:username" element={<Chats />} />
-// 		 <Route path="/:username" element={<OtherProfile />} />
-//       </Route>
-
-
-// 	  <Route path="/authsuccess" element={<AuthSuccess />} />
-//     </Routes>
-//   )
-// }
 
 export default App
