@@ -2,6 +2,7 @@
 import { useProjectFilters } from '../../../store/useProjectFilters';
 import Toggle from '../Toggle/Toggle';
 import MultiSelect from '../Multiselect/Multiselect';
+import { type MultiSelectOption } from '../Multiselect/Multiselect';
 
 const DAY_OPTIONS = [
 	{ label: "Mon", value: "Mon" },
@@ -27,7 +28,14 @@ const VIEW_MODE_OPTIONS = [
   { value: 'list', icon: 'list', ariaLabel: 'List view' },
 ] as const;
 
-function ProjectFilters() {
+interface ProjectFiltersProps {
+  rankOptions: MultiSelectOption[] | undefined;
+}
+
+// Controlled multiselect: parent owns the selected values array (value/onChange),
+// same pattern as a native input so it plugs straight into react-hook-form's Controller.
+
+const ProjectFilters: React.FC<ProjectFiltersProps> = ({ rankOptions = RANK_OPTIONS }) => {
   // selective subscriptions — each component only re-renders when its own slice changes
   const viewMode = useProjectFilters((s) => s.viewMode);
   const setViewMode = useProjectFilters((s) => s.setViewMode);
@@ -37,10 +45,12 @@ function ProjectFilters() {
   const setRank = useProjectFilters((s) => s.setRank);
 
   return (
-    <div className="flex flex-col w-full sm:justify-between lg:justify-end lg:w-min sm:flex-row gap-2 sm:gap-4">
-      <MultiSelect options={DAY_OPTIONS} value={days} onChange={setDays} />
-	  <MultiSelect options={RANK_OPTIONS} value={rank} onChange={setRank} />
-      <Toggle value={viewMode} onChange={setViewMode} options={VIEW_MODE_OPTIONS} />
+    <div className="flex flex-col w-full lg:justify-end lg:w-min sm:flex-row gap-2 sm:gap-4">
+		<MultiSelect options={DAY_OPTIONS} value={days} onChange={setDays} type="Weekdays" />
+		<div className="flex flex-row w-full gap-2 sm:gap-4 justify-between ">
+			<MultiSelect options={rankOptions} value={rank} onChange={setRank} type="Rank" />
+      		<Toggle value={viewMode} onChange={setViewMode} options={VIEW_MODE_OPTIONS} />
+		</div>
     </div>
   );
 }

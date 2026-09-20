@@ -1,16 +1,18 @@
 // src/components/sections/CardSection.tsx
 import React from 'react';
 import ProjectFilters from '../ui/Filters/Filters';
+import { type MultiSelectOption } from '../ui/Multiselect/Multiselect';
 
 // Main Wrapper Props
 type CardSectionProps = {
   isError?: boolean;
   title?: string;
   filter?: boolean;
+  rankOptions?: MultiSelectOption[];
   children: React.ReactNode;
 };
 
-function CardSection({ title, filter = false, children, isError }: CardSectionProps) {
+function CardSection({ title, filter = false, rankOptions, children, isError }: CardSectionProps) {
   // We search through children to separate the Filters from the Body content
   const childrenArray = React.Children.toArray(children);
 
@@ -32,7 +34,7 @@ function CardSection({ title, filter = false, children, isError }: CardSectionPr
 							<h2 className="text-lead">
 								{title}
 							</h2>
-							{filter && <ProjectFilters />}
+							{filter && <ProjectFilters rankOptions={rankOptions} />}
 						</div>
 					{filtersChild}
 				</div>

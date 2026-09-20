@@ -26,20 +26,23 @@ function Certain_Project() {
 	const { mutate: startChat } = useStartChat();
 
 	const {data: currentUser } = useUserProfile(userName);
-
-	const [selectedRank, setSelectedRank] = useState<number[]>([]);
-
 	const project = projectsData.find(p => p.slug === id);
-	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);
-	
-	const filteredUsers = activeUsers?.filter((user: FullUserProfile) => {
-		if (selectedRank.length === 0) return true;
 
-		return selectedRank.includes(user.currentRank ?? 0);
-	});
+	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);	
 	
+	const { viewMode, days: selectedDays, rank: selectedRanks } = useProjectFilters();
 	
-	const { viewMode, days: selectedDays } = useProjectFilters();
+	const startRank = Math.max(1, (currentUser?.currentRank ?? 1) - 1);
+	const endRank = project?.projectRank ?? currentUser?.currentRank ?? 1;
+
+	const rankOptions = Array.from(
+		{ length: Math.max(0, endRank - startRank + 1) },
+		(_, i) => ({ label: String(startRank + i), value: `Rank ${startRank + i}` })
+	);
+
+	const visibleRankValues = rankOptions.map((o) => o.value);
+	const activeRanks = selectedRanks.filter((r) => visibleRankValues.includes(r));
+
 	const layout = viewMode === 'grid' ? 'portrait' : 'landscape';
 
 	const teamSize = (project?.teamSize?.min === project?.teamSize?.max) ? project?.teamSize?.min : `${project?.teamSize?.min} - ${project?.teamSize?.max}`;
@@ -53,9 +56,16 @@ function Certain_Project() {
 		},
 	];
 
-		const availableUsers = filteredUsers?.filter(user => {
-			if (selectedDays.length === 0) return true;
-			return user?.availability?.preferredDays?.some(day => selectedDays.includes(day)) ?? false;
+		const availableUsers = activeUsers?.filter(user => {
+			const dayMatch =
+				selectedDays.length === 0 ||
+				(user?.availability?.preferredDays?.some(day => selectedDays.includes(day)) ?? false);
+
+			const rankMatch =
+				activeRanks.length === 0 ||
+				 activeRanks.includes(`Rank ${user.currentRank}`);
+
+			return dayMatch && rankMatch;
 		})
 		.map(user => {
 			const days = formatAvailability(user?.availability?.preferredDays);
@@ -108,21 +118,10 @@ function Certain_Project() {
 				</div>	
 			</div>
 
-			<CardSection title="Available Students" filter isError={isError}>
-			<CardSection.Filters>
-				<RankFilter
-				userRank={currentUser?.currentRank ?? 1}
-				projectRank={
-					project?.projectRank ?? currentUser?.currentRank ?? 1
-				}
-				selectedRanks={selectedRank}
-				onChange={setSelectedRank}
-				/>
-			</CardSection.Filters>
-
-			<CardSection.Body viewMode={viewMode}>
-				{availableUsers}
-			</CardSection.Body>
+			<CardSection title={`Available Students (${availableUsers?.length})`} filter rankOptions={rankOptions} isError={isError}>
+				<CardSection.Body viewMode={viewMode}>
+					{availableUsers}
+				</CardSection.Body>
 			</CardSection>
 
 			{isError && 
