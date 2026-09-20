@@ -49,7 +49,7 @@ const ProjectFilters: React.FC<ProjectFiltersProps> = ({ rankOptions = RANK_OPTI
 		<MultiSelect options={DAY_OPTIONS} value={days} onChange={setDays} type="Weekdays" />
 		<div className="flex flex-row w-full gap-2 sm:gap-4 justify-between ">
 			<MultiSelect options={rankOptions} value={rank} onChange={setRank} type="Rank" />
-      		<Toggle value={viewMode} onChange={setViewMode} options={VIEW_MODE_OPTIONS} />
+      		<Toggle value={viewMode} onChange={setViewMode} options={VIEW_MODE_OPTIONS} type="Show" />
 		</div>
     </div>
   );

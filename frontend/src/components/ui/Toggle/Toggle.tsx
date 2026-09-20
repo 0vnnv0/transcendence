@@ -15,6 +15,7 @@ interface ToggleProps<T extends string> {
   onChange: (value: T) => void;
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  type: string;
   className?: string;
 }
 
@@ -24,11 +25,12 @@ function Toggle<T extends string>({
   onChange,
   disabled = false,
   size = 'md',
+  type,
   className = '',
 }: ToggleProps<T>) {
   return (
 	<div className="flex flex-col gap-1">
-		<p className="text-tag-bold">Show</p>
+		<p className="text-tag-bold">{type}</p>
 		<div className={`inline-flex gap-0.5 w-min bg-background-dark rounded-lg p-0.75 ${className}`}>
 			{options.map((option) => (
 				<Option

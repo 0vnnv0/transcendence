@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import projectsData from '../data/projects.json';
 import UserCard from '../components/ui/Cards/UserCard';
@@ -15,8 +14,6 @@ import { useStartChat } from '../hooks/useChat';
 import SearchBar from '../components/ui/Search/Search';
 import Button from '../components/ui/Button/Button';
 import PageLayout from './PageLayout';
-import RankFilter from '../components/ui/Filters/RankFilters';
-import type { FullUserProfile } from '../types/user';
 
 
 function Certain_Project() {
