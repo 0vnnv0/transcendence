@@ -25,7 +25,7 @@ function Certain_Project() {
 	const {data: currentUser } = useUserProfile(userName);
 	const project = projectsData.find(p => p.slug === id);
 
-	const { data: activeUsers, isError, error } = useActiveUsersByProject(userName, project?.slug as string);	
+	const { data: activeUsers, isError, error, isLoading } = useActiveUsersByProject(userName, project?.slug as string);	
 	
 	const { viewMode, days: selectedDays, rank: selectedRanks } = useProjectFilters();
 	
@@ -53,7 +53,7 @@ function Certain_Project() {
 		},
 	];
 
-		const availableUsers = activeUsers?.filter(user => {
+		const availableUsers = (activeUsers ?? []).filter(user => {
 			const dayMatch =
 				selectedDays.length === 0 ||
 				(user?.availability?.preferredDays?.some(day => selectedDays.includes(day)) ?? false);
@@ -117,7 +117,11 @@ function Certain_Project() {
 
 			<CardSection title={`Available Students (${availableUsers?.length})`} filter rankOptions={rankOptions} isError={isError}>
 				<CardSection.Body viewMode={viewMode}>
-					{availableUsers}
+					{isLoading ? null : availableUsers?.length > 0 ? (
+						availableUsers
+					) : (
+						<p className="text-subtitle text-red-500 col-span-full">No users for the selected filters found.</p>
+					)}
 				</CardSection.Body>
 			</CardSection>
 
