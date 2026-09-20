@@ -29,7 +29,7 @@ function RankFilter({
   };
 
   return (
-    <div className="flex gap-0.5">
+	 <div className={`flex gap-0.5 bg-background-dark rounded-lg p-0.75`}>
       {ranks.map((rank) => (
         <Option
           key={rank}
