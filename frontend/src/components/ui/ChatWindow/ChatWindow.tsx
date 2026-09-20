@@ -9,11 +9,26 @@ import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { useEffect } from 'react'; //junruh
 import Forbidden from '../../../pages/Forbidden';
+import Button from '../../../components/ui/Button/Button'
 
 const ChatWindow: React.FC = () => {
     const { chatId } = useParams<{ chatId: string }>();
-    const parsedChatId = parseInt(chatId || '0', 10);
-    const { userId: currentUserId } = useAuth(); 
+    const isValidChatId = chatId && /^\d+$/.test(chatId);
+
+	if (!isValidChatId) {
+		return (
+				<div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
+					<h1 className="text-title">404</h1>
+					<p className="text-subtitle my-4">Page not found</p>
+					<Button href="/dashboard">
+						Back to dashboard
+					</Button>
+				</div>
+			);
+	}
+
+	const parsedChatId = parseInt(chatId, 10);
+	const { userId: currentUserId } = useAuth();
 	//junruh: for infinite scroll:
 	const { 
 		data, 

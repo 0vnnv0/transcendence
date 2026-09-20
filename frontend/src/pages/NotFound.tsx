@@ -9,7 +9,7 @@ export default function NotFound() {
 			<h1 className="text-title">404</h1>
 			<p className="text-subtitle my-4">Page not found</p>
 			<Button href="/dashboard">
-				Back go dashboard
+				Back to dashboard
 			</Button>
 		</div>
 	</PageLayout>

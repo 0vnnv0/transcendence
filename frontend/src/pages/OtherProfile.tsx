@@ -39,11 +39,13 @@ function OtherProfile() {
         );
     } else if (isError || !profile) {
         mainContent = (
-            <div className="flex h-full items-center justify-center">
-                <p className="text-subtitle text-red-500">
-                    [404] User "{username}" not found or error loading profile.
-                </p>
-            </div>
+            	<div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
+					<h1 className="text-title">404</h1>
+					<p className="text-subtitle my-4">Page not found</p>
+					<Button href="/dashboard">
+						Back to dashboard
+					</Button>
+				</div>
         );
     } else {
         const friendship = profile.friendship;
