@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { socket } from '../../services/socket';
 import { useAuth } from './AuthContext';
 import { toast } from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface SocketContextType {
     onlineUserIds: number[];
@@ -12,6 +13,7 @@ const SocketContext = createContext<SocketContextType>({ onlineUserIds: [] });
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [onlineUserIds, setOnlineUserIds] = useState<number[]>([]);
     const { userId } = useAuth();
+    const queryClient = useQueryClient();
 
     // Wenn sich der User ausloggt (userId wird null), sofort alle Toasts schließen
     useEffect(() => {
@@ -27,7 +29,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }, [userId]);
 
     useEffect(() => {
-        if (!userId) return;
+        if (!userId) {
+            setOnlineUserIds([]);
+            if (socket.connected) {
+                socket.disconnect();
+            }
+            return;
+        }
 
         const token = localStorage.getItem('token');
         socket.auth = {
@@ -66,13 +74,27 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
             setOnlineUserIds(prev => prev.filter(id => id !== data.userId));
         });
 
+        const invalidateFriendshipQueries = () => {
+            queryClient.invalidateQueries({ queryKey: ['friends'] });
+            queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
+            queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+        };
+
+        socket.on('friend_request_received', invalidateFriendshipQueries);
+        socket.on('friend_request_accepted', invalidateFriendshipQueries);
+        socket.on('friendship_removed', invalidateFriendshipQueries);
+
         return () => {
             socket.off('connect', onConnect);
             socket.off("initial_online_users");
             socket.off("user_online");
             socket.off("user_offline");
+            socket.off('friend_request_received', invalidateFriendshipQueries);
+            socket.off('friend_request_accepted', invalidateFriendshipQueries);
+            socket.off('friendship_removed', invalidateFriendshipQueries);
+            socket.disconnect();
         };
-    }, [userId]);
+    }, [userId, queryClient]);
 
     useEffect(() => {
         if (!userId) return;
