@@ -1,8 +1,14 @@
-This project has been created as part of the 42 curriculum by anschmit[, hreusing[, junruh[, nrauh[, pbohme]]]].
+This project has been created as part of the 42 curriculum by [Jake](https://github.com/jakunruh), [Hannah](https://github.com/Reu-si), [Natalie](https://github.com/Nat-Ma), [Pia](https://github.com/piapaetow1) and [Elisabeth](https://github.com/0vnnv0).
+
+https://github.com/user-attachments/assets/03e4c98f-c145-43d2-b180-892f97653939
+
+
+https://github.com/user-attachments/assets/3cc2e823-fa19-485c-b67f-158b39580247
+
 
 ## Description 
 
-This project, named "Clusterfuck" is a web application for 42berlin students. Students can find potential team members for their group projects. When the user is on a rank with group projects, they can see their upcoming group projects and see who else on campus needs to do those projects as well. They can message other students and add them as friends. Every user can also add their availability to their profile so everyone can see if the availability matches their needs - including preferred workdays and workplace.
+This project is a web application for 42berlin students. Students can find potential team members for their group projects. When the user is on a rank with group projects, they can see their upcoming group projects and see who else on campus needs to do those projects as well. They can message other students and add them as friends. Every user can also add their availability to their profile so everyone can see if the availability matches their needs - including preferred workdays and workplace.
 
 On the login page you need to register, if it is your first time, with an email and a password, that needs to be 6 letters long. When you're already registered you just need to login with your email and password. After login you need to verify that you are a 42 student by authorizing your 42 intra account. This way the application gets all your 42 info, including your intra, mail, rank, etc.
 
@@ -12,7 +18,7 @@ You can search for users and projects or look at your upcoming projects to find 
 
 Under your chats you can find every message you wrote and start a new chat.
 
-On the friends page you can see all your friendsand their online status and the students who requested you as a friend. You can accept the friend request on your friends page. You can add/remove friends on the profile page of the user.
+On the friends page you can see all your friends and their online status and the students who requested you as a friend. You can accept the friend request on your friends page. You can add/remove friends on the profile page of the user.
 
 On your own profile page you can change your profile picture and add/change your availability.
 
@@ -24,8 +30,6 @@ Prerequisits:
 
 To start:
 Simply make
-
-
 
 ## Resources
 
